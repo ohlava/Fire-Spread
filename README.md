@@ -36,7 +36,7 @@ git push -uf origin master
 
 ## Test and Deploy
 
-Use the built-in continuous integration in GitLab.
+Use the built-in continuous   in GitLab.
 
 - [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
 - [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
