@@ -23,9 +23,9 @@ public class Visulizer : MonoBehaviour
                 Tile worldTile = world.GetTileAt(x, y);
                 float height = worldTile.Height;
 
-                GameObject tileInstance = Instantiate(tilePrefab, new Vector3(x, height * 5, y), Quaternion.identity);
+                GameObject tileInstance = Instantiate(tilePrefab, new Vector3(x, height * 10, y), Quaternion.identity);
 
-                tileInstance.transform.localScale = new Vector3(1, height * 10, 1);
+                tileInstance.transform.localScale = new Vector3(1, height, 1);
                 tileInstance.transform.position = new Vector3(x, tileInstance.transform.localScale.y / 2, y);
 
                 // If tile is a water tile, color it blue
@@ -69,15 +69,21 @@ public class Visulizer : MonoBehaviour
         return ft;
     }
 
-    public void SetCameraPositionAndOrientation(int worldWidth, int worldDepth)
+    public void SetCameraPositionAndOrientation(World world)
     {
-        int cameraHeight = 50;
-        // Set camera's position to the center of the world.
-        mainCamera.transform.position = new Vector3(worldWidth / 2f, cameraHeight, -worldDepth / 2f);
+        // The diagonal of the world in Unity units
+        float diagonal = Mathf.Sqrt(world.Width * world.Width + world.Depth * world.Depth);
 
-        // Adjust the camera's position and orientation based on world size.
-        mainCamera.transform.position += new Vector3(0, cameraHeight * 0.5f, 0);
-        mainCamera.transform.rotation = Quaternion.Euler(45, 0, 0);
+        // Calculate the optimal distance required to view the entire map based on the diagonal.
+        // This is derived from the formula of tangent in a right-angled triangle, tan(FOV/2) = (diagonal/2) / distance,
+        // hence distance = (diagonal/2) / tan(FOV/2).
+        float getCloserPar = 0.4f;
+        float cameraDistance = (diagonal / 2)* getCloserPar / Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+
+        // Set the camera's position to the center of the world, and above it at the calculated distance.
+        mainCamera.transform.position = new Vector3(world.Width / 2f, cameraDistance, -world.Depth / 2f);
+
+        // Adjust the camera's orientation to look towards the center of the world.
+        mainCamera.transform.LookAt(new Vector3(world.Width / 2f, 0, world.Depth / 2f));
     }
-
 }

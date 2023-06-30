@@ -26,7 +26,7 @@ public class MainLogic : MonoBehaviour
     {
         world = worldGenerator.GenerateNewWorld();
         visulizer.CreateWorld(world);
-        visulizer.SetCameraPositionAndOrientation(world.Width, world.Depth);
+        visulizer.SetCameraPositionAndOrientation(world);
     }
 
     // Update is called once per frame
