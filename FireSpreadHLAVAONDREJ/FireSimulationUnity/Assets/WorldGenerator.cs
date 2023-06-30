@@ -6,15 +6,15 @@ using UnityEngine;
 public class World
 {
     public int Width { get; set; }
-    public int Height { get; set; }
+    public int Depth { get; set; }
     public Tile[,] Grid { get; set; }
     public Weather Weather { get; set; }
 
-    public World(int width, int height)
+    public World(int width, int depth)
     {
         Width = width;
-        Height = height;
-        Grid = new Tile[width, height];
+        Depth = depth;
+        Grid = new Tile[width, depth];
     }
 
     public void UpdateWeather(Weather newWeather)
@@ -72,7 +72,7 @@ public class WorldGenerator : MonoBehaviour
     public World world;
 
     public int worldWidth = 50;
-    public int worldHeight = 50;
+    public int worldDepth = 50;
 
     HeightMapImporter mapImporter;
     [SerializeField] GameObject mapImporterObj;
@@ -94,7 +94,7 @@ public class WorldGenerator : MonoBehaviour
         {
             customMap = mapImporter.GetMap();
             worldWidth = customMap.GetLength(0);
-            worldHeight = customMap.GetLength(1);
+            worldDepth = customMap.GetLength(1);
 
             GenerateWorldFromHeightMap(customMap);
         }
@@ -107,11 +107,11 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateWorldFromHeightMap(float[,] map)
     {
-        world = new World(worldWidth, worldHeight);
+        world = new World(worldWidth, worldDepth);
 
         for (int x = 0; x < worldWidth; x++)
         {
-            for (int y = 0; y < worldHeight; y++)
+            for (int y = 0; y < worldDepth; y++)
             {
                 float height = map[x,y];
                 world.Grid[x, y] = new Tile { Height = height, Moisture = (map[x, y] == 0) ? 100 : 0 };
@@ -122,8 +122,8 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateWorld()
     {
-        float[,] heightMap = new float[worldWidth, worldHeight];
-        int[,] lakeMap; // for rivers to End in there
+        float[,] heightMap = new float[worldWidth, worldDepth];
+        int[,] lakeMap; // rivers can end in there
         int[,] riverMap;
 
         heightMap = GenerateBaseTerrain(heightMap);
@@ -140,7 +140,7 @@ public class WorldGenerator : MonoBehaviour
         // Generate multi-octave Perlin noise for the height map
         for (int x = 0; x < worldWidth; x++)
         {
-            for (int y = 0; y < worldHeight; y++)
+            for (int y = 0; y < worldDepth; y++)
             {
                 float amplitude = 1;
                 float frequency = 1;
@@ -175,12 +175,12 @@ public class WorldGenerator : MonoBehaviour
         // Identify and create lakes
         float lakeThreshold = 0.15f;  // You can adjust this value to control how often lakes appear
 
-        int[,] lakeMap = new int[worldWidth, worldHeight];
-        bool[,] visited = new bool[worldWidth, worldHeight];
+        int[,] lakeMap = new int[worldWidth, worldDepth];
+        bool[,] visited = new bool[worldWidth, worldDepth];
 
         for (int x = 1; x < worldWidth - 1; x++)
         {
-            for (int y = 1; y < worldHeight - 1; y++)
+            for (int y = 1; y < worldDepth - 1; y++)
             {
                 // If a point is a local minimum and its height is below the lake threshold, create a lake
                 if (!visited[x, y] && heightMap[x, y] < lakeThreshold
@@ -197,7 +197,7 @@ public class WorldGenerator : MonoBehaviour
         // Recursive function to propagate the lake to neighbors
         void CreateLake(int x, int y, float[,] heightMap, bool[,] visited, float lakeThreshold)
         {
-            if (x < 0 || x >= worldWidth || y < 0 || y >= worldHeight || visited[x, y] || heightMap[x, y] >= lakeThreshold)
+            if (x < 0 || x >= worldWidth || y < 0 || y >= worldDepth || visited[x, y] || heightMap[x, y] >= lakeThreshold)
             {
                 return;
             }
@@ -216,20 +216,20 @@ public class WorldGenerator : MonoBehaviour
 
     private int[,] GenerateRivers(float[,] heightMap, int[,] lakeMap)
     {
-        int[,] riverMap = new int[worldWidth, worldHeight]; 
+        int[,] riverMap = new int[worldWidth, worldDepth]; 
 
         // Generate rivers
         System.Random rand = new System.Random();
         for (int i = 0; i < rivers; i++)
         {
             int riverStartX = rand.Next(worldWidth);
-            int riverStartY = rand.Next(worldHeight);
+            int riverStartY = rand.Next(worldDepth);
 
             int x = riverStartX;
             int y = riverStartY;
             int direction = rand.Next(4);
 
-            while (x < worldWidth && y < worldHeight)
+            while (x < worldWidth && y < worldDepth)
             {
                 riverMap[x, y] = 1;
 
@@ -242,7 +242,7 @@ public class WorldGenerator : MonoBehaviour
                     case 3: if (rand.NextDouble() < 0.5) y++; else x--; break;
                 }
 
-                if (x < 0 || y < 0 || x >= worldWidth || y >= worldHeight || lakeMap[x, y] == 1)
+                if (x < 0 || y < 0 || x >= worldWidth || y >= worldDepth || lakeMap[x, y] == 1)
                     break;
             }
 
@@ -257,7 +257,7 @@ public class WorldGenerator : MonoBehaviour
         // Iterate over each tile in the world
         for (int x = 0; x < worldWidth; x++)
         {
-            for (int y = 0; y < worldHeight; y++)
+            for (int y = 0; y < worldDepth; y++)
             {
                 // Check if the current tile is a water tile (i.e., its height is 0)
                 if (lakeMap[x, y] == 1 || riverMap[x, y] == 1)
@@ -273,7 +273,7 @@ public class WorldGenerator : MonoBehaviour
                             // Check if the neighbor is within the world bounds
                             int nx = x + dx;
                             int ny = y + dy;
-                            if (nx >= 0 && nx < worldWidth && ny >= 0 && ny < worldHeight)
+                            if (nx >= 0 && nx < worldWidth && ny >= 0 && ny < worldDepth)
                             {
                                 // Reduce the height of the neighbor by the beach factor, but don't let it go below 0
                                 heightMap[nx, ny] = Mathf.Max(heightMap[nx, ny] - beachFactor, 0);

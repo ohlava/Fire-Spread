@@ -5,6 +5,7 @@ using UnityEngine;
 public class Visulizer : MonoBehaviour
 {
     public GameObject tilePrefab;
+    public Camera mainCamera;
 
     private List<GameObject> tileInstances = new List<GameObject>(); // Corresponding tiles - change to dict?
     private List<Tile> actualTiles = new List<Tile>();
@@ -14,13 +15,10 @@ public class Visulizer : MonoBehaviour
 
     public void CreateWorld(World world)
     {
-        // Clear any existing tileInstances
-        DeleteAllTiles();
-
         // Generate tileInstances
         for (int x = 0; x < world.Width; x++)
         {
-            for (int y = 0; y < world.Height; y++)
+            for (int y = 0; y < world.Depth; y++)
             {
                 Tile worldTile = world.GetTileAt(x, y);
                 float height = worldTile.Height;
@@ -48,11 +46,13 @@ public class Visulizer : MonoBehaviour
 
     public void DeleteAllTiles()
     {
+        // Clear any existing tileInstances
         foreach (var tile in tileInstances)
         {
             Destroy(tile);
         }
         tileInstances.Clear();
+        actualTiles.Clear();
     }
 
     public Tile GetWorldTileFromInstance(GameObject instance)
@@ -60,4 +60,16 @@ public class Visulizer : MonoBehaviour
         int index = tileInstances.FindIndex(a => a == instance);
         return actualTiles[index];
     }
+
+    public void SetCameraPositionAndOrientation(int worldWidth, int worldDepth)
+    {
+        int cameraHeight = 50;
+        // Set camera's position to the center of the world.
+        mainCamera.transform.position = new Vector3(worldWidth / 2f, cameraHeight, -worldDepth / 2f);
+
+        // Adjust the camera's position and orientation based on world size.
+        mainCamera.transform.position += new Vector3(0, cameraHeight * 0.5f, 0);
+        mainCamera.transform.rotation = Quaternion.Euler(45, 0, 0);
+    }
+
 }

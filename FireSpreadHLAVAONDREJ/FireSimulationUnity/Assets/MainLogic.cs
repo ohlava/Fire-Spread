@@ -26,21 +26,31 @@ public class MainLogic : MonoBehaviour
     {
         world = worldGenerator.GenerateNewWorld();
         visulizer.CreateWorld(world);
+        visulizer.SetCameraPositionAndOrientation(world.Width, world.Depth);
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*
+        checkClick();
+
         elapsed += Time.deltaTime;
-        if (elapsed >= 2f) {
-            elapsed = elapsed % 2f;
+        if (elapsed >= 5f) {
+            elapsed = elapsed % 5f;
 
             world = worldGenerator.GenerateNewWorld();
+            visulizer.DeleteAllTiles();
             visulizer.CreateWorld(world);
+            
+            // After tiles are generated, set camera position and orientation.
+            //visulizer.SetCameraPositionAndOrientation(world.Width, 50);
         }
-        */
 
+
+    }
+
+    private void checkClick()
+    {
         // If left mouse button is clicked
         if (Input.GetMouseButtonDown(0))
         {
@@ -70,10 +80,4 @@ public class MainLogic : MonoBehaviour
         }
     }
 
-
-    public void OutputTime()
-    {
-        world = worldGenerator.GenerateNewWorld();
-        visulizer.CreateWorld(world);
-    }
 }
