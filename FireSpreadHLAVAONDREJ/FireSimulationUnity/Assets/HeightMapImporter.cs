@@ -8,8 +8,11 @@ using UnityEngine.UI;
 public class HeightMapImporter : MonoBehaviour
 {
     // Adjust this to change how the height values will be scaled
-    public float HeightMultiplier = 1.0f;
+    public float HeightMultiplier = 5f;
     public float[,] heightMap;
+    public int maxMapHeight = 100;
+    public int maxMapWidth = 100;
+    public int scale = 1; // scale parameter is the number of pixels to skip between each sample of the texture map
 
     public float[,] GetMap()
     {
@@ -20,8 +23,8 @@ public class HeightMapImporter : MonoBehaviour
         else
         {
             Debug.Log("Something went wrong with map Import");
-            // return plain map
 
+            // return plain map
             int width = heightMap.GetLength(0);
             int height = heightMap.GetLength(1);
 
@@ -56,8 +59,12 @@ public class HeightMapImporter : MonoBehaviour
 
     private float[,] ConvertToHeightmap(Texture2D tex)
     {
-        int width = Mathf.Min(tex.width, 100);
-        int height = Mathf.Min(tex.height, 100);
+        
+        if(scale < 1)
+            scale = 1;
+
+        int width = Mathf.Min(tex.width / scale, maxMapWidth);
+        int height = Mathf.Min(tex.height / scale, maxMapHeight);
 
         float[,] heights = new float[width, height];
 
@@ -67,7 +74,8 @@ public class HeightMapImporter : MonoBehaviour
             {
                 // Get the color value (0.0 - 1.0) for the pixel
                 // We use the grayscale value of the image as the height
-                float heightValue = tex.GetPixel(i, j).grayscale;
+                // Make sure to multiply indices by the scale to get the correct pixel from the texture
+                float heightValue = tex.GetPixel(i * scale, j * scale).grayscale;
 
                 // Scale the height value and assign it to the heightmap
                 heights[i, j] = heightValue * HeightMultiplier;

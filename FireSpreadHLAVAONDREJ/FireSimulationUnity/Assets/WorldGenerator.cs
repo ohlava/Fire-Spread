@@ -76,6 +76,10 @@ public class WorldGenerator : MonoBehaviour
 
     HeightMapImporter mapImporter;
     [SerializeField] GameObject mapImporterObj;
+    void Awake()
+    {
+        mapImporter = mapImporterObj.GetComponent<HeightMapImporter>();
+    }
 
     // Change to NoiseSettings / WorldGenerationSettings
     public bool useCustomMap;
@@ -227,22 +231,6 @@ public class WorldGenerator : MonoBehaviour
 
             while (x < worldWidth && y < worldHeight)
             {
-                // Create a valley around the river
-                for (int dx = -1; dx <= 1; dx++)
-                {
-                    for (int dy = -1; dy <= 1; dy++)
-                    {
-                        int nx = x + dx;
-                        int ny = y + dy;
-
-                        if (nx >= 0 && ny >= 0 && nx < worldWidth && ny < worldHeight)
-                        {
-                            float valleyDepth = 1f - Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) * 0.7f;  // Adjust depth factor as needed
-                            heightMap[nx, ny] = Mathf.Min(heightMap[nx, ny], valleyDepth);
-                        }
-                    }
-                }
-
                 riverMap[x, y] = 1;
 
                 // Move in a semi-random direction
@@ -278,9 +266,9 @@ public class WorldGenerator : MonoBehaviour
                     heightMap[x, y] = 0;
 
                     // Iterate over the neighbors of the current tile
-                    for (int dx = -1; dx <= 1; dx++)
+                    for (int dx = -1; dx <= 2; dx++)
                     {
-                        for (int dy = -1; dy <= 1; dy++)
+                        for (int dy = -1; dy <= 2; dy++)
                         {
                             // Check if the neighbor is within the world bounds
                             int nx = x + dx;
