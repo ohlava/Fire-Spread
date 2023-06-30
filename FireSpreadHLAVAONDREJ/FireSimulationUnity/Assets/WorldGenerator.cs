@@ -8,6 +8,7 @@ public class World
     public int Width { get; set; }
     public int Depth { get; set; }
     public Tile[,] Grid { get; set; }
+    public Tile HighestTile { get; set; }
     public Weather Weather { get; set; }
 
     public World(int width, int depth)
@@ -108,13 +109,22 @@ public class WorldGenerator : MonoBehaviour
     private void GenerateWorldFromHeightMap(float[,] map)
     {
         world = new World(worldWidth, worldDepth);
+        float heighestPoint = 0f;
 
         for (int x = 0; x < worldWidth; x++)
         {
             for (int y = 0; y < worldDepth; y++)
             {
                 float height = map[x,y];
-                world.Grid[x, y] = new Tile { Height = height, Moisture = (map[x, y] == 0) ? 100 : 0 };
+                Tile currTile = new Tile { Height = height, Moisture = (map[x, y] == 0) ? 100 : 0 };
+
+                if (height > heighestPoint)
+                {
+                    world.HighestTile = currTile;
+                    heighestPoint = height;
+                }
+
+                world.Grid[x, y] = currTile;
             }
         }
         return;

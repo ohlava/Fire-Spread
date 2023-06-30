@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Visulizer : MonoBehaviour
@@ -7,8 +8,7 @@ public class Visulizer : MonoBehaviour
     public GameObject tilePrefab;
     public Camera mainCamera;
 
-    private List<GameObject> tileInstances = new List<GameObject>(); // Corresponding tiles - change to dict?
-    private List<Tile> actualTiles = new List<Tile>();
+    private Dictionary<Tile, GameObject> tileToInstanceDict = new Dictionary<Tile, GameObject>();
 
     // Add the layer mask for the tileInstances
     public LayerMask tileLayer;
@@ -38,27 +38,35 @@ public class Visulizer : MonoBehaviour
                     }
                 }
 
-                tileInstances.Add(tileInstance);
-                actualTiles.Add(worldTile);
+                // dictinary to connect tiles to their instances
+                tileToInstanceDict[worldTile] = tileInstance;
             }
         }
     }
 
     public void DeleteAllTiles()
     {
-        // Clear any existing tileInstances
-        foreach (var tile in tileInstances)
+        // Clear any existing tile instances
+        foreach (var item in tileToInstanceDict)
         {
-            Destroy(tile);
+            Destroy(item.Value);
         }
-        tileInstances.Clear();
-        actualTiles.Clear();
+        tileToInstanceDict.Clear();
     }
 
     public Tile GetWorldTileFromInstance(GameObject instance)
     {
-        int index = tileInstances.FindIndex(a => a == instance);
-        return actualTiles[index];
+        Tile ft = tileToInstanceDict.Keys.First();
+        foreach (Tile tile in tileToInstanceDict.Keys)
+        {
+            if (tileToInstanceDict[tile] == instance)
+            {
+                return tile;
+            }
+        }
+        // should never happen - every tile has its own representation
+        Debug.Log("No tile found");
+        return ft;
     }
 
     public void SetCameraPositionAndOrientation(int worldWidth, int worldDepth)

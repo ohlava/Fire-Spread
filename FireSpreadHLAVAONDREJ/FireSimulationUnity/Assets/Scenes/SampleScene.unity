@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb2774a594cc4c41af1e760f9a88a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldWidth: 100
-  worldHeight: 100
+  worldWidth: 200
+  worldDepth: 100
   mapImporterObj: {fileID: 1253861192}
   useCustomMap: 0
   octaves: 5
@@ -508,6 +508,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
+  mainCamera: {fileID: 963194227}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8

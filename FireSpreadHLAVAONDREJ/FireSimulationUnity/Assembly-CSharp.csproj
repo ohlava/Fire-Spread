@@ -36,12 +36,12 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
+     <Compile Include="Assets/HeightMapImporter.cs" />
      <Compile Include="Assets/SettingsMenu.cs" />
      <Compile Include="Assets/NoiseSettings.cs" />
      <Compile Include="Assets/WorldGenerator.cs" />
-     <Compile Include="Assets/HeightMapImporter.cs" />
-     <Compile Include="Assets/Visulizer.cs" />
      <Compile Include="Assets/MainLogic.cs" />
+     <Compile Include="Assets/Visulizer.cs" />
      <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />

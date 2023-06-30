@@ -38,14 +38,13 @@ public class MainLogic : MonoBehaviour
         if (elapsed >= 5f) {
             elapsed = elapsed % 5f;
 
-            world = worldGenerator.GenerateNewWorld();
-            visulizer.DeleteAllTiles();
-            visulizer.CreateWorld(world);
+            //world = worldGenerator.GenerateNewWorld();
+            //visulizer.DeleteAllTiles();
+            //isulizer.CreateWorld(world);
             
             // After tiles are generated, set camera position and orientation.
             //visulizer.SetCameraPositionAndOrientation(world.Width, 50);
         }
-
 
     }
 
