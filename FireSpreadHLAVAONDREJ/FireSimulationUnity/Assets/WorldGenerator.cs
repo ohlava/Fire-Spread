@@ -2,108 +2,141 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Core data structures
+public class World
+{
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public Tile[,] Grid { get; set; }
+    public Weather Weather { get; set; }
+
+    public World(int width, int height)
+    {
+        Width = width;
+        Height = height;
+        Grid = new Tile[width, height];
+    }
+
+    public void UpdateWeather(Weather newWeather)
+    {
+        // Update the weather conditions in the world.
+    }
+
+    public Tile GetTileAt(int x, int y)
+    {
+        return Grid[x,y];
+        // Return the tile at the specified position in the grid.
+    }
+}
+
+public class Tile
+{
+    public float Moisture { get; set; } // 100% for water
+    public VegetationType Vegetation { get; set; }
+    public float Height { get; set; }
+    public bool IsBurning { get; set; }
+    public bool HasBurned { get; set; }
+
+    public void Ignite()
+    {
+        // Start burning this tile if it's not already burning or burned.
+    }
+
+    public void Extinguish()
+    {
+        // Extinguish the fire on this tile and set its state to burned.
+    }
+}
+
+public class Weather
+{
+    public float WindDirection { get; set; }
+    public float WindStrength { get; set; }
+
+    public Weather(float windDirection, float windStrength)
+    {
+        // Initialize the weather conditions.
+    }
+}
+
+public enum VegetationType
+{
+    Grass,
+    Forest,
+    Sparse
+    // Add other types of vegetation as needed.
+}
 
 public class WorldGenerator : MonoBehaviour
 {
-    // Core data structures
-    public class World
-    {
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public Tile[,] Grid { get; set; }
-        public Weather Weather { get; set; }
-
-        public void UpdateWeather(Weather newWeather)
-        {
-            // Update the weather conditions in the world.
-        }
-
-        public Tile GetTileAt(int x, int y)
-        {
-            return Grid[x,y];
-            // Return the tile at the specified position in the grid.
-        }
-    }
-
-    public class Tile
-    {
-        public float Moisture { get; set; }
-        public VegetationType Vegetation { get; set; }
-        public float Height { get; set; }
-        public bool IsBurning { get; set; }
-        public bool HasBurned { get; set; }
-
-        public void Ignite()
-        {
-            // Start burning this tile if it's not already burning or burned.
-        }
-
-        public void Extinguish()
-        {
-            // Extinguish the fire on this tile and set its state to burned.
-        }
-    }
-
-    public class Weather
-    {
-        public float WindDirection { get; set; }
-        public float WindStrength { get; set; }
-
-        public Weather(float windDirection, float windStrength)
-        {
-            // Initialize the weather conditions.
-        }
-    }
-
-    public enum VegetationType
-    {
-        Grass,
-        Forest,
-        Sparse
-        // Add other types of vegetation as needed.
-    }
-
     public World world;
-    public GameObject tilePrefab;
-    public bool useCustomMap;
-    public float[,] customMap;
 
-    // Change to NoiseSettings
+    public int worldWidth = 50;
+    public int worldHeight = 50;
+
+    HeightMapImporter mapImporter;
+    [SerializeField] GameObject mapImporterObj;
+
+    // Change to NoiseSettings / WorldGenerationSettings
+    public bool useCustomMap;
+    private float[,] customMap;
     public int octaves = 5;
     public float persistence = 0.4f;
-
     public int rivers = 1;
 
-    private void Start()
+    public World GenerateNewWorld()
     {
         if (useCustomMap)
         {
-            GenerateWorld(customMap);
+            customMap = mapImporter.GetMap();
+            worldWidth = customMap.GetLength(0);
+            worldHeight = customMap.GetLength(1);
+
+            GenerateWorldFromHeightMap(customMap);
         }
         else
         {
             GenerateWorld();
         }
+        return world;
     }
 
-    private void GenerateWorld(float[,] map = null)
+    private void GenerateWorldFromHeightMap(float[,] map)
     {
-        world = new World
+        world = new World(worldWidth, worldHeight);
+
+        for (int x = 0; x < worldWidth; x++)
         {
-            Width = map != null ? map.GetLength(0) : 100,
-            Height = map != null ? map.GetLength(1) : 100,
-            Grid = new Tile[map != null ? map.GetLength(0) : 100, map != null ? map.GetLength(1) : 100]
-        };
+            for (int y = 0; y < worldHeight; y++)
+            {
+                float height = map[x,y];
+                world.Grid[x, y] = new Tile { Height = height, Moisture = (map[x, y] == 0) ? 100 : 0 };
+            }
+        }
+        return;
+    }
 
-        float[,] heightMap = new float[world.Width, world.Height];
+    private void GenerateWorld()
+    {
+        float[,] heightMap = new float[worldWidth, worldHeight];
+        int[,] lakeMap; // for rivers to End in there
+        int[,] riverMap;
 
-        int[,] lakeMap = new int[world.Width, world.Height]; // for rivers to end on those
-        int[,] riverMap = new int[world.Width, world.Height]; 
+        heightMap = GenerateBaseTerrain(heightMap);
+        lakeMap = GenerateLakes(heightMap);
+        riverMap = GenerateRivers(heightMap, lakeMap);
 
+        heightMap = GenerateCombinedMap(heightMap, lakeMap, riverMap);
+        GenerateWorldFromHeightMap(heightMap);
+        return;
+    }
+
+    private float[,] GenerateBaseTerrain(float[,] heightMap)
+    {
         // Generate multi-octave Perlin noise for the height map
-        for (int x = 0; x < world.Width; x++)
+        for (int x = 0; x < worldWidth; x++)
         {
-            for (int y = 0; y < world.Height; y++)
+            for (int y = 0; y < worldHeight; y++)
             {
                 float amplitude = 1;
                 float frequency = 1;
@@ -130,14 +163,20 @@ public class WorldGenerator : MonoBehaviour
                 heightMap[x, y] = (noiseHeight + 1) / 2; // normalize to 0-1
             }
         }
+        return heightMap;
+    }
 
-        // Identify and create lakes and adjust rivers
-        float lakeThreshold = 0.2f;  // You can adjust this value to control how often lakes appear
-        bool[,] visited = new bool[world.Width, world.Height];
+    private int[,] GenerateLakes(float[,] heightMap)
+    {
+        // Identify and create lakes
+        float lakeThreshold = 0.15f;  // You can adjust this value to control how often lakes appear
 
-        for (int x = 1; x < world.Width - 1; x++)
+        int[,] lakeMap = new int[worldWidth, worldHeight];
+        bool[,] visited = new bool[worldWidth, worldHeight];
+
+        for (int x = 1; x < worldWidth - 1; x++)
         {
-            for (int y = 1; y < world.Height - 1; y++)
+            for (int y = 1; y < worldHeight - 1; y++)
             {
                 // If a point is a local minimum and its height is below the lake threshold, create a lake
                 if (!visited[x, y] && heightMap[x, y] < lakeThreshold
@@ -154,13 +193,12 @@ public class WorldGenerator : MonoBehaviour
         // Recursive function to propagate the lake to neighbors
         void CreateLake(int x, int y, float[,] heightMap, bool[,] visited, float lakeThreshold)
         {
-            if (x < 0 || x >= world.Width || y < 0 || y >= world.Height || visited[x, y] || heightMap[x, y] >= lakeThreshold)
+            if (x < 0 || x >= worldWidth || y < 0 || y >= worldHeight || visited[x, y] || heightMap[x, y] >= lakeThreshold)
             {
                 return;
             }
 
             visited[x, y] = true;
-            heightMap[x, y] = 0;
             lakeMap[x, y] = 1;
 
             CreateLake(x + 1, y, heightMap, visited, lakeThreshold);
@@ -168,20 +206,26 @@ public class WorldGenerator : MonoBehaviour
             CreateLake(x, y + 1, heightMap, visited, lakeThreshold);
             CreateLake(x, y - 1, heightMap, visited, lakeThreshold);
         }
+        return lakeMap;
 
+    }
+
+    private int[,] GenerateRivers(float[,] heightMap, int[,] lakeMap)
+    {
+        int[,] riverMap = new int[worldWidth, worldHeight]; 
 
         // Generate rivers
         System.Random rand = new System.Random();
         for (int i = 0; i < rivers; i++)
         {
-            int riverStartX = rand.Next(world.Width);
-            int riverStartY = rand.Next(world.Height);
+            int riverStartX = rand.Next(worldWidth);
+            int riverStartY = rand.Next(worldHeight);
 
             int x = riverStartX;
             int y = riverStartY;
             int direction = rand.Next(4);
 
-            while (x < world.Width && y < world.Height)
+            while (x < worldWidth && y < worldHeight)
             {
                 // Create a valley around the river
                 for (int dx = -1; dx <= 1; dx++)
@@ -191,7 +235,7 @@ public class WorldGenerator : MonoBehaviour
                         int nx = x + dx;
                         int ny = y + dy;
 
-                        if (nx >= 0 && ny >= 0 && nx < world.Width && ny < world.Height)
+                        if (nx >= 0 && ny >= 0 && nx < worldWidth && ny < worldHeight)
                         {
                             float valleyDepth = 1f - Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy)) * 0.7f;  // Adjust depth factor as needed
                             heightMap[nx, ny] = Mathf.Min(heightMap[nx, ny], valleyDepth);
@@ -199,8 +243,6 @@ public class WorldGenerator : MonoBehaviour
                     }
                 }
 
-                // Set height to 0 for river
-                heightMap[x, y] = 0;
                 riverMap[x, y] = 1;
 
                 // Move in a semi-random direction
@@ -212,24 +254,29 @@ public class WorldGenerator : MonoBehaviour
                     case 3: if (rand.NextDouble() < 0.5) y++; else x--; break;
                 }
 
-                if (x < 0 || y < 0 || x >= world.Width || y >= world.Height || lakeMap[x, y] == 1)
+                if (x < 0 || y < 0 || x >= worldWidth || y >= worldHeight || lakeMap[x, y] == 1)
                     break;
             }
+
         }
+        return riverMap;
+    }
 
-
-
-
-        float beachFactor = 0.1f; // adjust this to control how much the terrain around water tiles is reduced
+    private float[,] GenerateCombinedMap(float[,] heightMap, int[,] lakeMap, int[,] riverMap)
+    {
+        float beachFactor = 0.15f; // adjust this to control how much the terrain around water tiles is reduced
 
         // Iterate over each tile in the world
-        for (int x = 0; x < world.Width; x++)
+        for (int x = 0; x < worldWidth; x++)
         {
-            for (int y = 0; y < world.Height; y++)
+            for (int y = 0; y < worldHeight; y++)
             {
                 // Check if the current tile is a water tile (i.e., its height is 0)
-                if (heightMap[x, y] == 0)
+                if (lakeMap[x, y] == 1 || riverMap[x, y] == 1)
                 {
+                    // all water is 0
+                    heightMap[x, y] = 0;
+
                     // Iterate over the neighbors of the current tile
                     for (int dx = -1; dx <= 1; dx++)
                     {
@@ -238,7 +285,7 @@ public class WorldGenerator : MonoBehaviour
                             // Check if the neighbor is within the world bounds
                             int nx = x + dx;
                             int ny = y + dy;
-                            if (nx >= 0 && nx < world.Width && ny >= 0 && ny < world.Height)
+                            if (nx >= 0 && nx < worldWidth && ny >= 0 && ny < worldHeight)
                             {
                                 // Reduce the height of the neighbor by the beach factor, but don't let it go below 0
                                 heightMap[nx, ny] = Mathf.Max(heightMap[nx, ny] - beachFactor, 0);
@@ -248,52 +295,6 @@ public class WorldGenerator : MonoBehaviour
                 }
             }
         }
-
-
-
-        // repeat with smoothing multiple times?
-        for (int x = 0; x < world.Width; x++)
-        {
-            for (int y = 0; y < world.Height; y++)
-            {
-                if (riverMap[x, y] == 1) 
-                {
-                    heightMap[x, y] = 0;
-                }
-            }
-        }
-
-
-
-
-
-
-
-
-        // Generate tiles
-        for (int x = 0; x < world.Width; x++)
-        {
-            for (int y = 0; y < world.Height; y++)
-            {
-                float height = map != null ? map[x, y] : heightMap[x, y];
-                world.Grid[x, y] = new Tile { Height = height };
-
-                GameObject tileInstance = Instantiate(tilePrefab, new Vector3(x, height * 5, y), Quaternion.identity);
-                tileInstance.transform.localScale = new Vector3(1, height * 10, 1);
-                tileInstance.transform.position = new Vector3(x, tileInstance.transform.localScale.y / 2, y);
-                
-                // If tile is a water tile, color it blue
-                if (height == 0)
-                {
-                    Renderer renderer = tileInstance.GetComponent<Renderer>();
-                    if (renderer != null)
-                    {
-                        renderer.material.color = Color.blue;
-                    }
-                }
-            }
-        }
-
+        return heightMap;
     }
-
 }

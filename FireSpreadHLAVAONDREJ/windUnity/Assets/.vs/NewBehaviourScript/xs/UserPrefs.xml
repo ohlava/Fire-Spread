@@ -1,0 +1,25 @@
+﻿<Properties StartupConfiguration="{58A03BD7-8FE7-41AC-9827-0365354BB05D}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/hlava/Library/Mobile Documents/com~apple~CloudDocs/MFF/4.semestr-letní/Programování2_zapoctovyTest/FireSpreadHLAVAONDREJ/windUnity/Assets/NewBehaviourScript.cs" relfile="NewBehaviourScript.cs" line="131" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.NewBehaviourScript PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="NewBehaviourScript.cs">
+    <Files>
+      <File FileName="NewBehaviourScript.cs" Line="138" Column="40" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="NewBehaviourScript" expanded="True">
+            <Node name="NewBehaviourScript" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

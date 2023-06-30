@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1705.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wind", "wind\wind.csproj", "{77746861-A605-4B0A-A905-F2B1BACED71C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{77746861-A605-4B0A-A905-F2B1BACED71C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77746861-A605-4B0A-A905-F2B1BACED71C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77746861-A605-4B0A-A905-F2B1BACED71C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77746861-A605-4B0A-A905-F2B1BACED71C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AD518F2A-B972-4F4C-8CF7-C7A74B940253}
+	EndGlobalSection
+EndGlobal
