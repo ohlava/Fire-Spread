@@ -44,6 +44,27 @@ public class Visulizer : MonoBehaviour
         }
     }
 
+    public GameObject firePrefab; // Assign a prefab for the "something" you want to create
+
+    public void createFireOnTile(Tile t)
+    {
+        // Check if there's a GameObject instance corresponding to the tile
+        if (tileToInstanceDict.TryGetValue(t, out GameObject ti))
+        {
+            // Get the position and height of the tile instance
+            Vector3 tilePosition = ti.transform.position;
+            float tileHeight = ti.transform.localScale.y;
+
+            // Create a new "something" at the position of the tile + height along the Y axis
+            GameObject something = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight, 0), Quaternion.identity);
+        }
+        else
+        {
+            Debug.LogError("No instance found for the given tile.");
+        }
+    }
+
+
     public void DeleteAllTiles()
     {
         // Clear any existing tile instances
@@ -65,7 +86,7 @@ public class Visulizer : MonoBehaviour
             }
         }
         // should never happen - every tile has its own representation
-        Debug.Log("No tile found");
+        Debug.LogError("No Tile found for the given instance.");
         return ft;
     }
 

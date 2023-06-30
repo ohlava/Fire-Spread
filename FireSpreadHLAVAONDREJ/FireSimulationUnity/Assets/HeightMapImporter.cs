@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class HeightMapImporter : MonoBehaviour
 {
     // Adjust this to change how the height values will be scaled
-    public float HeightMultiplier = 5f;
+    public float HeightMultiplier = 2f;
     public float[,] heightMap;
     public int maxMapHeight = 100;
     public int maxMapWidth = 100;

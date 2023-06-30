@@ -32,23 +32,25 @@ public class MainLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        checkClick();
+        Tile clickedTile = CheckForClick();
+        if (clickedTile != null)
+        {
+            visulizer.createFireOnTile(clickedTile);
+        }
 
         elapsed += Time.deltaTime;
-        if (elapsed >= 5f) {
+        if (elapsed >= 5f)
+        {
             elapsed = elapsed % 5f;
 
             //world = worldGenerator.GenerateNewWorld();
             //visulizer.DeleteAllTiles();
-            //isulizer.CreateWorld(world);
-            
-            // After tiles are generated, set camera position and orientation.
-            //visulizer.SetCameraPositionAndOrientation(world.Width, 50);
-        }
+            //visulizer.CreateWorld(world);
 
+        }
     }
 
-    private void checkClick()
+    private Tile CheckForClick() // always check for null before using clickedTile.
     {
         // If left mouse button is clicked
         if (Input.GetMouseButtonDown(0))
@@ -73,10 +75,15 @@ public class MainLogic : MonoBehaviour
                 if (worldTile != null)
                 {
                     Debug.Log(worldTile);
-                    // Do something with worldTile
+                    // Return the tile that was clicked
+                    return worldTile;
                 }
             }
         }
+
+        // Return null if no tile was clicked
+        return null;
     }
+
 
 }
