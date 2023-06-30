@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb2774a594cc4c41af1e760f9a88a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldWidth: 200
-  worldDepth: 100
+  worldWidth: 50
+  worldDepth: 50
   mapImporterObj: {fileID: 1253861192}
   useCustomMap: 0
   octaves: 5
@@ -508,10 +508,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
-  mainCamera: {fileID: 963194227}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
+  firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
+  grassPrefab: {fileID: 5098166735730487887, guid: e1911aeff5cba5f47861e9584df91e0e, type: 3}
+  forestPrefab: {fileID: 4025141361983464341, guid: 28d66e7e8dab6da44af849ea5753aa44, type: 3}
+  sparsePrefab: {fileID: 4992434099539113192, guid: d1278bde9795dd444a561ac91d01c74d, type: 3}
+  mainCamera: {fileID: 963194227}
 --- !u!4 &804466388
 Transform:
   m_ObjectHideFlags: 0

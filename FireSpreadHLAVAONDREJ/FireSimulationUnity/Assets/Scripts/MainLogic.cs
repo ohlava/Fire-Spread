@@ -32,11 +32,20 @@ public class MainLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Tile clickedTile = CheckForClick();
+        Tile clickedTile = CheckForLeftClick();
         if (clickedTile != null)
         {
-            visulizer.createFireOnTile(clickedTile);
+            visulizer.CreateFireOnTile(clickedTile);
         }
+
+        clickedTile = CheckForRightClick();
+        if (clickedTile != null)
+        {
+            System.Random rand = new System.Random();
+            visulizer.CreateVegetationOnTile(clickedTile, (VegetationType)rand.Next(3));
+        }
+
+
 
         elapsed += Time.deltaTime;
         if (elapsed >= 5f)
@@ -46,11 +55,10 @@ public class MainLogic : MonoBehaviour
             //world = worldGenerator.GenerateNewWorld();
             //visulizer.DeleteAllTiles();
             //visulizer.CreateWorld(world);
-
         }
     }
 
-    private Tile CheckForClick() // always check for null before using clickedTile.
+    private Tile CheckForLeftClick() // always check for null before using clickedTile.
     {
         // If left mouse button is clicked
         if (Input.GetMouseButtonDown(0))
@@ -63,18 +71,10 @@ public class MainLogic : MonoBehaviour
             // If ray hits a tile
             if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
             {
-                // Change color to red
-                Renderer renderer = hitInfo.transform.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.red;
-                }
-
                 // Get the corresponding world tile
                 Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
                 if (worldTile != null)
                 {
-                    Debug.Log(worldTile);
                     // Return the tile that was clicked
                     return worldTile;
                 }
@@ -85,5 +85,31 @@ public class MainLogic : MonoBehaviour
         return null;
     }
 
+    private Tile CheckForRightClick() // always check for null before using clickedTile.
+    {
+        // If left mouse button is clicked
+        if (Input.GetMouseButtonDown(1))
+        {
+            // Cast a ray from camera to click point
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hitInfo;
+
+            // If ray hits a tile
+            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
+            {
+                // Get the corresponding world tile
+                Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
+                if (worldTile != null)
+                {
+                    // Return the tile that was clicked
+                    return worldTile;
+                }
+            }
+        }
+
+        // Return null if no tile was clicked
+        return null;
+    }
 
 }

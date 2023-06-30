@@ -32,20 +32,28 @@ public class World
 
 public class Tile
 {
-    public float Moisture { get; set; } // 100% for water
+    public int Moisture { get; set; } // 100% for water
     public VegetationType Vegetation { get; set; }
     public float Height { get; set; }
     public bool IsBurning { get; set; }
     public bool HasBurned { get; set; }
 
-    public void Ignite()
+    public bool Ignite()
     {
         // Start burning this tile if it's not already burning or burned.
+        if (IsBurning == true || HasBurned == true || Moisture == 100)
+        {
+            return false;
+        }
+        IsBurning = true;
+        return true;
     }
 
     public void Extinguish()
     {
         // Extinguish the fire on this tile and set its state to burned.
+        IsBurning = false;
+        HasBurned = true;
     }
 }
 
