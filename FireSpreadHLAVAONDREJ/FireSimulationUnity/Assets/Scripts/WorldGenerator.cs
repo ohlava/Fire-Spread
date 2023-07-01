@@ -1,160 +1,146 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Core data structures
-public class World
-{
-    public int Width { get; set; }
-    public int Depth { get; set; }
-    public Tile[,] Grid { get; set; }
-    public Tile HighestTile { get; set; }
-    public Weather Weather { get; set; }
-
-    public World(int width, int depth)
-    {
-        Width = width;
-        Depth = depth;
-        Grid = new Tile[width, depth];
-    }
-
-    public void UpdateWeather(Weather newWeather)
-    {
-        // Update the weather conditions in the world.
-    }
-
-    public Tile GetTileAt(int x, int y)
-    {
-        return Grid[x,y];
-        // Return the tile at the specified position in the grid.
-    }
-}
-
-public class Tile
-{
-    public int Moisture { get; set; } // 100% for water
-    public VegetationType Vegetation { get; set; }
-    public float Height { get; set; }
-    public bool IsBurning { get; set; }
-    public bool HasBurned { get; set; }
-
-    public bool Ignite()
-    {
-        // Start burning this tile if it's not already burning or burned.
-        if (IsBurning == true || HasBurned == true || Moisture == 100)
-        {
-            return false;
-        }
-        IsBurning = true;
-        return true;
-    }
-
-    public void Extinguish()
-    {
-        // Extinguish the fire on this tile and set its state to burned.
-        IsBurning = false;
-        HasBurned = true;
-    }
-}
-
-public class Weather
-{
-    public float WindDirection { get; set; }
-    public float WindStrength { get; set; }
-
-    public Weather(float windDirection, float windStrength)
-    {
-        // Initialize the weather conditions.
-    }
-}
-
-public enum VegetationType
-{
-    Grass,
-    Forest,
-    Sparse
-    // Add other types of vegetation as needed.
-}
-
+[Serializable]
 public class WorldGenerator : MonoBehaviour
 {
-    public World world;
-
     public int worldWidth = 50;
     public int worldDepth = 50;
 
-    HeightMapImporter mapImporter;
+    MapImporter mapImporter;
     [SerializeField] GameObject mapImporterObj;
     void Awake()
     {
-        mapImporter = mapImporterObj.GetComponent<HeightMapImporter>();
+        mapImporter = mapImporterObj.GetComponent<MapImporter>();
     }
 
-    // Change to NoiseSettings / WorldGenerationSettings
+    // Combine all to WorldGenerationSettings
     public bool useCustomMap;
-    private float[,] customMap;
     public int octaves = 5;
     public float persistence = 0.4f;
     public int rivers = 1;
 
-    public World GenerateNewWorld()
+    public World GetWorld()
     {
+        World world;
+
+        // get heightMap different ways
+        float[,] heightMap;
         if (useCustomMap)
         {
-            customMap = mapImporter.GetMap();
-            worldWidth = customMap.GetLength(0);
-            worldDepth = customMap.GetLength(1);
-
-            GenerateWorldFromHeightMap(customMap);
+            heightMap = mapImporter.GetMap(); // returns different size that defualt worldWidth and worldDepth
+            worldWidth = heightMap.GetLength(0);
+            worldDepth = heightMap.GetLength(1);
         }
         else
         {
-            GenerateWorld();
+            heightMap = GenerateBaseTerrain();
         }
+
+        int[,] lakeMap = GenerateLakes(heightMap); // rivers can end in there
+
+        int[,] riverMap = GenerateRivers(heightMap, lakeMap); //
+
+        heightMap = GenerateCombinedMap(heightMap, lakeMap, riverMap);
+
+        int[,] moistureMap = GenerateMoistureMap(heightMap, lakeMap, riverMap);
+
+        VegetationType[,] vegetationMap = GenerateVegetationMap(moistureMap);
+
+        world = GenerateWorldFromMaps(heightMap, moistureMap, vegetationMap);
         return world;
     }
 
-    private void GenerateWorldFromHeightMap(float[,] map)
+    private int[,] GenerateMoistureMap(float[,] heightMap, int[,] lakeMap, int[,] riverMap)
     {
-        world = new World(worldWidth, worldDepth);
+        int[,] moistureMap = new int[worldWidth, worldDepth];
+        for (int x = 0; x < worldWidth; x++)
+        {
+            for (int y = 0; y < worldDepth; y++)
+            {
+                if (heightMap[x, y] == 0 || lakeMap[x, y] == 1 || riverMap[x, y] == 1) // water is represented by 1 in lake and river maps
+                {
+                    moistureMap[x, y] = 100;
+                }
+                else
+                {
+                    // Use Perlin noise to generate a moisture value
+                    float noise = Mathf.PerlinNoise(x / 10.0f, y / 10.0f); // Adjust the division value to change the noise scale
+                    moistureMap[x, y] = (int)(noise * 100);
+                }
+            }
+        }
+        return moistureMap;
+    }
+
+    private VegetationType[,] GenerateVegetationMap(int[,] moistureMap)
+    {
+        VegetationType[,] vegetationMap = new VegetationType[worldWidth, worldDepth];
+
+        for (int x = 0; x < worldWidth; x++)
+        {
+            for (int y = 0; y < worldDepth; y++)
+            {
+                int moisture = moistureMap[x, y];
+
+                // Adjust these moisture thresholds to change the distribution of vegetation
+                if (moisture < 30)
+                {
+                    vegetationMap[x, y] = VegetationType.Sparse;
+                }
+                else if (moisture < 50)
+                {
+                    vegetationMap[x, y] = VegetationType.Grass;
+                }
+                else if (moisture < 70)
+                {
+                    vegetationMap[x, y] = VegetationType.Forest;
+                }
+                else
+                {
+                    vegetationMap[x, y] = VegetationType.Swamp;
+                }
+            }
+        }
+        return vegetationMap;
+    }
+
+    private World GenerateWorldFromMaps(float[,] heightMap, int[,] moistureMap, VegetationType[,] vegetationMap)
+    {
+        World world = new World(worldWidth, worldDepth);
         float heighestPoint = 0f;
 
         for (int x = 0; x < worldWidth; x++)
         {
             for (int y = 0; y < worldDepth; y++)
             {
-                float height = map[x,y];
-                Tile currTile = new Tile { Height = height, Moisture = (map[x, y] == 0) ? 100 : 0 };
+                float height = heightMap[x,y];
+                int moisture = moistureMap[x, y];
+                VegetationType vegetation = vegetationMap[x, y];
 
+                // Assign the height, moisture and vegetation values to the tile
+                Tile currTile = new Tile { Height = height, Moisture = moisture, Vegetation = vegetation};
+
+                // Put that tile in the world on correct position
+                world.Grid[x, y] = currTile;
+
+                // for the HighestTile of the world
                 if (height > heighestPoint)
                 {
                     world.HighestTile = currTile;
                     heighestPoint = height;
-                }
-
-                world.Grid[x, y] = currTile;
+                } 
             }
         }
-        return;
+        return world;
     }
 
-    private void GenerateWorld()
+    private float[,] GenerateBaseTerrain()
     {
         float[,] heightMap = new float[worldWidth, worldDepth];
-        int[,] lakeMap; // rivers can end in there
-        int[,] riverMap;
 
-        heightMap = GenerateBaseTerrain(heightMap);
-        lakeMap = GenerateLakes(heightMap);
-        riverMap = GenerateRivers(heightMap, lakeMap);
-
-        heightMap = GenerateCombinedMap(heightMap, lakeMap, riverMap);
-        GenerateWorldFromHeightMap(heightMap);
-        return;
-    }
-
-    private float[,] GenerateBaseTerrain(float[,] heightMap)
-    {
         // Generate multi-octave Perlin noise for the height map
         for (int x = 0; x < worldWidth; x++)
         {

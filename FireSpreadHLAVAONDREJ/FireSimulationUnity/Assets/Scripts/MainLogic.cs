@@ -24,8 +24,8 @@ public class MainLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        world = worldGenerator.GenerateNewWorld();
-        visulizer.CreateWorld(world);
+        world = worldGenerator.GetWorld();
+        visulizer.CreateWorldTiles(world);
         visulizer.SetCameraPositionAndOrientation(world);
     }
 
@@ -57,6 +57,20 @@ public class MainLogic : MonoBehaviour
             //visulizer.CreateWorld(world);
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private Tile CheckForLeftClick() // always check for null before using clickedTile.
     {
