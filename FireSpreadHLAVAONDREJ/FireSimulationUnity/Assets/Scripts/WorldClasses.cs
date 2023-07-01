@@ -26,6 +26,16 @@ public class World
     {
         return Grid[x, y];
     }
+
+    // Reset all the changing atributes for all tiles
+    public void Reset()
+    {
+        foreach (Tile tile in Grid)
+        {
+            tile.IsBurning = false;
+            tile.HasBurned = false;
+        }
+    }
 }
 
 public class Tile
@@ -40,6 +50,15 @@ public class Tile
     public float Height { get; set; }
     public bool IsBurning { get; set; }
     public bool HasBurned { get; set; }
+    public int BurnTime { get; set; }
+    public int BurningFor = 0; // How long is already burning
+
+    public Tile()
+    {
+        System.Random rand = new System.Random();
+        BurnTime = rand.Next(3); // TODO later calculate based on Vegetation and Moisture
+    }
+
 
     public bool Ignite()
     {
@@ -57,6 +76,7 @@ public class Tile
         // Extinguish the fire on this tile and set its state to burned.
         IsBurning = false;
         HasBurned = true;
+        BurningFor = 0;
     }
 }
 
@@ -67,7 +87,7 @@ public class Weather
 
     public Weather(float windDirection, float windStrength)
     {
-        // Initialize the weather conditions.
+        // TODO initialize the weather conditions. 
     }
 }
 

@@ -36,9 +36,9 @@ public class Visulizer : MonoBehaviour
     // Add the layer mask for the tileInstances
     public LayerMask tileLayer;
 
+    // Generate tileInstances
     public void CreateWorldTiles(World world)
     {
-        // Generate tileInstances
         for (int x = 0; x < world.Width; x++)
         {
             for (int y = 0; y < world.Depth; y++)
@@ -63,6 +63,18 @@ public class Visulizer : MonoBehaviour
         }
     }
 
+    // Generate vegetationInstances
+    public void CreateVegetation(World world)
+    {
+        foreach (var tile in world.Grid)
+        {
+            if (tile.Moisture != 100)
+            {
+                CreateVegetationOnTile(tile, tile.Vegetation);
+            }
+        }
+    }
+
     // Create a new Dictionary to keep track of GameObjects created on Tiles
     private Dictionary<Tile, GameObject> tileToFireInstanceDict = new Dictionary<Tile, GameObject>();
 
@@ -77,8 +89,8 @@ public class Visulizer : MonoBehaviour
         Vector3 tilePosition = tileInstance.GetPosition();
         float tileHeight = tileInstance.GetHeight();
 
-        // Create a new fire at the position of the tile + height along the Y axis
-        GameObject fireInstance = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight, 0), Quaternion.Euler(-90, 0, 0));
+        // Create a new fire at the top of the tile
+        GameObject fireInstance = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.Euler(-90, 0, 0));
 
         // Add the created GameObject to the Dictionary
         tileToFireInstanceDict[tile] = fireInstance;
@@ -107,7 +119,7 @@ public class Visulizer : MonoBehaviour
     public GameObject forestPrefab;
     public GameObject sparsePrefab;
     public GameObject swampPrefab;
-    public void CreateVegetationOnTile(Tile tile, VegetationType vegetation)
+    private void CreateVegetationOnTile(Tile tile, VegetationType vegetation)
     {
         GameObject tileInstance = tileToInstanceDict[tile];
 
@@ -141,7 +153,7 @@ public class Visulizer : MonoBehaviour
 
         if (chosenPrefab != null)
         {
-            // Instantiate vegetation prefab on the correct Y level
+            // Create a new vegetation at the top of the tile
             GameObject vegetationInstance = Instantiate(chosenPrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.identity);
 
             // Add the created GameObject to the Dictionary

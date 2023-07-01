@@ -17,6 +17,48 @@ public class MainLogic : MonoBehaviour
     World world;
 
     float elapsed = 0f;
+    float speedOfUpdates = 2f; // in seconds
+
+    FireSpreadSimulation fireSpreadSimulation;
+    public bool simulationRunning = false;
+    public void buttonStartSimulation()
+    {
+        simulationRunning = true;
+    }
+    public void buttonStopSimulation()
+    {
+        simulationRunning = false;
+    }
+    public void sliderSetspeedOfUpdates(float speed)
+    {
+        speedOfUpdates = speed;
+    }
+    public void buttonResetCurrentWorld()
+    {
+        simulationRunning = false;
+        world.Reset();
+        visulizer.DestroyAllFire();
+        // renew vegetation
+        // reset also colors of tiles
+    }
+    public void buttonGenereteNewWorld()
+    {
+        simulationRunning = false;
+        world = worldGenerator.GetWorld();
+
+        FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world);
+
+        visulizer.DestroyAllTile();
+        visulizer.DestroyAllVegetation();
+        visulizer.DestroyAllFire();
+
+        visulizer.CreateWorldTiles(world);
+        visulizer.CreateVegetation(world);
+        visulizer.SetCameraPositionAndOrientation(world);
+    }
+
+
 
     void Awake()
     {
@@ -47,30 +89,62 @@ public class MainLogic : MonoBehaviour
     }
 
 
+
     // Start is called before the first frame update
     void Start()
     {
         world = worldGenerator.GetWorld();
+
+        // Initialize FireSpreadSimulation.
+        FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world);
+
         visulizer.CreateWorldTiles(world);
+        visulizer.CreateVegetation(world);
         visulizer.SetCameraPositionAndOrientation(world);
-        foreach (var tile in world.Grid)
-        {
-            if (tile.Moisture != 100) { visulizer.CreateVegetationOnTile(tile, tile.Vegetation); }
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
         elapsed += Time.deltaTime;
-        if (elapsed >= 5f)
+        if (elapsed >= speedOfUpdates)
         {
-            elapsed = elapsed % 5f;
+            elapsed = elapsed % speedOfUpdates;
 
-            //world = worldGenerator.GenerateNewWorld();
-            //visulizer.DeleteAllTiles();
-            //visulizer.CreateWorld(world);
+            RunEverything();
         }
     }
 
+    private void RunEverything()
+    {
+        if (simulationRunning)
+        {
+            Debug.Log("running");
+
+            fireSpreadSimulation.Update();
+
+            // Get the events from the last update
+            List<FireEvent> events = fireSpreadSimulation.GetEventsFromLastUpdate();
+
+            // Handle these events, for example by visualizing them
+            foreach (FireEvent evt in events)
+            {
+                if (evt.EventType == EventType.StartedBurning)
+                {
+                    visulizer.CreateFireOnTile(evt.Tile);
+                }
+                else if (evt.EventType == EventType.StoppedBurning)
+                {
+                    visulizer.DestroyFireOnTile(evt.Tile);
+                    // set color of tile to brown
+                }
+            }
+
+        }
+        else
+        {
+            Debug.Log("Not running");
+        }
+    }
 }

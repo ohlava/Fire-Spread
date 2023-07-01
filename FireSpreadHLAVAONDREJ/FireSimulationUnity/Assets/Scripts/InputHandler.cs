@@ -82,10 +82,10 @@ public class InputHandler : MonoBehaviour
 
         Vector3 rotationChange = new Vector3();
 
-        if (Input.GetKey(KeyCode.I))
+        if (Input.GetKey(KeyCode.K))
             rotationChange += Vector3.right;
 
-        if (Input.GetKey(KeyCode.K))
+        if (Input.GetKey(KeyCode.I))
             rotationChange -= Vector3.right;
 
         if (rotationChange != Vector3.zero)

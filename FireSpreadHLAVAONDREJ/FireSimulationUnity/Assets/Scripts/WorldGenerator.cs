@@ -177,7 +177,7 @@ public class WorldGenerator : MonoBehaviour
     private int[,] GenerateLakes(float[,] heightMap)
     {
         // Identify and create lakes
-        float lakeThreshold = 0.15f;  // You can adjust this value to control how often lakes appear
+        float lakeThreshold = 0.2f;  // You can adjust this value to control how often lakes appear
 
         int[,] lakeMap = new int[worldWidth, worldDepth];
         bool[,] visited = new bool[worldWidth, worldDepth];
