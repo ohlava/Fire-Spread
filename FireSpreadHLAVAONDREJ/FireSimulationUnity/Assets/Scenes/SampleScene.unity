@@ -158,7 +158,7 @@ MonoBehaviour:
   useCustomMap: 0
   octaves: 5
   persistence: 0.4
-  rivers: 6
+  rivers: 0
 --- !u!4 &131065774
 Transform:
   m_ObjectHideFlags: 0
@@ -384,6 +384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   generatorObj: {fileID: 131065772}
   visulizerObj: {fileID: 804466386}
+  inputHandlerObj: {fileID: 846402035}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,9 +513,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
-  grassPrefab: {fileID: 5098166735730487887, guid: e1911aeff5cba5f47861e9584df91e0e, type: 3}
-  forestPrefab: {fileID: 4025141361983464341, guid: 28d66e7e8dab6da44af849ea5753aa44, type: 3}
-  sparsePrefab: {fileID: 4992434099539113192, guid: d1278bde9795dd444a561ac91d01c74d, type: 3}
+  grassPrefab: {fileID: 8903058273634794869, guid: f1fc5bb90ac285e4486771552d63bcb8, type: 3}
+  forestPrefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
+  sparsePrefab: {fileID: 38335279662140195, guid: 34d3f526198dae440bb2ce6005d86055, type: 3}
+  swampPrefab: {fileID: 4661435515762455780, guid: e289bf5debb17f6459818c207d781953, type: 3}
   mainCamera: {fileID: 963194227}
 --- !u!4 &804466388
 Transform:
@@ -530,6 +532,54 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &846402035
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 846402037}
+  - component: {fileID: 846402036}
+  m_Layer: 0
+  m_Name: InputHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &846402036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846402035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8d288246bec748629a18f3e700f6868, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  visulizerObj: {fileID: 804466386}
+--- !u!4 &846402037
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 846402035}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &874579670
 GameObject:
@@ -837,7 +887,7 @@ GameObject:
   - component: {fileID: 1253861194}
   - component: {fileID: 1253861193}
   m_Layer: 0
-  m_Name: HeightMapImporter
+  m_Name: MapImporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -855,10 +905,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd8ba58f5067647468cc35beebca21d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HeightMultiplier: 5
   maxMapHeight: 100
   maxMapWidth: 100
-  scale: 10
+  HeightMultiplier: 5
+  widthDepthScale: 1
 --- !u!4 &1253861194
 Transform:
   m_ObjectHideFlags: 0

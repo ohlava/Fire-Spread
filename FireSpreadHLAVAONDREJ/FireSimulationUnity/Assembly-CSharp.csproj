@@ -38,10 +38,11 @@
   <ItemGroup>
      <Compile Include="Assets/Scripts/MapImporter.cs" />
      <Compile Include="Assets/Scripts/SettingsMenu.cs" />
+     <Compile Include="Assets/Scripts/InputHandler.cs" />
      <Compile Include="Assets/Scripts/WorldGenerator.cs" />
+     <Compile Include="Assets/Scripts/WorldClasses.cs" />
      <Compile Include="Assets/Scripts/MainLogic.cs" />
      <Compile Include="Assets/Scripts/Visulizer.cs" />
-     <Compile Include="Assets/Scripts/WorldClasses.cs" />
      <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader" />
@@ -58,7 +59,6 @@
      <None Include="Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc" />
      <None Include="Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" />
-     <None Include="Assets/Nature/GrassAndFlowers/Info.txt" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" />
      <None Include="Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" />
      <None Include="Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt" />

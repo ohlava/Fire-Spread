@@ -11,6 +11,9 @@ public class MainLogic : MonoBehaviour
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
 
+    InputHandler inputHandler;
+    [SerializeField] GameObject inputHandlerObj;
+
     World world;
 
     float elapsed = 0f;
@@ -19,7 +22,30 @@ public class MainLogic : MonoBehaviour
     {
         worldGenerator = generatorObj.GetComponent<WorldGenerator>();
         visulizer = visulizerObj.GetComponent<Visulizer>();
+        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+
+        inputHandler.OnTileClicked += HandleTileClick;
+        inputHandler.OnCameraMove += HandleCameraMove;
+        inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
     }
+
+    private void HandleTileClick(Tile clickedTile)
+    {
+        visulizer.CreateFireOnTile(clickedTile);
+    }
+
+    private void HandleCameraMove(Vector3 direction)
+    {
+        // Implement your camera movement logic here, for example:
+        Camera.main.transform.Translate(direction * Time.deltaTime * 10);
+    }
+
+    private void HandleCameraAngleChange(Vector3 rotationChange)
+    {
+        // Implement your camera rotation logic here, for example:
+        Camera.main.transform.Rotate(rotationChange);
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,26 +53,15 @@ public class MainLogic : MonoBehaviour
         world = worldGenerator.GetWorld();
         visulizer.CreateWorldTiles(world);
         visulizer.SetCameraPositionAndOrientation(world);
+        foreach (var tile in world.Grid)
+        {
+            if (tile.Moisture != 100) { visulizer.CreateVegetationOnTile(tile, tile.Vegetation); }
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        Tile clickedTile = CheckForLeftClick();
-        if (clickedTile != null)
-        {
-            visulizer.CreateFireOnTile(clickedTile);
-        }
-
-        clickedTile = CheckForRightClick();
-        if (clickedTile != null)
-        {
-            System.Random rand = new System.Random();
-            visulizer.CreateVegetationOnTile(clickedTile, (VegetationType)rand.Next(3));
-        }
-
-
-
         elapsed += Time.deltaTime;
         if (elapsed >= 5f)
         {
@@ -56,74 +71,6 @@ public class MainLogic : MonoBehaviour
             //visulizer.DeleteAllTiles();
             //visulizer.CreateWorld(world);
         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private Tile CheckForLeftClick() // always check for null before using clickedTile.
-    {
-        // If left mouse button is clicked
-        if (Input.GetMouseButtonDown(0))
-        {
-            // Cast a ray from camera to click point
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hitInfo;
-
-            // If ray hits a tile
-            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
-            {
-                // Get the corresponding world tile
-                Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
-                if (worldTile != null)
-                {
-                    // Return the tile that was clicked
-                    return worldTile;
-                }
-            }
-        }
-
-        // Return null if no tile was clicked
-        return null;
-    }
-
-    private Tile CheckForRightClick() // always check for null before using clickedTile.
-    {
-        // If left mouse button is clicked
-        if (Input.GetMouseButtonDown(1))
-        {
-            // Cast a ray from camera to click point
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hitInfo;
-
-            // If ray hits a tile
-            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity))
-            {
-                // Get the corresponding world tile
-                Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
-                if (worldTile != null)
-                {
-                    // Return the tile that was clicked
-                    return worldTile;
-                }
-            }
-        }
-
-        // Return null if no tile was clicked
-        return null;
     }
 
 }

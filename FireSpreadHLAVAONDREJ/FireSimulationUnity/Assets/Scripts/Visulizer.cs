@@ -51,24 +51,6 @@ public class Visulizer : MonoBehaviour
                 tileInstance.transform.localScale = new Vector3(1, height * 4, 1);
                 tileInstance.transform.position = new Vector3(x, tileInstance.transform.localScale.y / 2, y);
 
-                // docasne
-                if (worldTile.Vegetation == VegetationType.Grass)
-                {
-                    tileInstance.setColorTo(Color.green);
-                }
-                if (worldTile.Vegetation == VegetationType.Forest)
-                {
-                    tileInstance.setColorTo(Color.grey);
-                }
-                if (worldTile.Vegetation == VegetationType.Sparse)
-                {
-                    tileInstance.setColorTo(Color.magenta);
-                }
-                if (worldTile.Vegetation == VegetationType.Swamp)
-                {
-                    tileInstance.setColorTo(Color.yellow);
-                }
-
                 // If tile is a water tile, color it blue
                 if (worldTile.Moisture == 100)
                 {
@@ -96,10 +78,10 @@ public class Visulizer : MonoBehaviour
         float tileHeight = tileInstance.GetHeight();
 
         // Create a new fire at the position of the tile + height along the Y axis
-        GameObject fireObj = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight, 0), Quaternion.Euler(-90, 0, 0));
+        GameObject fireInstance = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight, 0), Quaternion.Euler(-90, 0, 0));
 
         // Add the created GameObject to the Dictionary
-        tileToFireInstanceDict[tile] = fireObj;
+        tileToFireInstanceDict[tile] = fireInstance;
     }
 
     // Method to destroy an instance on a specific tile
@@ -129,7 +111,7 @@ public class Visulizer : MonoBehaviour
     {
         GameObject tileInstance = tileToInstanceDict[tile];
 
-        tileInstance.setColorTo(Color.green);
+        tileInstance.setColorTo(new Color(0f, 0.5f, 0f)); // dark green color
 
         // Get the position and height of the tile instance
         Vector3 tilePosition = tileInstance.GetPosition();
@@ -159,10 +141,11 @@ public class Visulizer : MonoBehaviour
 
         if (chosenPrefab != null)
         {
-            GameObject vegetationObj = Instantiate(chosenPrefab, tilePosition + new Vector3(0, tileHeight, 0), Quaternion.identity);
+            // Instantiate vegetation prefab on the correct Y level
+            GameObject vegetationInstance = Instantiate(chosenPrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.identity);
 
             // Add the created GameObject to the Dictionary
-            tileToVegetationInstanceDict[tile] = vegetationObj;
+            tileToVegetationInstanceDict[tile] = vegetationInstance;
         }
     }
 
