@@ -81,7 +81,7 @@ public class FireSpreadSimulation
         // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
         float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
 
-        return 100f;
+        return UnityEngine.Random.Range(0.6f, 0.8f);
         //return vegetationFactor * moistureFactor * slopeFactor; // * windFactor
     }
 

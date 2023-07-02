@@ -557,13 +557,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb2774a594cc4c41af1e760f9a88a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldWidth: 50
-  worldDepth: 20
+  worldWidth: 101
+  worldDepth: 100
   mapImporterObj: {fileID: 1253861192}
   useCustomMap: 0
   octaves: 5
   persistence: 0.4
-  rivers: 0
+  rivers: 3
 --- !u!4 &131065774
 Transform:
   m_ObjectHideFlags: 0
@@ -626,7 +626,7 @@ MonoBehaviour:
   generatorObj: {fileID: 131065772}
   visulizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 846402035}
-  speedOfUpdates: 2
+  speedOfUpdates: 1
   simulationRunning: 0
 --- !u!1 &705507993
 GameObject:
@@ -751,15 +751,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309c5ecbbefd042d6805adead5bf0c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: 1
   tilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
-  firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
   grassPrefab: {fileID: 8903058273634794869, guid: f1fc5bb90ac285e4486771552d63bcb8, type: 3}
   forestPrefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
   sparsePrefab: {fileID: 38335279662140195, guid: 34d3f526198dae440bb2ce6005d86055, type: 3}
   swampPrefab: {fileID: 4661435515762455780, guid: e289bf5debb17f6459818c207d781953, type: 3}
+  firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
   mainCamera: {fileID: 963194227}
 --- !u!4 &804466388
 Transform:

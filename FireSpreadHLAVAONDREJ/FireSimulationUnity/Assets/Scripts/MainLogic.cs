@@ -51,7 +51,7 @@ public class MainLogic : MonoBehaviour
     }
 
     private float elapsed = 0f;
-    public float speedOfUpdates = 2f; // in seconds
+    public float speedOfUpdates = 1f; // in seconds
     public bool simulationRunning = false;
 
     public void buttonStartSimulation()
@@ -93,7 +93,7 @@ public class MainLogic : MonoBehaviour
         visulizer.DestroyAllFire();
 
         visulizer.CreateWorldTiles(world);
-        visulizer.CreateVegetation(world);
+        visulizer.CreateAllVegetation(world);
         visulizer.SetCameraPositionAndOrientation(world);
     }
 
@@ -104,8 +104,14 @@ public class MainLogic : MonoBehaviour
     {
         world = worldGenerator.GetWorld();
 
+        int numberOfTiles = world.Width * world.Depth;
+        if (numberOfTiles <= 10000)
+        {
+            visulizer.mode = VisulizerMode.Standard;
+        }
+
         visulizer.CreateWorldTiles(world);
-        visulizer.CreateVegetation(world);
+        visulizer.CreateAllVegetation(world);
         visulizer.SetCameraPositionAndOrientation(world);
     }
 
@@ -142,7 +148,8 @@ public class MainLogic : MonoBehaviour
                 else if (evt.Type == EventType.StoppedBurning)
                 {
                     visulizer.DestroyFireOnTile(evt.Tile);
-                    // set color of tile to brown
+                    visulizer.DestroyVegetationOnTile(evt.Tile);
+                    visulizer.MakeTileBurned(evt.Tile);
                 }
             }
         }
