@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -53,7 +54,7 @@ public class FireSpreadSimulation
                 float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _world.Weather, _parameters);
 
                 // Check if fire spread.
-                if (Random.value < spreadProbability)
+                if (UnityEngine.Random.value < spreadProbability)
                 {
                     bool ignited = neighborTile.Ignite();
                     if (ignited && !nextBurningTiles.Contains(neighborTile))
@@ -90,13 +91,43 @@ public class FireSpreadSimulation
 
     private float CalculateFireSpreadProbability(Tile source, Tile target, Weather weather, FireSpreadParameters parameters)
     {
-        float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
-        float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
-        // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
-        float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
+        // TODO implement more reminiscent of reality
 
-        return UnityEngine.Random.Range(0.6f, 0.8f);
-        //return vegetationFactor * moistureFactor * slopeFactor; // * windFactor
+        // float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
+        // float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
+        // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
+        // float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
+
+        // float combined = GetStepFireProbability(vegetationFactor * moistureFactor * slopeFactor * windFactor, source.BurnTime)
+
+        float combined = UnityEngine.Random.Range(0.25f, 0.35f);
+        return GetStepFireProbability(combined, source.BurnTime);
+    }
+
+    // Calculates the per-step probability of a tile catching fire, such that over the tile's BurnTime,
+    // the total cumulative probability of catching fire is equal to the specified total probability. - uses binary search
+    private float GetStepFireProbability(float totalProbability, int BurnTime)
+    {
+        float lowerBound = 0;
+        float upperBound = 1;
+        float p;
+
+        for (int i = 0; i < 100; i++) // 100 should be enough iterations to get a good approximation
+        {
+            p = (lowerBound + upperBound) / 2;
+            float calcTotalProbability = p * (1 - (float)Math.Pow(1 - p, BurnTime)) / p;
+
+            if (calcTotalProbability > totalProbability)
+            {
+                upperBound = p;
+            }
+            else
+            {
+                lowerBound = p;
+            }
+        }
+
+        return (lowerBound + upperBound) / 2;
     }
 
     // Implement helper methods for calculating factors based on vegetation, moisture, wind, and slope.
@@ -115,6 +146,9 @@ public class FireSpreadSimulation
             case VegetationType.Sparse:
                 factor = 0.5f;
                 break;
+            case VegetationType.Swamp:
+                factor = 0.2f;
+                break;
         }
 
         return factor * spreadFactor;
@@ -122,7 +156,6 @@ public class FireSpreadSimulation
 
     private float GetMoistureFactor(float moisture, float spreadFactor)
     {
-        // Assuming moisture is a value between 0 (dry) and 1 (wet).
         // The spread factor will be higher for drier tiles.
         return (1 - moisture) * spreadFactor;
     }
@@ -221,8 +254,6 @@ public class EventLogger
 
         return burningTilesOverTime;
     }
-
-
 }
 
 public class SimulationCalendar

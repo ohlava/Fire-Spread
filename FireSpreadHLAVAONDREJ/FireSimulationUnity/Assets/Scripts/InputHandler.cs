@@ -101,5 +101,4 @@ public class InputHandler : MonoBehaviour
             Camera.main.transform.Rotate(Vector3.up * speed * Time.deltaTime, Space.World);
         }
     }
-
 }

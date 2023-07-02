@@ -16,7 +16,6 @@ public class MainLogic : MonoBehaviour
     FireSpreadSimulation fireSpreadSimulation;
     List<Tile> initBurningTiles = new List<Tile>();
 
-
     WorldGenerator worldGenerator;
     [SerializeField] GameObject generatorObj;
 
@@ -61,6 +60,8 @@ public class MainLogic : MonoBehaviour
             }
         }
     }
+
+
 
     private float elapsed = 0f;
     public float speedOfUpdates = 1f; // in seconds
@@ -175,6 +176,8 @@ public class MainLogic : MonoBehaviour
 
         Debug.Log("Toggled useCustomMap. New value: " + worldGenerator.useCustomMap);
     }
+
+
 
 
 
