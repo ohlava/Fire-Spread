@@ -17,7 +17,7 @@ public class WorldGenerator : MonoBehaviour
     }
 
     // TODO combine all to WorldGenerationSettings
-    public bool useCustomMap;
+    public bool useCustomMap = false;
     public int octaves = 5;
     public float persistence = 0.4f;
     public int rivers = 1;

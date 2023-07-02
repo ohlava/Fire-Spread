@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public static class GameObjectExtensions
@@ -160,6 +159,9 @@ public class Visulizer : MonoBehaviour
             // Create a new vegetation at the top of the tile
             GameObject vegetationInstance = Instantiate(chosenPrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.identity);
 
+            // Make a random rotation
+            vegetationInstance.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
+
             // Add the created GameObject to the Dictionary
             tileToVegetationInstanceDict[tile] = vegetationInstance;
         }
@@ -178,7 +180,7 @@ public class Visulizer : MonoBehaviour
             }
             else
             {
-                Debug.LogError("No created instance found for the given tile.");
+                Debug.LogError("No created instance found for the given tile. VEGETATION");
             }
         }
     }
@@ -225,7 +227,7 @@ public class Visulizer : MonoBehaviour
             }
             else
             {
-                Debug.LogError("No created instance found for the given tile.");
+                Debug.LogError("No created instance found for the given tile. FIRE");
             }
         }
     }

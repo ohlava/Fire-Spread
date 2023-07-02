@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -24,6 +25,14 @@ public class FireSpreadSimulation
         {
             _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StartedBurning, tile));
         }
+    }
+    public bool Finished()
+    {
+        if (_burningTiles.Count == 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     public void Update()
@@ -72,6 +81,11 @@ public class FireSpreadSimulation
     public List<FireEvent> GetLastUpdateEvents()
     {
         return _eventLogger.GetLastUpdateEvents(_calendar.CurrentTime);
+    }
+
+    public Dictionary<int, int> GetBurningTilesOverTime()
+    {
+        return _eventLogger.GetBurningTilesOverTime();
     }
 
     private float CalculateFireSpreadProbability(Tile source, Tile target, Weather weather, FireSpreadParameters parameters)
@@ -178,6 +192,37 @@ public class EventLogger
         // If there are events, return the list of events
         return _events[time];
     }
+
+    public Dictionary<int, int> GetBurningTilesOverTime()
+    {
+        Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>();
+
+        // Track current count of burning tiles
+        int currentBurningCount = 0;
+
+        // Iterate over events in chronological order
+        foreach (var timeEvents in _events.OrderBy(e => e.Key))
+        {
+            // At each time step, calculate the count of burning tiles
+            foreach (FireEvent evt in timeEvents.Value)
+            {
+                if (evt.Type == EventType.StartedBurning)
+                {
+                    currentBurningCount++;
+                }
+                else if (evt.Type == EventType.StoppedBurning)
+                {
+                    currentBurningCount--;
+                }
+            }
+
+            burningTilesOverTime[timeEvents.Key] = currentBurningCount;
+        }
+
+        return burningTilesOverTime;
+    }
+
+
 }
 
 public class SimulationCalendar

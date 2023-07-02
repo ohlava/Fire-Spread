@@ -2,6 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum State
+{
+    NewWorldState,
+    RunningState,
+    StoppedState,
+    GraphState
+}
+
 public class MainLogic : MonoBehaviour
 {
     World world;
@@ -43,64 +51,134 @@ public class MainLogic : MonoBehaviour
 
     private void HandleTileClick(Tile clickedTile)
     {
-        if (clickedTile.Ignite()) // is not ignited if water for example
+        // We can click on tiles only when simulation is not running
+        if (currentState == State.NewWorldState)
         {
-            initBurningTiles.Add(clickedTile);
-            visulizer.CreateFireOnTile(clickedTile);
+            if (clickedTile.Ignite()) // it is ignitable
+            {
+                initBurningTiles.Add(clickedTile);
+                visulizer.CreateFireOnTile(clickedTile);
+            }
         }
     }
 
     private float elapsed = 0f;
     public float speedOfUpdates = 1f; // in seconds
-    public bool simulationRunning = false;
+    FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+    private State currentState = State.NewWorldState;
 
-    public void buttonStartSimulation()
+
+    public void HandleEvent(State nextState)
     {
-        // Initialize FireSpreadSimulation.
-        FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
-        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
-        simulationRunning = true;
+        switch (currentState)
+        {
+            case State.NewWorldState:
+                switch (nextState)
+                {
+                    case State.RunningState:
+                        currentState = State.RunningState;
+                        break;
+                    case State.NewWorldState:
+                        currentState = State.NewWorldState;
+                        GenereteNewWorld();
+                        break;
+                }
+                break;
 
+            case State.RunningState:
+                switch (nextState)
+                {
+                    case State.StoppedState:
+                        currentState = State.StoppedState;
+                        break;
+                    case State.NewWorldState:
+                        currentState = State.NewWorldState;
+                        GenereteNewWorld();
+                        break;
+                    case State.GraphState:
+                        currentState = State.GraphState;
+                        SaveGraph();
+                        break;
+                }
+                break;
+
+            case State.StoppedState:
+                switch (nextState)
+                {
+                    case State.RunningState:
+                        currentState = State.RunningState;
+                        break;
+                    case State.NewWorldState:
+                        currentState = State.NewWorldState;
+                        GenereteNewWorld();
+                        break;
+                    case State.GraphState:
+                        currentState = State.GraphState;
+                        SaveGraph();
+                        break;
+                }
+                break;
+
+            case State.GraphState:
+                switch (nextState)
+                {
+                    case State.RunningState:
+                        currentState = State.RunningState;
+                        break;
+                    case State.NewWorldState:
+                        currentState = State.NewWorldState;
+                        GenereteNewWorld();
+                        break;
+                }
+                break;
+        }
+
+        currentState = nextState;
     }
-    public void buttonStopSimulation()
-    {
-        simulationRunning = false;
 
-    }
-    public void sliderSetspeedOfUpdates(float speed)
+    public void OnNewWorldButtonClicked()
     {
-        speedOfUpdates = speed;
-        Debug.Log(speedOfUpdates);
-        Debug.Log("speed set to:");
-        Debug.Log(speedOfUpdates);
+        HandleEvent(State.NewWorldState);
+    }
 
-    }
-    public void buttonResetCurrentWorld()
+    public void OnRunSimulationButtonClicked()
     {
-        simulationRunning = false;
+        HandleEvent(State.RunningState);
+    }
+
+    public void OnPauseSimulationButtonClicked()
+    {
+        HandleEvent(State.StoppedState);
+    }
+
+    public void OnShowGraphsButtonClicked()
+    {
+        HandleEvent(State.GraphState);
+    }
+
+    public void OnResetButtonClicked()
+    {
+        currentState = State.NewWorldState;
+
         world.Reset();
-        visulizer.DestroyAllFire();
-        // renew vegetation
-        // reset also colors of tiles
+
+        initBurningTiles.Clear();
+        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
+
+        VisulizerRemakeAllBrandNew();
     }
-    public void buttonGenereteNewWorld()
+
+    public void ToggleUseCustomMap()
     {
-        simulationRunning = false;
-        world = worldGenerator.GetWorld();
+        // Toggle the useCustomMap value
+        worldGenerator.useCustomMap = !worldGenerator.useCustomMap;
 
-        visulizer.DestroyAllTile();
-        visulizer.DestroyAllVegetation();
-        visulizer.DestroyAllFire();
-
-        visulizer.CreateWorldTiles(world);
-        visulizer.CreateAllVegetation(world);
-        visulizer.SetCameraPositionAndOrientation(world);
+        Debug.Log("Toggled useCustomMap. New value: " + worldGenerator.useCustomMap);
     }
 
 
 
-    // Start is called before the first frame update
-    void Start()
+    public void GenereteNewWorld()
     {
         world = worldGenerator.GetWorld();
 
@@ -110,9 +188,34 @@ public class MainLogic : MonoBehaviour
             visulizer.mode = VisulizerMode.Standard;
         }
 
+        initBurningTiles.Clear();
+        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
+
+        VisulizerRemakeAllBrandNew();
+    }
+
+    private void VisulizerRemakeAllBrandNew()
+    {
+        visulizer.DestroyAllTile();
+        visulizer.DestroyAllVegetation();
+        visulizer.DestroyAllFire();
+
         visulizer.CreateWorldTiles(world);
         visulizer.CreateAllVegetation(world);
         visulizer.SetCameraPositionAndOrientation(world);
+    }
+
+    private void SaveGraph()
+    {
+        Dictionary<int, int> d = fireSpreadSimulation.GetBurningTilesOverTime();
+        GraphCreator.SaveToFile(d);
+    }
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        GenereteNewWorld();
     }
 
     // Update is called once per frame
@@ -129,33 +232,55 @@ public class MainLogic : MonoBehaviour
 
     private void RunEverything()
     {
-        if (simulationRunning)
+        if (currentState == State.RunningState)
         {
-            Debug.Log("running");
-
-            fireSpreadSimulation.Update();
-
-            // Get the events from the last update
-            List<FireEvent> events = fireSpreadSimulation.GetLastUpdateEvents();
-
-            // Handle these events, for example by visualizing them
-            foreach (FireEvent evt in events)
+            
+            if (!fireSpreadSimulation.Finished())
             {
-                if (evt.Type == EventType.StartedBurning)
+                fireSpreadSimulation.Update();
+
+                // Get the events from the last update
+                List<FireEvent> events = fireSpreadSimulation.GetLastUpdateEvents();
+
+                // Handle these events, for example by visualizing them
+                foreach (FireEvent evt in events)
                 {
-                    visulizer.CreateFireOnTile(evt.Tile);
-                }
-                else if (evt.Type == EventType.StoppedBurning)
-                {
-                    visulizer.DestroyFireOnTile(evt.Tile);
-                    visulizer.DestroyVegetationOnTile(evt.Tile);
-                    visulizer.MakeTileBurned(evt.Tile);
+                    if (evt.Type == EventType.StartedBurning)
+                    {
+                        visulizer.CreateFireOnTile(evt.Tile);
+                    }
+                    else if (evt.Type == EventType.StoppedBurning)
+                    {
+                        visulizer.DestroyFireOnTile(evt.Tile);
+                        visulizer.DestroyVegetationOnTile(evt.Tile);
+                        visulizer.MakeTileBurned(evt.Tile);
+                    }
                 }
             }
+            else
+            {
+                currentState = State.StoppedState;
+            }
+            
+            Debug.Log("RUNNING");
+
         }
-        else
+        else if (currentState == State.StoppedState) // simulation not running
         {
-            Debug.Log("Not running");
+            Debug.Log("NOT running");
+        }
+        else if (currentState == State.NewWorldState) // simulation not running
+        {
+            Debug.Log("NEW WORLD");
+        }
+        else if (currentState == State.GraphState) // simulation not running
+        {
+            // TODO actually show graph on screen
+            Debug.Log("GRAPH");
+        }
+        else // should never happen
+        {
+            Debug.Log("OTHER");
         }
     }
 }
