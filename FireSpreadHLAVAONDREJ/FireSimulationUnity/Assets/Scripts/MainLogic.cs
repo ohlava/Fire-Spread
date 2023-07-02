@@ -73,6 +73,7 @@ public class MainLogic : MonoBehaviour
 
     private void HandleTileClick(Tile clickedTile)
     {
+        clickedTile.Ignite();
         visulizer.CreateFireOnTile(clickedTile);
     }
 
@@ -125,7 +126,7 @@ public class MainLogic : MonoBehaviour
             fireSpreadSimulation.Update();
 
             // Get the events from the last update
-            List<FireEvent> events = fireSpreadSimulation.GetEventsFromLastUpdate();
+            List<FireEvent> events = fireSpreadSimulation.GetLastUpdateEvents();
 
             // Handle these events, for example by visualizing them
             foreach (FireEvent evt in events)
@@ -140,7 +141,6 @@ public class MainLogic : MonoBehaviour
                     // set color of tile to brown
                 }
             }
-
         }
         else
         {

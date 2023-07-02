@@ -10,6 +10,8 @@ public class FireSpreadSimulation
     private EventLogger _eventLogger;
     private SimulationCalendar _calendar;
 
+    private List<FireEvent> _lastUpdateEvents;
+
     public FireSpreadSimulation(FireSpreadParameters parameters, World world)
     {
         _parameters = parameters;
@@ -18,11 +20,14 @@ public class FireSpreadSimulation
         _calendar = new SimulationCalendar();
     }
 
-
     // TODO add list of burning tiles and iterate threw it now all tiles!
 
     public void Update()
     {
+        // Advance the simulation calendar.
+        _calendar.AdvanceTime();
+        _lastUpdateEvents = new List<FireEvent>();
+
         // Iterate over each tile in the world.
         for (int x = 0; x < _world.Width; x++)
         {
@@ -30,12 +35,14 @@ public class FireSpreadSimulation
             {
                 Tile tile = _world.GetTileAt(x, y);
 
+
                 // If this tile is burning, it may spread to neighbors.
                 if (tile.IsBurning)
                 {
                     // Iterate over each neighboring tile.
                     foreach (Tile neighborTile in GetNeighborTiles(x, y))
                     {
+
                         // Calculate the fire spread probability.
                         float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _world.Weather, _parameters);
 
@@ -44,7 +51,9 @@ public class FireSpreadSimulation
                         {
                             if (neighborTile.Ignite())
                             {
-                                _eventLogger.LogEvent(new FireEvent { Tile = neighborTile, EventType = EventType.StartedBurning, Time = _calendar.CurrentTime });
+                                FireEvent fireEvent = new FireEvent() { Tile = neighborTile, EventType = EventType.StartedBurning, Time = _calendar.CurrentTime };
+                                _eventLogger.LogEvent(fireEvent);
+                                _lastUpdateEvents.Add(fireEvent);
                             }
                         }
                     }
@@ -54,26 +63,43 @@ public class FireSpreadSimulation
                     if (tile.BurningFor > tile.BurnTime)
                     {
                         tile.Extinguish();
-                        _eventLogger.LogEvent(new FireEvent { Tile = tile, EventType = EventType.StoppedBurning, Time = _calendar.CurrentTime });
+                        FireEvent fireEvent = new FireEvent() { Tile = tile, EventType = EventType.StoppedBurning, Time = _calendar.CurrentTime };
+                        _eventLogger.LogEvent(fireEvent);
+                        _lastUpdateEvents.Add(fireEvent);
                         continue;
                     }
                 }
             }
         }
-
-        // Advance the simulation calendar.
-        _calendar.AdvanceTime();
+        _eventLogger.LogLastUpdateEvents(_lastUpdateEvents);
     }
 
-    private bool IsValidCoordinate(int x, int y, int width, int height)
+    public List<FireEvent> GetLastUpdateEvents()
     {
-        return x >= 0 && x < width && y >= 0 && y < height;
+        return _eventLogger.GetLastUpdateEvents();
     }
 
-    private IEnumerable<Tile> GetNeighborTiles(int x, int y)
+    // Returns a list of neighboring tiles given the coordinates of a tile.
+    private List<Tile> GetNeighborTiles(int x, int y)
     {
-        // Returns a list of neighboring tiles given the coordinates of a tile.
-        // This method needs to handle edge cases properly.
+        List<Tile> neighbours = new List<Tile>();
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int nx = x + i;
+                int ny = y + j;
+
+                if (nx != x || ny != y) // not the same
+                {
+                    if (nx >= 0 && nx < _world.Width && ny >= 0 && ny < _world.Depth)
+                    {
+                        neighbours.Add(_world.GetTileAt(nx, ny));
+                    }
+                }
+            }
+        }
+        return neighbours;
     }
 
     private float CalculateFireSpreadProbability(Tile source, Tile target, Weather weather, FireSpreadParameters parameters)
@@ -83,7 +109,8 @@ public class FireSpreadSimulation
         // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
         float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
 
-        return vegetationFactor * moistureFactor * slopeFactor; // * windFactor
+        return 100f;
+        //return vegetationFactor * moistureFactor * slopeFactor; // * windFactor
     }
 
     // Implement helper methods for calculating factors based on vegetation, moisture, wind, and slope.
@@ -117,7 +144,7 @@ public class FireSpreadSimulation
     private float GetWindFactor(Tile source, Tile target, Weather weather, float spreadFactor)
     {
         // Calculate the wind direction towards the target tile.
-        float targetDirection = Mathf.Atan2(target.Y - source.Y, target.X - source.X) * Mathf.Rad2Deg;
+        float targetDirection = 1;
 
         // Calculate the angular difference between the wind direction and the target direction.
         float angularDifference = Mathf.DeltaAngle(weather.WindDirection, targetDirection);
@@ -130,22 +157,24 @@ public class FireSpreadSimulation
 
     private float GetSlopeFactor(Tile source, Tile target, float spreadFactor)
     {
-        float slopeDifference = target.Slope - source.Slope;
+        float slopeDifference = target.Height - source.Height;
 
         // Assuming slopeDifference is between -1 (downhill) and 1 (uphill).
         // The spread factor will be higher for uphill slopes.
         return (1 + slopeDifference) * spreadFactor;
     }
-
 }
 
 public class EventLogger
 {
+    // TODO should it rather have list of all events _lastUpdateEvents / list of lists
     private List<FireEvent> _events;
+    private List<List<FireEvent>> _updateEvents;
 
     public EventLogger()
     {
         _events = new List<FireEvent>();
+        _updateEvents = new List<List<FireEvent>>();
     }
 
     public void LogEvent(FireEvent evt)
@@ -153,9 +182,30 @@ public class EventLogger
         _events.Add(evt);
     }
 
+    public void LogLastUpdateEvents(List<FireEvent> lue)
+    {
+        _updateEvents.Add(lue);
+    }
+
     public List<FireEvent> GetEvents()
     {
         return _events;
+    }
+
+    public List<FireEvent> GetLastUpdateEvents()
+    {
+        // Check if _updateEvents is not null and contains at least one list
+        if (_updateEvents != null && _updateEvents.Count > 0)
+        {
+            // Get the last list from _updateEvents
+            List<FireEvent> lastList = _updateEvents[_updateEvents.Count - 1];
+            return lastList;
+        }
+        else
+        {
+            // Return an empty list if _updateEvents is null or empty
+            return new List<FireEvent>();
+        }
     }
 }
 
