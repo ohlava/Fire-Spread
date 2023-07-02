@@ -14,15 +14,51 @@ public class MainLogic : MonoBehaviour
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
 
+    void Awake()
+    {
+        worldGenerator = generatorObj.GetComponent<WorldGenerator>();
+        visulizer = visulizerObj.GetComponent<Visulizer>();
+        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+
+        inputHandler.OnTileClicked += HandleTileClick;
+        inputHandler.OnCameraMove += HandleCameraMove;
+        inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
+    }
+
+    private void HandleCameraMove(Vector3 direction)
+    {
+        // Implement your camera movement logic here, for example:
+        Camera.main.transform.Translate(direction * Time.deltaTime * 10);
+    }
+
+    private void HandleCameraAngleChange(Vector3 rotationChange)
+    {
+        // Implement your camera rotation logic here, for example:
+        Camera.main.transform.Rotate(rotationChange);
+    }
+
+    private void HandleTileClick(Tile clickedTile)
+    {
+        clickedTile.Ignite();
+        initBurningTiles.Add(clickedTile);
+        visulizer.CreateFireOnTile(clickedTile);
+    }
+
+
+
     World world;
+    FireSpreadSimulation fireSpreadSimulation;
+    List<Tile> initBurningTiles = new List<Tile>();
 
     float elapsed = 0f;
-    float speedOfUpdates = 2f; // in seconds
+    float speedOfUpdates = 5f; // in seconds
 
-    FireSpreadSimulation fireSpreadSimulation;
     public bool simulationRunning = false;
     public void buttonStartSimulation()
     {
+        // Initialize FireSpreadSimulation.
+        FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
         simulationRunning = true;
     }
     public void buttonStopSimulation()
@@ -46,9 +82,6 @@ public class MainLogic : MonoBehaviour
         simulationRunning = false;
         world = worldGenerator.GetWorld();
 
-        FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
-        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world);
-
         visulizer.DestroyAllTile();
         visulizer.DestroyAllVegetation();
         visulizer.DestroyAllFire();
@@ -60,45 +93,10 @@ public class MainLogic : MonoBehaviour
 
 
 
-    void Awake()
-    {
-        worldGenerator = generatorObj.GetComponent<WorldGenerator>();
-        visulizer = visulizerObj.GetComponent<Visulizer>();
-        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
-
-        inputHandler.OnTileClicked += HandleTileClick;
-        inputHandler.OnCameraMove += HandleCameraMove;
-        inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
-    }
-
-    private void HandleTileClick(Tile clickedTile)
-    {
-        clickedTile.Ignite();
-        visulizer.CreateFireOnTile(clickedTile);
-    }
-
-    private void HandleCameraMove(Vector3 direction)
-    {
-        // Implement your camera movement logic here, for example:
-        Camera.main.transform.Translate(direction * Time.deltaTime * 10);
-    }
-
-    private void HandleCameraAngleChange(Vector3 rotationChange)
-    {
-        // Implement your camera rotation logic here, for example:
-        Camera.main.transform.Rotate(rotationChange);
-    }
-
-
-
     // Start is called before the first frame update
     void Start()
     {
         world = worldGenerator.GetWorld();
-
-        // Initialize FireSpreadSimulation.
-        FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
-        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world);
 
         visulizer.CreateWorldTiles(world);
         visulizer.CreateVegetation(world);
@@ -131,11 +129,11 @@ public class MainLogic : MonoBehaviour
             // Handle these events, for example by visualizing them
             foreach (FireEvent evt in events)
             {
-                if (evt.EventType == EventType.StartedBurning)
+                if (evt.Type == EventType.StartedBurning)
                 {
                     visulizer.CreateFireOnTile(evt.Tile);
                 }
-                else if (evt.EventType == EventType.StoppedBurning)
+                else if (evt.Type == EventType.StoppedBurning)
                 {
                     visulizer.DestroyFireOnTile(evt.Tile);
                     // set color of tile to brown

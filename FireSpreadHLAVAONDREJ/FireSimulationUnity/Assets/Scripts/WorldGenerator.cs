@@ -60,6 +60,7 @@ public class WorldGenerator : MonoBehaviour
         {
             for (int y = 0; y < worldDepth; y++)
             {
+                // TODO moisture along water tiles heigher?
                 if (heightMap[x, y] == 0 || lakeMap[x, y] == 1 || riverMap[x, y] == 1) // water is represented by 1 in lake and river maps
                 {
                     moistureMap[x, y] = 100;

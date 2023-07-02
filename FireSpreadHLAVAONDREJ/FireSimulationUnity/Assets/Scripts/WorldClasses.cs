@@ -1,5 +1,6 @@
 // Core data structures
 using System;
+using System.Collections.Generic;
 
 public class World
 {
@@ -25,6 +26,48 @@ public class World
     public Tile GetTileAt(int x, int y)
     {
         return Grid[x, y];
+    }
+
+    public (int x, int z) GetTilePosition(Tile tile)
+    {
+        for (int row = 0; row < Depth; row++)
+        {
+            for (int col = 0; col < Width; col++)
+            {
+                if (Grid[row, col] == tile)
+                {
+                    return (row, col);
+                }
+            }
+        }
+
+        // Tile not found
+        return (-1, -1);
+    }
+
+    // Returns a list of neighboring tiles given the coordinates of a tile.
+    public List<Tile> GetNeighborTiles(Tile tile)
+    {
+        int x = GetTilePosition(tile).x;
+        int z = GetTilePosition(tile).z;
+        List<Tile> neighbours = new List<Tile>();
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int nx = x + i;
+                int nz = z + j;
+
+                if (nx != x || nz != z) // not the same
+                {
+                    if (nx >= 0 && nx < Width && nz >= 0 && nz < Depth)
+                    {
+                        neighbours.Add(GetTileAt(nx, nz));
+                    }
+                }
+            }
+        }
+        return neighbours;
     }
 
     // Reset all the changing atributes for all tiles

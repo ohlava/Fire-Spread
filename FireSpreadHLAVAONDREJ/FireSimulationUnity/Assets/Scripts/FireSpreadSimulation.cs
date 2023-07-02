@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,99 +8,70 @@ public class FireSpreadSimulation
 {
     private FireSpreadParameters _parameters;
     private World _world;
-    private EventLogger _eventLogger;
+    private List<Tile> _burningTiles;
     private SimulationCalendar _calendar;
+    private EventLogger _eventLogger;
 
-    private List<FireEvent> _lastUpdateEvents;
-
-    public FireSpreadSimulation(FireSpreadParameters parameters, World world)
+    public FireSpreadSimulation(FireSpreadParameters parameters, World world, List<Tile> initBurningTiles)
     {
         _parameters = parameters;
         _world = world;
         _eventLogger = new EventLogger();
         _calendar = new SimulationCalendar();
-    }
 
-    // TODO add list of burning tiles and iterate threw it now all tiles!
+        _burningTiles = initBurningTiles; // When creating the simulation we have to tell what we set on fire.
+        foreach (Tile tile in initBurningTiles)
+        {
+            _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StartedBurning, tile));
+        }
+    }
 
     public void Update()
     {
         // Advance the simulation calendar.
         _calendar.AdvanceTime();
-        _lastUpdateEvents = new List<FireEvent>();
 
-        // Iterate over each tile in the world.
-        for (int x = 0; x < _world.Width; x++)
+        // All that are currently burning, but some will in this update stop burning, some will keep burning.
+        List<Tile> nextBurningTiles = new List<Tile>(_burningTiles);
+
+        // If this tile is burning, it may spread to neighbors.
+        foreach (Tile tile in _burningTiles)
         {
-            for (int y = 0; y < _world.Depth; y++)
+            // Iterate over each neighboring tile.
+            foreach (Tile neighborTile in _world.GetNeighborTiles(tile))
             {
-                Tile tile = _world.GetTileAt(x, y);
+                // Calculate the fire spread probability.
+                float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _world.Weather, _parameters);
 
-
-                // If this tile is burning, it may spread to neighbors.
-                if (tile.IsBurning)
+                // Check if fire spread.
+                if (Random.value < spreadProbability)
                 {
-                    // Iterate over each neighboring tile.
-                    foreach (Tile neighborTile in GetNeighborTiles(x, y))
+                    bool ignited = neighborTile.Ignite();
+                    if (ignited && !nextBurningTiles.Contains(neighborTile))
                     {
-
-                        // Calculate the fire spread probability.
-                        float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _world.Weather, _parameters);
-
-                        // Check if fire spread.
-                        if (Random.value < spreadProbability)
-                        {
-                            if (neighborTile.Ignite())
-                            {
-                                FireEvent fireEvent = new FireEvent() { Tile = neighborTile, EventType = EventType.StartedBurning, Time = _calendar.CurrentTime };
-                                _eventLogger.LogEvent(fireEvent);
-                                _lastUpdateEvents.Add(fireEvent);
-                            }
-                        }
-                    }
-
-                    // Increment the burn time and extinguish the tile if it has been burning too long.
-                    tile.BurningFor++;
-                    if (tile.BurningFor > tile.BurnTime)
-                    {
-                        tile.Extinguish();
-                        FireEvent fireEvent = new FireEvent() { Tile = tile, EventType = EventType.StoppedBurning, Time = _calendar.CurrentTime };
-                        _eventLogger.LogEvent(fireEvent);
-                        _lastUpdateEvents.Add(fireEvent);
-                        continue;
+                        nextBurningTiles.Add(neighborTile);
+                        _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StartedBurning, neighborTile));
                     }
                 }
             }
+
+            // Increment the burn time and extinguish the tile if it has been burning too long
+            tile.BurningFor++;
+            if (tile.BurningFor >= tile.BurnTime)
+            {
+                tile.Extinguish();
+                nextBurningTiles.Remove(tile);
+                _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StoppedBurning, tile));
+            }
         }
-        _eventLogger.LogLastUpdateEvents(_lastUpdateEvents);
+
+        // This allows us to iterate through the list of currently burning tiles without modification, while preparing the list of tiles that will be burning in the next update.
+        _burningTiles = nextBurningTiles;
     }
 
     public List<FireEvent> GetLastUpdateEvents()
     {
-        return _eventLogger.GetLastUpdateEvents();
-    }
-
-    // Returns a list of neighboring tiles given the coordinates of a tile.
-    private List<Tile> GetNeighborTiles(int x, int y)
-    {
-        List<Tile> neighbours = new List<Tile>();
-        for (int i = -1; i <= 1; i++)
-        {
-            for (int j = -1; j <= 1; j++)
-            {
-                int nx = x + i;
-                int ny = y + j;
-
-                if (nx != x || ny != y) // not the same
-                {
-                    if (nx >= 0 && nx < _world.Width && ny >= 0 && ny < _world.Depth)
-                    {
-                        neighbours.Add(_world.GetTileAt(nx, ny));
-                    }
-                }
-            }
-        }
-        return neighbours;
+        return _eventLogger.GetLastUpdateEvents(_calendar.CurrentTime);
     }
 
     private float CalculateFireSpreadProbability(Tile source, Tile target, Weather weather, FireSpreadParameters parameters)
@@ -167,45 +139,44 @@ public class FireSpreadSimulation
 
 public class EventLogger
 {
-    // TODO should it rather have list of all events _lastUpdateEvents / list of lists
-    private List<FireEvent> _events;
-    private List<List<FireEvent>> _updateEvents;
+    // The key is the time, and the value is a list of events that happened at that time.
+    private Dictionary<int, List<FireEvent>> _events;
 
     public EventLogger()
     {
-        _events = new List<FireEvent>();
-        _updateEvents = new List<List<FireEvent>>();
+        // Initialize the dictionary in the constructor
+        _events = new Dictionary<int, List<FireEvent>>();
     }
 
     public void LogEvent(FireEvent evt)
     {
-        _events.Add(evt);
-    }
+        // Extract the time from the event
+        int time = evt.Time;
 
-    public void LogLastUpdateEvents(List<FireEvent> lue)
-    {
-        _updateEvents.Add(lue);
-    }
-
-    public List<FireEvent> GetEvents()
-    {
-        return _events;
-    }
-
-    public List<FireEvent> GetLastUpdateEvents()
-    {
-        // Check if _updateEvents is not null and contains at least one list
-        if (_updateEvents != null && _updateEvents.Count > 0)
+        // Check if there are already events at this time
+        if (_events.ContainsKey(time))
         {
-            // Get the last list from _updateEvents
-            List<FireEvent> lastList = _updateEvents[_updateEvents.Count - 1];
-            return lastList;
+            // If there are, add the new event to the existing list
+            _events[time].Add(evt);
         }
         else
         {
-            // Return an empty list if _updateEvents is null or empty
+            // If there are no events at this time, create a new list and add the event
+            _events[time] = new List<FireEvent>() { evt };
+        }
+    }
+
+    public List<FireEvent> GetLastUpdateEvents(int time)
+    {
+        // First, check if there are events at this time
+        if (!_events.ContainsKey(time))
+        {
+            // If there are no events, return an empty list
             return new List<FireEvent>();
         }
+
+        // If there are events, return the list of events
+        return _events[time];
     }
 }
 
@@ -226,9 +197,16 @@ public class SimulationCalendar
 
 public class FireEvent
 {
-    public Tile Tile { get; set; }
-    public EventType EventType { get; set; }
-    public int Time { get; set; }
+    public int Time { get; private set; }
+    public EventType Type { get; private set; }
+    public Tile Tile { get; private set; }
+
+    public FireEvent(int time, EventType type, Tile tile)
+    {
+        Time = time;
+        Type = type;
+        Tile = tile;
+    }
 }
 
 public enum EventType
