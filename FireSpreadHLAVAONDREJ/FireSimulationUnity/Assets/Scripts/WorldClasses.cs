@@ -1,12 +1,16 @@
 // Core data structures
+
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class World
 {
     public int Width { get; set; }
     public int Depth { get; set; }
     public Tile[,] Grid { get; set; }
+
+    // Not yet used
     public Tile HighestTile { get; set; }
     public Weather Weather { get; set; }
 
@@ -20,6 +24,7 @@ public class World
     public void UpdateWeather(Weather newWeather)
     {
         // Update the weather conditions in the world.
+        // TODO add World logger, fire simulation can log in, weather handler will also report any changes in non static weather in the future, Reseting world, clears it. 
     }
 
     // Return the tile at the specified position in the grid.
@@ -28,41 +33,24 @@ public class World
         return Grid[x, y];
     }
 
-    public (int x, int z) GetTilePosition(Tile tile)
-    {
-        for (int row = 0; row < Depth; row++)
-        {
-            for (int col = 0; col < Width; col++)
-            {
-                if (Grid[row, col] == tile)
-                {
-                    return (row, col);
-                }
-            }
-        }
-
-        // Tile not found
-        return (-1, -1);
-    }
-
-    // Returns a list of neighboring tiles given the coordinates of a tile.
+    // Returns a list of neighboring tiles given some tile.
     public List<Tile> GetNeighborTiles(Tile tile)
     {
-        int x = GetTilePosition(tile).x;
-        int z = GetTilePosition(tile).z;
+        int x = tile.widthWorldPosition;
+        int y = tile.depthWorldPosition;
         List<Tile> neighbours = new List<Tile>();
         for (int i = -1; i <= 1; i++)
         {
             for (int j = -1; j <= 1; j++)
             {
                 int nx = x + i;
-                int nz = z + j;
+                int ny = y + j;
 
-                if (nx != x || nz != z) // not the same
+                if (nx != x || ny != y) // not the same
                 {
-                    if (nx >= 0 && nx < Width && nz >= 0 && nz < Depth)
+                    if (nx >= 0 && nx < Width && ny >= 0 && ny < Depth)
                     {
-                        neighbours.Add(GetTileAt(nx, nz));
+                        neighbours.Add(GetTileAt(nx, ny));
                     }
                 }
             }
@@ -70,42 +58,68 @@ public class World
         return neighbours;
     }
 
-    // Reset all the changing atributes for all tiles
+    // Reset the world, reset all non static atributes for all the tiles. 
     public void Reset()
     {
         foreach (Tile tile in Grid)
         {
             tile.IsBurning = false;
             tile.HasBurned = false;
+            tile.BurningFor = 0;
         }
     }
 }
 
 public class Tile
 {
-    private int moisture; // private backing field
-    public int Moisture // 100% is water
+    public int widthWorldPosition { get; set; }
+    public int depthWorldPosition { get; set; }
+
+    private int moisture; // in percents, 100 is water
+    public int Moisture 
     {
         get { return moisture; }
         set { moisture = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
     }
     public VegetationType Vegetation { get; set; }
     public float Height { get; set; }
+    public int BurnTime { get; set; } // number of episodes required to burn this tile
+
+    // Non static during simulation
+    public int BurningFor = 0; // number of burning episodes
     public bool IsBurning { get; set; }
     public bool HasBurned { get; set; }
-    public int BurnTime { get; set; }
-    public int BurningFor = 0; // How long is already burning
 
-    public Tile()
+    public Tile(float height, int moisture, VegetationType vegetation, int positionX, int positionY)
     {
-        System.Random rand = new System.Random();
-        BurnTime = rand.Next(3); // TODO later calculate based on Vegetation and Moisture
+        Height = height;
+        Moisture = moisture;
+        Vegetation = vegetation;
+        switch (vegetation)
+        {
+            case VegetationType.Grass:
+                BurnTime = 1;
+                break;
+            case VegetationType.Sparse:
+                BurnTime = 2;
+                break;
+            case VegetationType.Swamp:
+                BurnTime = 3;
+                break;
+            case VegetationType.Forest:
+                BurnTime = 4;
+                break;
+            default:
+                Debug.Log("Some vegetation type is not handled.");
+                break;
+        }
+        widthWorldPosition = positionX;
+        depthWorldPosition = positionY;
     }
 
-
+    // Start burning this tile just if it's not already burning or burned.
     public bool Ignite()
     {
-        // Start burning this tile if it's not already burning or burned.
         if (IsBurning == true || HasBurned == true || Moisture == 100)
         {
             return false;
@@ -114,9 +128,9 @@ public class Tile
         return true;
     }
 
+    // Extinguish the fire on this tile and set its state to burned.
     public void Extinguish()
     {
-        // Extinguish the fire on this tile and set its state to burned.
         IsBurning = false;
         HasBurned = true;
         BurningFor = 0;
@@ -130,7 +144,7 @@ public class Weather
 
     public Weather(float windDirection, float windStrength)
     {
-        // TODO initialize the weather conditions. 
+        // TODO initialize the weather conditions, add changable Weather + with logger in World class.
     }
 }
 

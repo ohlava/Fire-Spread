@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class WorldGenerator : MonoBehaviour
 {
-    public int worldWidth = 50;
+    public int worldWidth = 20;
     public int worldDepth = 50;
 
     MapImporter mapImporter;
@@ -16,7 +16,7 @@ public class WorldGenerator : MonoBehaviour
         mapImporter = mapImporterObj.GetComponent<MapImporter>();
     }
 
-    // Combine all to WorldGenerationSettings
+    // TODO combine all to WorldGenerationSettings
     public bool useCustomMap;
     public int octaves = 5;
     public float persistence = 0.4f;
@@ -39,9 +39,9 @@ public class WorldGenerator : MonoBehaviour
             heightMap = GenerateBaseTerrain();
         }
 
-        int[,] lakeMap = GenerateLakes(heightMap); // rivers can end in there
-
-        int[,] riverMap = GenerateRivers(heightMap, lakeMap); //
+        // water is represented by 1 in lake and river maps, rest is zero
+        int[,] lakeMap = GenerateLakes(heightMap); // rivers can end in lakes
+        int[,] riverMap = GenerateRivers(heightMap, lakeMap); 
 
         heightMap = GenerateCombinedMap(heightMap, lakeMap, riverMap);
 
@@ -56,25 +56,33 @@ public class WorldGenerator : MonoBehaviour
     private int[,] GenerateMoistureMap(float[,] heightMap, int[,] lakeMap, int[,] riverMap)
     {
         int[,] moistureMap = new int[worldWidth, worldDepth];
+
+        int seed = (int)System.DateTime.Now.Ticks;
+        UnityEngine.Random.InitState(seed);
+
+        float offsetX = UnityEngine.Random.Range(0, 10000f);
+        float offsetY = UnityEngine.Random.Range(0, 10000f);
+
         for (int x = 0; x < worldWidth; x++)
         {
             for (int y = 0; y < worldDepth; y++)
             {
-                // TODO moisture along water tiles heigher?
-                if (heightMap[x, y] == 0 || lakeMap[x, y] == 1 || riverMap[x, y] == 1) // water is represented by 1 in lake and river maps
+                // TODO moisture along water tiles is usually increased
+                if (heightMap[x, y] == 0 || lakeMap[x, y] == 1 || riverMap[x, y] == 1)
                 {
                     moistureMap[x, y] = 100;
                 }
                 else
                 {
                     // Use Perlin noise to generate a moisture value
-                    float noise = Mathf.PerlinNoise(x / 10.0f, y / 10.0f); // Adjust the division value to change the noise scale
+                    float noise = Mathf.PerlinNoise((x + offsetX) / 10.0f, (y + offsetY) / 10.0f); // Adjust the division value to change the noise scale
                     moistureMap[x, y] = (int)(noise * 100);
                 }
             }
         }
         return moistureMap;
     }
+
 
     private VegetationType[,] GenerateVegetationMap(int[,] moistureMap)
     {
@@ -86,22 +94,27 @@ public class WorldGenerator : MonoBehaviour
             {
                 int moisture = moistureMap[x, y];
 
-                // Adjust these moisture thresholds to change the distribution of vegetation
-                if (moisture < 30)
+                vegetationMap[x, y] = VegetationType.Grass; // base vegetation
+
+                if (UnityEngine.Random.Range(0f, 1f) <= 0.85f) // call 85% of the time
                 {
-                    vegetationMap[x, y] = VegetationType.Sparse;
-                }
-                else if (moisture < 50)
-                {
-                    vegetationMap[x, y] = VegetationType.Grass;
-                }
-                else if (moisture < 70)
-                {
-                    vegetationMap[x, y] = VegetationType.Forest;
-                }
-                else
-                {
-                    vegetationMap[x, y] = VegetationType.Swamp;
+                    // Adjust these moisture thresholds to change the distribution and amount of certain vegetation
+                    if (moisture < 30)
+                    {
+                        vegetationMap[x, y] = VegetationType.Sparse;
+                    }
+                    else if (moisture < 50)
+                    {
+                        vegetationMap[x, y] = VegetationType.Grass;
+                    }
+                    else if (moisture < 70)
+                    {
+                        vegetationMap[x, y] = VegetationType.Forest;
+                    }
+                    else
+                    {
+                        vegetationMap[x, y] = VegetationType.Swamp;
+                    }
                 }
             }
         }
@@ -122,7 +135,7 @@ public class WorldGenerator : MonoBehaviour
                 VegetationType vegetation = vegetationMap[x, y];
 
                 // Assign the height, moisture and vegetation values to the tile
-                Tile currTile = new Tile { Height = height, Moisture = moisture, Vegetation = vegetation};
+                Tile currTile = new Tile(height, moisture, vegetation, x, y);
 
                 // Put that tile in the world on correct position
                 world.Grid[x, y] = currTile;
@@ -142,6 +155,12 @@ public class WorldGenerator : MonoBehaviour
     {
         float[,] heightMap = new float[worldWidth, worldDepth];
 
+        int seed = (int)System.DateTime.Now.Ticks;
+        UnityEngine.Random.InitState(seed);
+
+        float offsetX = UnityEngine.Random.Range(0, 10000f);
+        float offsetY = UnityEngine.Random.Range(0, 10000f);
+
         // Generate multi-octave Perlin noise for the height map
         for (int x = 0; x < worldWidth; x++)
         {
@@ -150,12 +169,12 @@ public class WorldGenerator : MonoBehaviour
                 float amplitude = 1;
                 float frequency = 1;
                 float noiseHeight = 0;
-                
+
                 for (int i = 0; i < octaves; i++)
                 {
-                    float perlinValue = Mathf.PerlinNoise(x / 20f * frequency, y / 20f * frequency) * 2 - 1;
+                    float perlinValue = Mathf.PerlinNoise((x + offsetX) / 20f * frequency, (y + offsetY) / 20f * frequency) * 2 - 1;
                     noiseHeight += perlinValue * amplitude;
-                    
+
                     amplitude *= persistence; // decrease the amplitude
                     frequency *= 2; // double the frequency
                 }
@@ -168,17 +187,18 @@ public class WorldGenerator : MonoBehaviour
                 {
                     noiseHeight = -1;
                 }
-                
+
                 heightMap[x, y] = (noiseHeight + 1) / 2; // normalize to 0-1
             }
         }
         return heightMap;
     }
 
+
     private int[,] GenerateLakes(float[,] heightMap)
     {
-        // Identify and create lakes
-        float lakeThreshold = 0.2f;  // You can adjust this value to control how often lakes appear
+        // Identify and create lakes 
+        float lakeThreshold = 0.2f; // adjust this to control how often lakes appear
 
         int[,] lakeMap = new int[worldWidth, worldDepth];
         bool[,] visited = new bool[worldWidth, worldDepth];
@@ -259,18 +279,16 @@ public class WorldGenerator : MonoBehaviour
     {
         float beachFactor = 0.15f; // adjust this to control how much the terrain around water tiles is reduced
 
-        // Iterate over each tile in the world
         for (int x = 0; x < worldWidth; x++)
         {
             for (int y = 0; y < worldDepth; y++)
             {
-                // Check if the current tile is a water tile (i.e., its height is 0)
-                if (lakeMap[x, y] == 1 || riverMap[x, y] == 1)
+                if (lakeMap[x, y] == 1 || riverMap[x, y] == 1) // is the current tile water tile? (i.e., its height is 0)
                 {
                     // all water is 0
                     heightMap[x, y] = 0;
 
-                    // Iterate over the neighbors of the current tile
+                    // Iterate over only some of the neighbors - pseudo randomly
                     for (int dx = -1; dx <= 2; dx++)
                     {
                         for (int dy = -1; dy <= 2; dy++)

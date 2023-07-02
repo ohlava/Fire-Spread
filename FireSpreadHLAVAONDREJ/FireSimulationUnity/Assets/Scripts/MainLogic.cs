@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class MainLogic : MonoBehaviour
 {
+    World world;
+    FireSpreadSimulation fireSpreadSimulation;
+    List<Tile> initBurningTiles = new List<Tile>();
+
 
     WorldGenerator worldGenerator;
     [SerializeField] GameObject generatorObj;
@@ -39,35 +43,37 @@ public class MainLogic : MonoBehaviour
 
     private void HandleTileClick(Tile clickedTile)
     {
-        clickedTile.Ignite();
-        initBurningTiles.Add(clickedTile);
-        visulizer.CreateFireOnTile(clickedTile);
+        if (clickedTile.Ignite()) // is not ignited if water for example
+        {
+            initBurningTiles.Add(clickedTile);
+            visulizer.CreateFireOnTile(clickedTile);
+        }
     }
 
-
-
-    World world;
-    FireSpreadSimulation fireSpreadSimulation;
-    List<Tile> initBurningTiles = new List<Tile>();
-
-    float elapsed = 0f;
-    float speedOfUpdates = 5f; // in seconds
-
+    private float elapsed = 0f;
+    public float speedOfUpdates = 2f; // in seconds
     public bool simulationRunning = false;
+
     public void buttonStartSimulation()
     {
         // Initialize FireSpreadSimulation.
         FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
         fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
         simulationRunning = true;
+
     }
     public void buttonStopSimulation()
     {
         simulationRunning = false;
+
     }
     public void sliderSetspeedOfUpdates(float speed)
     {
         speedOfUpdates = speed;
+        Debug.Log(speedOfUpdates);
+        Debug.Log("speed set to:");
+        Debug.Log(speedOfUpdates);
+
     }
     public void buttonResetCurrentWorld()
     {
