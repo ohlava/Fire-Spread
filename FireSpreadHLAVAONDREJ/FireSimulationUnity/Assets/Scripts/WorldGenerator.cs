@@ -6,8 +6,8 @@ using UnityEngine;
 [Serializable]
 public class WorldGenerator : MonoBehaviour
 {
-    public int worldWidth = 20;
-    public int worldDepth = 50;
+    public int worldWidth = 60;
+    public int worldDepth = 40;
 
     MapImporter mapImporter;
     [SerializeField] GameObject mapImporterObj;
@@ -20,7 +20,8 @@ public class WorldGenerator : MonoBehaviour
     public bool useCustomMap = false;
     public int octaves = 5;
     public float persistence = 0.4f;
-    public int rivers = 1;
+    public float lakeThreshold = 0.12f; // 0-1 adjust this to control how often lakes appear
+    public int rivers = 2; 
 
     public World GetWorld()
     {
@@ -50,6 +51,7 @@ public class WorldGenerator : MonoBehaviour
         VegetationType[,] vegetationMap = GenerateVegetationMap(moistureMap);
 
         world = GenerateWorldFromMaps(heightMap, moistureMap, vegetationMap);
+
         return world;
     }
 
@@ -198,7 +200,6 @@ public class WorldGenerator : MonoBehaviour
     private int[,] GenerateLakes(float[,] heightMap)
     {
         // Identify and create lakes 
-        float lakeThreshold = 0.2f; // adjust this to control how often lakes appear
 
         int[,] lakeMap = new int[worldWidth, worldDepth];
         bool[,] visited = new bool[worldWidth, worldDepth];

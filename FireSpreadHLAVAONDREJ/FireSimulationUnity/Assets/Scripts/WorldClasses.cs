@@ -139,8 +139,14 @@ public class Tile
 
 public class Weather
 {
-    public float WindDirection { get; set; }
-    public float WindStrength { get; set; }
+    public float WindDirection { get; set; } // in degrees, 0-359
+    private int windStrength; // in km/h
+    public int WindStrength
+    {
+        get { return windStrength; }
+        set { windStrength = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
+    }
+
 
     public Weather(float windDirection, float windStrength)
     {

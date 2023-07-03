@@ -1,7 +1,7 @@
-# FireSpread Simulation
+# Fire Spread Simulator
 
 # Description
-The Fire Spread Simulator is an application developed in Unity that models the spread of fire in a procedurally generated world. It enables users to observe and analyze how fire propagates through different environments and conditions. (factors such as vegetation type, moisture levels, weather, height difference) The application is built with a set of classes and methods that generate a world, run the fire spread simulation, and visualize the outcome. (note that in this stage it is very simplified, but easily modifiable and extandable)
+The Fire Spread Simulator is an application developed in Unity that models the spread of fire in a procedurally generated world. It enables users to observe and analyze how fire propagates through different environments and conditions. The application is built with a set of classes and methods that generate a world, run the fire spread simulation, and visualize the outcome.
 
 This project now offers for example:
 
@@ -11,9 +11,9 @@ This project now offers for example:
 - Vegetation map with different types of vegetation
 - Ability to import own custom heigh map from PNG greyscale file
 - Fire spread simulation with interactive 3D visualization
-- Camera movement and clickable world tiles
-- Running and pausing simulation
-- Graph of fire spread - serialization into file to make charts later in python for example.
+- Camera movement and angle change using keyboard and mouse clickable world tiles
+- Running and pausing the simulation
+- Live graph of the fire spread - with prepared function for serialization into file to make charts later in python for example.
 
 # Installation
 This project runs on the Unity Game Engine. Here are the steps to run the project:
@@ -29,21 +29,23 @@ Once you've installed and opened the project in Unity, you can modify and run th
 
 Press the play button!
 
-In the objects panel, you will see multiple different objects responsible for alternating the program run. Experiment with different values in Inspector panel for those public properties. Or control the program with the buttons with self explanatory texts. Change them ideally before you press play button.
+In the objects panel, you will see multiple different objects responsible for alternating the program run. Experiment with different values in Inspector panel for such public properties. Change them ideally before you press play button. Control the program with the program buttons right during the run of the program. 
 
-Seting tiles on fire is as simple as clicking on them! Just make sure you are in the game not in the scene view. Also the state of the game has to be in new world state which means that fire simulation must not be running or paused. If the simulation already started, it is prohibited to egnite new tiles manually. (maybe will be added in the future) Click the Reset button or generate new World to be able to manually set tile on fire. 
+Seting tiles on fire is as simple as clicking on them. Just make sure you are in the game view not in the scene view. Also the state of the game has to be the new World state which means that fire simulation must not be running or paused. Initial burning tiles can be ignited only before you click run simulation button. If the simulation already started, it is prohibited to egnite new tiles manually. (maybe this ability will be added in the future) Click the Reset current world button or generate entire new World to be able to manually set new tiles on fire again.
 
-After you ignite initial tiles, click the button to run the simulation. Pause and restart the simulation whenever you want. It is also convinient to change the speed of the updates. 
+After you ignite initial tiles, click the button to run the simulation. Pause and restart the simulation whenever you want. It is also convinient to change the speed of the updates beforehand. 
 
 Reset the current world or generate completely new one.
 
 Control the camera movement with WASD. Control the camera angle with IJKL anytime.
 
+Have a graph of burning tiles displayed right during the simulation on your screen, or after the simulation finishes or at any time just by clicking the Show/hide graph button.
+
 # General overview
 
 ### MainLogic
 
-This class is the central hub for running the application, maintaining the state of the application, handling input events, running the fire spread simulation, and managing the generated world. It's a Unity MonoBehaviour, which allows it to be attached to a game object and make use of Unity's inbuilt methods like Start and Update.
+This class is the central hub for running the application, maintaining the state of the application, handling input events, running the fire spread simulation, and managing the generated world and displaying it by visulizer accordingly. It's a Unity MonoBehaviour, which allows it to be attached to a game object and make use of Unity's inbuilt methods like Start and Update.
 
 ### Terrain Generation
 
@@ -51,15 +53,15 @@ The WorldGenerator class generates a virtual world for the fire spread simulatio
 
 Adjust the worldWidth and worldDepth properties to alter the size of the terrain that will be generated.
 
-To use a custom map, set the useCustomMap boolean to true and connect your custom map to the mapImporterObj property. Example of two heigh maps is included in the project.
+To use a custom map, set the useCustomMap boolean to true. Or do it by in game toggle. Followed by Generate new World. Then just simply locate and select the right PNG file. Example of two heigh maps is included in the project.
 
-Set number of rivers you want to generate etc.
+Set number of rivers you want to generate and amount of lake space etc.
 
-Press the Unity play button to start the simulation and generate the initial terrain. Or later with the buttons.
+Press the Unity play button to start the simulation and generate the initial terrain. Or later regenerate with the in game buttons.
 
 ### FireSpreadSimulation
 
-The FireSpreadSimulation class is responsible for managing the spread of the fire in the simulation. It contains all the necessary methods to run and update the state of the fire spread simulation.
+The FireSpreadSimulation class is responsible for managing the spread of the fire in the simulation. It contains all the necessary methods to run and update the state of the fire spread simulation based on the factors you set.
 
 The SimulationCalendar class keeps track of the current time in the simulation.
 
@@ -71,11 +73,13 @@ The FireEvent class represents a fire event that occurred during the simulation.
 
 The Visualizer class is responsible for creating and managing the visual representation of the  world simulation.
 
-The Visualizer object allows you to visualize the simulation. It has two modes: Standard and Simplified. Simplified is set automatically if size of the world reaches certain number of tiles.
+The Visualizer object allows you to visualize the simulation. It has two modes: Standard and Simplified. Simplified is set automatically if size of the world reaches certain number of tiles to reduce lag.
 
 Standard mode generates a 3D representation of the terrain with vegetation and fire. Each tile of the terrain will have a corresponding GameObject instance.
 Simplified mode uses color coding on a 2D grid to represent different states.
 You can switch between these modes by changing the mode property on the Visualizer object. Note that the mode should not be changed during the simulation.
+
+The GraphVisualizer class allows to draw graphs based on a given dataset. It provides functionality to visualize data points on a graph panel using Unity's UI system.
 
 
 # Fire Spread Simulator Documentation
@@ -96,25 +100,25 @@ You can switch between these modes by changing the mode property on the Visualiz
 ### Methods
 
 #### `HandleCameraMove(Vector3 direction)` 
-Handles the movement of the camera.
+Handles the movement of the camera. Move camera with WASD keyboard buttons. 
 
 #### `HandleCameraAngleChange(Vector3 rotationChange)`
-Handles the rotation change of the camera.
+Handles the rotation change of the camera. Change camera angle with IJKL keyboard buttons. 
 
 #### `HandleTileClick(Tile clickedTile)`
-Handles the events when a tile is clicked. It's noteworthy that tiles can be clicked only when the simulation is not running.
+Handles the events when a tile is clicked. It's noteworthy that tiles can be clicked only when the simulation is not running, specifically new World has to be created with new simulation.
 
 #### `HandleEvent(State nextState)`
-This method is responsible for handling state transitions in the application based on the user's actions. The transitions are between `NewWorldState`, `RunningState`, `StoppedState`, and `GraphState`. 
+This method is responsible for handling state transitions in the application based on the user's actions. The transitions are between `NewWorldState`, `RunningState`, `StoppedState`. 
 
-#### `OnNewWorldButtonClicked()`, `OnRunSimulationButtonClicked()`, `OnPauseSimulationButtonClicked()`, `OnShowGraphsButtonClicked()`, `OnResetButtonClicked()`
+#### `OnNewWorldButtonClicked()`, `OnRunSimulationButtonClicked()`, `OnPauseSimulationButtonClicked()`, `OnShowHideGraphsButtonClicked()`, `OnResetButtonClicked()`
 These methods handle the events when respective buttons are clicked in the user interface.
 
 #### `ToggleUseCustomMap()`
 Toggles the `useCustomMap` variable, changing whether a custom or generated map is used in the simulation.
 
 #### `GenereteNewWorld()`
-Generates a new world and initializes the fire spread simulation for this world.
+Generates and prepares new world and initializes the fire spread simulation for this world. Remakes all in the screen with
 
 #### `VisulizerRemakeAllBrandNew()`
 Resets and re-creates all visualizations.
@@ -125,13 +129,15 @@ Saves the graph data that shows the number of burning tiles over time.
 #### `RunEverything()`
 Executes all the necessary updates based on the current state of the application.
 
-## Enum: State
+#### `showGraph()`
+Uses GraphVisulizer to draw the graph of all the simulation update states, right now just tiles burning over time.
+
+## State
 This enum contains the four possible states that the application can be in:
 
 - `NewWorldState`: The application is in a state where a new world has been or is being generated, here initialBurningTiles can be set by clicking on tiles (Raycast is sent).
 - `RunningState`: The fire spread simulation is currently running.
 - `StoppedState`: The fire spread simulation has been paused or has finished running.
-- `GraphState`: The application should be in a state where it displays the graph of burning tiles over time. (currently it just saves it to a file)
 
 
 ## FireSpreadSimulation
@@ -165,9 +171,9 @@ This method calculates the probability of the fire spreading from the source til
 This method calculates the per-step probability of a tile catching fire, such that over the tile's `BurnTime`, the total cumulative probability of catching fire is equal to the specified total probability.
 
 #### `GetVegetationFactor(VegetationType vegetation, float spreadFactor)`, `GetMoistureFactor(float moisture, float spreadFactor)`, `GetWindFactor(Tile source, Tile target, Weather weather, float spreadFactor)`, `GetSlopeFactor(Tile source, Tile target, float spreadFactor)`
-These methods are intended to calculate the factors affecting fire spread based on vegetation, moisture, wind, and slope. They are not actively used right now.
+These methods are intended to calculate the factors affecting fire spread based on vegetation, moisture, wind, and slope. They are not all actively used right now.
 
-## Class: EventLogger
+## EventLogger
 
 ### Variables
 
@@ -243,7 +249,7 @@ This method generates the final world from the height, moisture, and vegetation 
 
 ## Visualizer
 
-The `Visualizer` class is responsible for creating and managing the visual representation of the simulation world.
+The `Visualizer` class is responsible for creating and managing the visual representation of the simulation world. Operates on one of two settings states Standard and Simplified.
 
 ### Methods
 
@@ -290,6 +296,29 @@ This method retrieves the `Tile` object associated with a specific GameObject in
 This method sets the position and orientation of the camera in the visualization.
 
 
+## GraphVisualizer
+
+### Public Variables
+
+- `panel`: A RectTransform that represents the graph panel where the graph will be drawn.
+- `pointPrefab`: A GameObject prefab that represents a data point on the graph.
+- `xAxisLabel`: A Text component that displays the label for the X-axis.
+- `yAxisLabel`: A Text component that displays the label for the Y-axis.
+- `last_maxLabel`: A Text component that displays the last data point's value and the maximum value on the Y-axis.
+
+### Methods
+
+- `DrawGraph(Dictionary<int, int> data, string Y_text = "Y axis", string X_text = "X axis")`: Draws the graph based on the provided data dictionary. It takes an optional Y-axis label and X-axis label as parameters.
+- `HideGraph()`: Hides the graph panel and labels.
+- `ClearGraph()`: Clears the graph by removing all data points.
+- `SaveToFile(Dictionary<int, int> dict, string pathAndName = "Assets/graph.json")`: Static method that saves the provided data dictionary to a JSON file at the specified path.
+
+- `AdjustPointSize(int count)`: Private method that calculates the size of the data points based on the width of the graph panel and the number of data points.
+
+### Serialization Class
+
+The `Serialization<T1, T2>` class is a helper class for serialization. It serializes a dictionary by storing its keys and values in separate lists. This class is used internally to save the data dictionary to a JSON file using the `SaveToFile` method.
+
 
 # Roadmap
 Future enhancements will include:
@@ -299,6 +328,7 @@ Future enhancements will include:
 - More types of vegetation and their unique impact on the fire spread
 - Better fire spread calculation based on more factors
 - UI changes and enhancements, more settings options implemented by buttons, sliders, toggles...
+- importing map - platform specific import system, right now can be used only through the Unity Engine
 - and many many more
 
 ## Support
@@ -314,4 +344,4 @@ Project initiated by [Ondřej Hlava].
 None.
 
 ## Project Status
-The project is in active development with the aim to include more features, simplify current proccesses etc.
+The project is in active development with the aim to include more features, simplify and speed up current proccesses etc.

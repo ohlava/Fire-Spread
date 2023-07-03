@@ -26,6 +26,17 @@ public class MainLogic : MonoBehaviour
 
     GraphVisulizer graphVisulizer;
 
+
+
+
+    private float elapsed = 0f;
+    public float speedOfUpdates = 1f; // in seconds
+    FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+
+    public bool showingGraph = false;
+    private State currentState = State.NewWorldState;
+
+
     void Awake()
     {
         worldGenerator = generatorObj.GetComponent<WorldGenerator>();
@@ -65,16 +76,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
-
-
-    private float elapsed = 0f;
-    public float speedOfUpdates = 1f; // in seconds
-    FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
-
-    public bool showingGraph = false;
-    private State currentState = State.NewWorldState;
-
-
+    // Handling program states and possible state transitions
     public void HandleEvent(State nextState)
     {
         switch (currentState)
@@ -163,11 +165,12 @@ public class MainLogic : MonoBehaviour
 
     public void ToggleUseCustomMap()
     {
-        // Toggle the useCustomMap value
         worldGenerator.useCustomMap = !worldGenerator.useCustomMap;
-
-        Debug.Log("Toggled useCustomMap. New value: " + worldGenerator.useCustomMap);
     }
+
+
+
+
 
 
     public void GenereteNewWorld()
@@ -175,7 +178,7 @@ public class MainLogic : MonoBehaviour
         world = worldGenerator.GetWorld();
 
         int numberOfTiles = world.Width * world.Depth;
-        if (numberOfTiles <= 10000)
+        if (numberOfTiles <= 6000)
         {
             visulizer.mode = VisulizerMode.Standard;
         }
@@ -211,6 +214,7 @@ public class MainLogic : MonoBehaviour
         {
             elapsed = elapsed % speedOfUpdates;
 
+            // is called once every speedOfUpdates seconds
             RunEverything();
         }
     }
@@ -219,7 +223,7 @@ public class MainLogic : MonoBehaviour
     {
         if (currentState == State.RunningState)
         {
-            
+            // Run and then automatically stop running after simulation finishes
             if (!fireSpreadSimulation.Finished())
             {
                 fireSpreadSimulation.Update();
@@ -244,7 +248,7 @@ public class MainLogic : MonoBehaviour
 
                 if (showingGraph)
                 {
-                    showGraph(showingGraph); // for update
+                    showGraph(showingGraph); // for graph update
                 }
             }
             else
@@ -266,6 +270,7 @@ public class MainLogic : MonoBehaviour
         
     }
 
+    // Uses GraphVisulizer to draw the graph of all the simulation update states, now tiles burning over time
     private void showGraph(bool show)
     {
         if (showingGraph)

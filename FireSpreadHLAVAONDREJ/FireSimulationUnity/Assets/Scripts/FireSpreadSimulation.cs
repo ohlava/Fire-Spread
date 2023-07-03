@@ -91,16 +91,19 @@ public class FireSpreadSimulation
 
     private float CalculateFireSpreadProbability(Tile source, Tile target, Weather weather, FireSpreadParameters parameters)
     {
-        // TODO implement more reminiscent of reality
+        // TODO implement more reminiscent of reality / something like cumulative probability being 0.20f-0.35f seems to be nice
+        // precalculate?
 
-        // float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
-        // float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
+        float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
+        // loat moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
         // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
-        // float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
+        float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
+
+        float combined = (vegetationFactor + slopeFactor) / 2; // average
 
         // float combined = GetStepFireProbability(vegetationFactor * moistureFactor * slopeFactor * windFactor, source.BurnTime)
+        // float combined = UnityEngine.Random.Range(0.25f, 0.35f);
 
-        float combined = UnityEngine.Random.Range(0.25f, 0.35f);
         return GetStepFireProbability(combined, source.BurnTime);
     }
 
@@ -138,16 +141,16 @@ public class FireSpreadSimulation
         switch (vegetation)
         {
             case VegetationType.Grass:
-                factor = 0.8f;
+                factor = 0.18f;
                 break;
             case VegetationType.Forest:
-                factor = 1.2f;
+                factor = 0.4f;
                 break;
             case VegetationType.Sparse:
-                factor = 0.5f;
+                factor = 0.25f;
                 break;
             case VegetationType.Swamp:
-                factor = 0.2f;
+                factor = 0.22f;
                 break;
         }
 
@@ -162,25 +165,29 @@ public class FireSpreadSimulation
 
     private float GetWindFactor(Tile source, Tile target, Weather weather, float spreadFactor)
     {
-        // Calculate the wind direction towards the target tile.
-        float targetDirection = 1;
+        // It has been measured that with a wind speed of 10 km/h, the fire spreads through the Australian bush at a speed of about 0.5 km/h.
+        // If the wind speed increases to 20 km/h, the speed of the fire will increase to 0.8 km/h. At a wind speed of 40 km/h, the speed of fire progress is already 1.8 km/h
 
-        // Calculate the angular difference between the wind direction and the target direction.
-        float angularDifference = Mathf.DeltaAngle(weather.WindDirection, targetDirection);
-
-        // Calculate the wind factor based on the angular difference and wind strength.
-        float windFactor = Mathf.Cos(Mathf.Deg2Rad * angularDifference) * weather.WindStrength * spreadFactor;
+        float windFactor = 1;
 
         return Mathf.Max(0, windFactor);
     }
 
     private float GetSlopeFactor(Tile source, Tile target, float spreadFactor)
     {
+        // The spread factor will be higher for uphill slopes.
+        // Experimentally, it was found that at a slope of 10°, the speed of fire progress increases twice, and at a slope of 40° even four times.
+
         float slopeDifference = target.Height - source.Height;
 
-        // Assuming slopeDifference is between -1 (downhill) and 1 (uphill).
-        // The spread factor will be higher for uphill slopes.
-        return (1 + slopeDifference) * spreadFactor;
+        if (slopeDifference >= 0)
+        {
+            return 0.35f * spreadFactor;
+        }
+        else
+        {
+            return 0.25f * spreadFactor;
+        }
     }
 }
 
@@ -295,7 +302,7 @@ public class FireSpreadParameters
 {
     public float VegetationSpreadFactor { get; set; }
     public float MoistureSpreadFactor { get; set; }
-    // public float WindSpreadFactor { get; set; }
+    public float WindSpreadFactor { get; set; }
     public float SlopeSpreadFactor { get; set; }
 
     public FireSpreadParameters()
@@ -303,7 +310,7 @@ public class FireSpreadParameters
         // Set default values for the spread factors.
         VegetationSpreadFactor = 1.0f;
         MoistureSpreadFactor = 1.0f;
-        // WindSpreadFactor = 1.0f;
+        WindSpreadFactor = 1.0f;
         SlopeSpreadFactor = 1.0f;
     }
 }

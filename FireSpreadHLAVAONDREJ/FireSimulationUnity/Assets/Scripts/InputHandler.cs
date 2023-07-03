@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// publisher class
 public class InputHandler : MonoBehaviour
 {
     public delegate void TileClickHandler(Tile clickedTile);

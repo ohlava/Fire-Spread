@@ -8,11 +8,11 @@ using UnityEngine.UI;
 public class MapImporter : MonoBehaviour
 {
     private float[,] heightMap;
-    public int maxMapHeight = 100;
-    public int maxMapWidth = 100;
+    public int maxMapHeight = 80;
+    public int maxMapWidth = 80;
 
     // Adjust this to change how the height values will be scaled
-    public float HeightMultiplier = 2f;
+    public float HeightMultiplier = 2.5f;
     // widthDepthScale parameter is the number of pixels to skip between each sample of the texture map
     public int widthDepthScale = 1;
 
