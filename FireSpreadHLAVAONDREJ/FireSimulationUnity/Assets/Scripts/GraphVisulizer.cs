@@ -12,6 +12,8 @@ public class GraphVisulizer : MonoBehaviour
     public GameObject pointPrefab;
     public Text xAxisLabel;
     public Text yAxisLabel;
+    public Text last_maxLabel;
+
     private List<GameObject> points; // List to keep track of point instances
 
     private float width;
@@ -19,8 +21,6 @@ public class GraphVisulizer : MonoBehaviour
 
     void Start()
     {
-        // TODO add axis with numbers, make points smaller over time, so graph is well visible (they stay the same size now)
-
         // Adjust panel to cover left half of screen
         panel.anchorMin = new Vector2(0, 0);
         panel.anchorMax = new Vector2(0.5f, 1);
@@ -28,38 +28,42 @@ public class GraphVisulizer : MonoBehaviour
         panel.offsetMax = new Vector2(0, 0);
 
         // Calculate the space available in the panel
-        width = panel.rect.width * 0.9f;
-        height = panel.rect.height * 0.8f;
+        width = panel.rect.width * 0.85f;
+        height = panel.rect.height * 0.85f;
 
         // hide the panel and texts
         HideGraph();
 
         points = new List<GameObject>();
-
-        // texts are manually set in the editor
     }
 
-    public void DrawGraph(Dictionary<int, int> data, string Y_text = "Y axis")
+    public void DrawGraph(Dictionary<int, int> data, string Y_text = "Y axis", string X_text = "X axis")
     {
         // clear previous graph
         ClearGraph();
 
-        if (data.Count == 0)
+        if (data.Count == 0) // otherwise data.Values.Max() has a problem
         {
             return;
         }
 
-        // rename the Y axis
+        // rename the axes
         yAxisLabel.text = Y_text;
+        xAxisLabel.text = X_text;
+        last_maxLabel.text = data.Last().Value + "/" + data.Values.Max();
 
         // show all
         panel.gameObject.SetActive(true);
         xAxisLabel.gameObject.SetActive(true);
         yAxisLabel.gameObject.SetActive(true);
+        last_maxLabel.gameObject.SetActive(true);
 
         // Calculate the intervals for the x and y axes
         float xInterval = xInterval = width / (data.Count + 1);
-        float yInterval = yInterval = height / data.Values.Max(); // devided by data max value
+        float yInterval = yInterval = height / data.Values.Max(); ; //  Max cant handle empty data, careful for zero division!
+
+        // Calculate the size of the points based on the count
+        Vector2 pointSize = AdjustPointSize(data.Count);
 
         // Draw the graph
         int index = 1;
@@ -69,6 +73,9 @@ public class GraphVisulizer : MonoBehaviour
             RectTransform pointTransform = point.GetComponent<RectTransform>();
             points.Add(point);
 
+            // Adjust the size of the points
+            pointTransform.sizeDelta = pointSize;
+
             float x = xInterval * index;
             float y = yInterval * entry.Value;
 
@@ -76,11 +83,24 @@ public class GraphVisulizer : MonoBehaviour
             pointTransform.anchorMin = new Vector2(0, 0);
             pointTransform.anchorMax = new Vector2(0, 0);
             pointTransform.pivot = new Vector2(0.5f, 0.5f); // Center the pivot point
-            pointTransform.anchoredPosition = new Vector2(x, y);
+            pointTransform.anchoredPosition = new Vector2(x+25f, y+25f); // 25f is just for the offset from the screen sides
 
             index++;
+
         }
     }
+
+    // Calculate the size of the points based on the width of the panel and the number of points
+    private Vector2 AdjustPointSize(int count)
+    {
+        float newSize = width / (count * 1.2f); // scaling factor 1.2f to ensure points do not touch each other
+
+        // Ensure that points do not become too small or too large
+        newSize = Mathf.Clamp(newSize, 5f, 30f);
+
+        return new Vector2(newSize, newSize);
+    }
+
 
     public void HideGraph()
     {
@@ -88,6 +108,7 @@ public class GraphVisulizer : MonoBehaviour
         panel.gameObject.SetActive(false);
         xAxisLabel.gameObject.SetActive(false);
         yAxisLabel.gameObject.SetActive(false);
+        last_maxLabel.gameObject.SetActive(false);
     }
 
     public void ClearGraph()
@@ -107,6 +128,26 @@ public class GraphVisulizer : MonoBehaviour
     }
 
 }
+
+// TODO own graph object and storing bunch different ones to easily vizulize different ones
+/*
+public class Graph : Dictionary<int, int>
+{
+    // unique type of graph
+    public Text xAxisLabel;
+    public Text yAxisLabel;
+
+    public void AddPoint(int x, int y)
+    {
+        this[x] = y;
+    }
+
+    public void RemovePoint(int x)
+    {
+        this.Remove(x);
+    }
+}
+*/
 
 
 // Helper class for serialization

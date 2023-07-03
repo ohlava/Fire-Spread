@@ -80,7 +80,7 @@ public class Visulizer : MonoBehaviour
         }
         else
         {
-            Debug.LogError("No created instance found for the given tile to set color.");
+            Debug.LogError("No created instance found for the given tile to set color. It doesnt exist anymore in vizulizer data.");
         }
     }
 
@@ -180,7 +180,7 @@ public class Visulizer : MonoBehaviour
             }
             else
             {
-                Debug.LogError("No created instance found for the given tile. VEGETATION");
+                Debug.LogError("No created instance found for the given tile. It doesnt exist anymore in vizulizer data. VEGETATION");
             }
         }
     }
@@ -227,7 +227,7 @@ public class Visulizer : MonoBehaviour
             }
             else
             {
-                Debug.LogError("No created instance found for the given tile. FIRE");
+                Debug.LogError("No created instance found for the given tile. It doesnt exist anymore in vizulizer data. FIRE");
             }
         }
     }
