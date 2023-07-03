@@ -557,13 +557,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb2774a594cc4c41af1e760f9a88a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldWidth: 50
+  worldWidth: 100
   worldDepth: 50
   mapImporterObj: {fileID: 1253861192}
   useCustomMap: 0
   octaves: 5
   persistence: 0.4
-  rivers: 6
+  rivers: 7
 --- !u!4 &131065774
 Transform:
   m_ObjectHideFlags: 0
@@ -626,7 +626,7 @@ MonoBehaviour:
   generatorObj: {fileID: 131065772}
   visulizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 846402035}
-  speedOfUpdates: 0.7
+  speedOfUpdates: 0.8
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
