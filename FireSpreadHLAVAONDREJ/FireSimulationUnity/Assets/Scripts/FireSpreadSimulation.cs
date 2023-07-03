@@ -234,7 +234,7 @@ public class EventLogger
         int currentBurningCount = 0;
 
         // Iterate over events in chronological order
-        foreach (var timeEvents in _events.OrderBy(e => e.Key))
+        foreach (var timeEvents in _events)
         {
             // At each time step, calculate the count of burning tiles
             foreach (FireEvent evt in timeEvents.Value)

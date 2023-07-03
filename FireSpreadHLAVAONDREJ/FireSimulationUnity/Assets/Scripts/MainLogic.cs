@@ -6,14 +6,13 @@ public enum State
 {
     NewWorldState,
     RunningState,
-    StoppedState,
-    GraphState
+    StoppedState
 }
 
 public class MainLogic : MonoBehaviour
 {
     World world;
-    FireSpreadSimulation fireSpreadSimulation;
+    FireSpreadSimulation fireSpreadSimulation = null;
     List<Tile> initBurningTiles = new List<Tile>();
 
     WorldGenerator worldGenerator;
@@ -25,11 +24,16 @@ public class MainLogic : MonoBehaviour
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
 
+    GraphVisulizer graphVisulizer;
+
     void Awake()
     {
         worldGenerator = generatorObj.GetComponent<WorldGenerator>();
         visulizer = visulizerObj.GetComponent<Visulizer>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+
+        // object is attached to a main camera, this finds ir, there is only one graphVisualizer
+        graphVisulizer = GameObject.FindObjectOfType<GraphVisulizer>();
 
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnCameraMove += HandleCameraMove;
@@ -66,6 +70,8 @@ public class MainLogic : MonoBehaviour
     private float elapsed = 0f;
     public float speedOfUpdates = 1f; // in seconds
     FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+
+    public bool showingGraph = false;
     private State currentState = State.NewWorldState;
 
 
@@ -78,6 +84,8 @@ public class MainLogic : MonoBehaviour
                 {
                     case State.RunningState:
                         currentState = State.RunningState;
+                        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
+                        graphVisulizer.ClearGraph();
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
@@ -95,10 +103,7 @@ public class MainLogic : MonoBehaviour
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        break;
-                    case State.GraphState:
-                        currentState = State.GraphState;
-                        SaveGraph();
+                        graphVisulizer.ClearGraph();
                         break;
                 }
                 break;
@@ -112,23 +117,7 @@ public class MainLogic : MonoBehaviour
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        break;
-                    case State.GraphState:
-                        currentState = State.GraphState;
-                        SaveGraph();
-                        break;
-                }
-                break;
-
-            case State.GraphState:
-                switch (nextState)
-                {
-                    case State.RunningState:
-                        currentState = State.RunningState;
-                        break;
-                    case State.NewWorldState:
-                        currentState = State.NewWorldState;
-                        GenereteNewWorld();
+                        graphVisulizer.ClearGraph();
                         break;
                 }
                 break;
@@ -152,9 +141,25 @@ public class MainLogic : MonoBehaviour
         HandleEvent(State.StoppedState);
     }
 
-    public void OnShowGraphsButtonClicked()
+    public void OnShowHideGraphsButtonClicked()
     {
-        HandleEvent(State.GraphState);
+        showingGraph = !showingGraph;
+    }
+
+    private void showGraph(bool show)
+    {
+        if (showingGraph == true)
+        {
+            if (fireSpreadSimulation != null)
+            {
+                Dictionary<int, int> d = fireSpreadSimulation.GetBurningTilesOverTime();
+                graphVisulizer.DrawGraph(d, "burning tiles");
+            }
+        }
+        else
+        {
+            graphVisulizer.HideGraph();
+        }
     }
 
     public void OnResetButtonClicked()
@@ -164,9 +169,11 @@ public class MainLogic : MonoBehaviour
         world.Reset();
 
         initBurningTiles.Clear();
-        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
 
         VisulizerRemakeAllBrandNew();
+
+        graphVisulizer.ClearGraph();
+
     }
 
     public void ToggleUseCustomMap()
@@ -192,7 +199,6 @@ public class MainLogic : MonoBehaviour
         }
 
         initBurningTiles.Clear();
-        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
 
         VisulizerRemakeAllBrandNew();
     }
@@ -206,12 +212,6 @@ public class MainLogic : MonoBehaviour
         visulizer.CreateWorldTiles(world);
         visulizer.CreateAllVegetation(world);
         visulizer.SetCameraPositionAndOrientation(world);
-    }
-
-    private void SaveGraph()
-    {
-        Dictionary<int, int> d = fireSpreadSimulation.GetBurningTilesOverTime();
-        GraphCreator.SaveToFile(d);
     }
 
 
@@ -235,6 +235,8 @@ public class MainLogic : MonoBehaviour
 
     private void RunEverything()
     {
+        showGraph(showingGraph);
+
         if (currentState == State.RunningState)
         {
             
@@ -272,18 +274,10 @@ public class MainLogic : MonoBehaviour
         {
             Debug.Log("NOT running");
         }
-        else if (currentState == State.NewWorldState) // simulation not running
+        else // simulation not running State.NewWorldState
         {
             Debug.Log("NEW WORLD");
         }
-        else if (currentState == State.GraphState) // simulation not running
-        {
-            // TODO actually show graph on screen
-            Debug.Log("GRAPH");
-        }
-        else // should never happen
-        {
-            Debug.Log("OTHER");
-        }
+        
     }
 }
