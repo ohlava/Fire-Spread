@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using TMPro;
+using UnityEditor.Presets;
 
 // publisher class
 public class InputHandler : MonoBehaviour
@@ -15,14 +18,74 @@ public class InputHandler : MonoBehaviour
     public delegate void CameraAngleChangeHandler(Vector3 rotation);
     public event CameraAngleChangeHandler OnCameraAngleChange;
 
+    public delegate void GraphHandler();
+    public event GraphHandler OnGraph;
+
+    public delegate void ResetWorldHandler();
+    public event ResetWorldHandler OnReset;
+
+    public delegate void GenerateWorldHandler();
+    public event GenerateWorldHandler OnGenerateWorld;
+
+    public delegate void FieldValueChangeHandler();
+    public event FieldValueChangeHandler OnFieldValueChange;
+
+    public delegate void ImportToggleHandler();
+    public event ImportToggleHandler OnImportToggle;
+
+    public delegate void RunHandler();
+    public event RunHandler OnRun;
+
+    public delegate void PauseHandler();
+    public event PauseHandler OnPause;
+
+    public delegate void OnSimulationSpeedChange(float newSpeed);
+    public event OnSimulationSpeedChange onSimulationSpeedChange;
+
     public LayerMask ignoreLayer;
 
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
 
+    // These references for fields are there to later be change in case user for example exceeds limit for Max value
+    [SerializeField] private Slider simulationSpeedSlider;
+    [SerializeField] private GameObject worldWidthInputFieldObj;
+    TMP_InputField worldWidthInputField;
+    [SerializeField] private GameObject worldDepthInputFieldObj;
+    TMP_InputField worldDepthInputField;
+    [SerializeField] private GameObject riversInputFieldObj;
+    TMP_InputField riversInputField;
+    [SerializeField] private Slider lakeThresholdSlider;
+
+
+    public float simulationSpeed { get; private set; }
+    public int worldWidth { get; private set; }
+    public int MaxWorldWidth = 250;
+    public int worldDepth { get; private set; }
+    public int MaxWorldDepth = 250;
+    public int rivers { get; private set; }
+    public int MaxRivers = 50;
+    public float lakeThreshold { get; private set; }
+
+
     void Awake()
     {
         visulizer = visulizerObj.GetComponent<Visulizer>();
+        worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
+        worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
+        riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
+
+        simulationSpeed = 1f;
+        worldWidth = 20;
+        worldDepth = 20;
+        rivers = 1;
+        lakeThreshold = 0.12f;
+
+        simulationSpeedSlider.value = simulationSpeed;
+        worldWidthInputField.text = worldWidth.ToString();
+        worldDepthInputField.text = worldDepth.ToString();
+        riversInputField.text = rivers.ToString();
+        lakeThresholdSlider.value = lakeThreshold;
     }
 
     void Update()
@@ -102,4 +165,94 @@ public class InputHandler : MonoBehaviour
             Camera.main.transform.Rotate(Vector3.up * speed * Time.deltaTime, Space.World);
         }
     }
+
+    public void TriggerGraph()
+    {
+        OnGraph?.Invoke();
+    }
+
+    public void TriggerReset()
+    {
+        OnReset?.Invoke();
+    }
+
+    public void TriggerGenerateWorld()
+    {
+        OnGenerateWorld?.Invoke();
+    }
+
+    public void TriggerImportToggle()
+    {
+        OnImportToggle?.Invoke();
+    }
+
+    public void TriggerRun()
+    {
+        OnRun?.Invoke();
+    }
+
+    public void TriggerPause()
+    {
+        OnPause?.Invoke();
+    }
+
+    public void SetWorldWidth(string widthString)
+    {
+        int parsedValue;
+        if (int.TryParse(widthString, out parsedValue))
+        {
+            worldWidth = Mathf.Min(parsedValue, MaxWorldWidth);
+            worldWidth = Mathf.Max(worldWidth, 1);
+
+            // Update the displayed value
+            worldWidthInputField.text = worldWidth.ToString();
+
+            OnFieldValueChange?.Invoke();
+        }
+    }
+
+    public void SetWorldDepth(string depthString)
+    {
+        int parsedValue;
+        if (int.TryParse(depthString, out parsedValue))
+        {
+            worldDepth = Mathf.Min(parsedValue, MaxWorldDepth);
+            worldDepth = Mathf.Max(worldDepth, 1);
+
+            // Update the displayed value
+            worldDepthInputField.text = worldDepth.ToString();
+
+            OnFieldValueChange?.Invoke();
+        }
+    }
+
+    public void SetRivers(string riversString)
+    {
+        int parsedValue;
+        if (int.TryParse(riversString, out parsedValue))
+        {
+            rivers = Mathf.Min(parsedValue, MaxRivers);
+            rivers = Mathf.Max(rivers, 0);
+
+            // Update the displayed value
+            riversInputField.text = rivers.ToString();
+
+            OnFieldValueChange?.Invoke();
+        }
+    }
+
+    public void SetSimulationSpeed(float value)
+    {
+        simulationSpeed = 5.5f - value;
+        simulationSpeed = Mathf.Max(simulationSpeed, 0);
+
+        onSimulationSpeedChange?.Invoke(simulationSpeed);
+    }
+
+    public void SetLakeThreshold(float value)
+    {
+        lakeThreshold = value;
+        OnFieldValueChange?.Invoke();
+    }
+
 }

@@ -5,7 +5,46 @@ using UnityEditor;
 using System.IO;
 using UnityEngine.UI;
 
-public class MapImporter : MonoBehaviour
+public interface IMapImporter
+{
+    float[,] GetMap();
+}
+
+public class FileMapImporter : IMapImporter
+{
+    private string filePath;
+
+    public FileMapImporter(string filePath)
+    {
+        this.filePath = filePath;
+    }
+
+    public float[,] GetMap()
+    {
+        return new float[2,2];
+        // TODO: implement logic to read map from file
+    }
+}
+
+public class SeedMapImporter : IMapImporter
+{
+    private int seed;
+
+    public SeedMapImporter(int seed)
+    {
+        this.seed = seed;
+    }
+
+    public float[,] GetMap()
+    {
+        return new float[2, 2];
+
+        // TODO: implement logic to generate map from seed
+    }
+}
+
+
+public class MapImporter
 {
     private float[,] heightMap;
     public int maxMapHeight = 80;

@@ -26,9 +26,6 @@ public class MainLogic : MonoBehaviour
 
     GraphVisulizer graphVisulizer;
 
-
-
-
     private float elapsed = 0f;
     public float speedOfUpdates = 1f; // in seconds
     FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
@@ -36,19 +33,27 @@ public class MainLogic : MonoBehaviour
     public bool showingGraph = false;
     private State currentState = State.NewWorldState;
 
-
     void Awake()
     {
         worldGenerator = generatorObj.GetComponent<WorldGenerator>();
         visulizer = visulizerObj.GetComponent<Visulizer>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
-        // object is attached to a main camera, this findd it, there is only one graphVisualizer
+        // object is attached to a main camera, this finds it, there is only one graphVisualizer
         graphVisulizer = GameObject.FindObjectOfType<GraphVisulizer>();
 
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnCameraMove += HandleCameraMove;
         inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
+
+        inputHandler.OnGraph += OnGraphButtonClicked;
+        inputHandler.OnReset += OnResetButtonClicked;
+        inputHandler.OnGenerateWorld += GenereteNewWorld;
+        inputHandler.OnFieldValueChange += ApplyInputValues;
+        inputHandler.OnImportToggle += ToggleUseCustomMap;
+        inputHandler.OnRun += OnRunButtonClicked;
+        inputHandler.OnPause += OnPauseButtonClicked;
+        inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
     }
 
     private void HandleCameraMove(Vector3 direction)
@@ -128,22 +133,7 @@ public class MainLogic : MonoBehaviour
         currentState = nextState;
     }
 
-    public void OnNewWorldButtonClicked()
-    {
-        HandleEvent(State.NewWorldState);
-    }
-
-    public void OnRunSimulationButtonClicked()
-    {
-        HandleEvent(State.RunningState);
-    }
-
-    public void OnPauseSimulationButtonClicked()
-    {
-        HandleEvent(State.StoppedState);
-    }
-
-    public void OnShowHideGraphsButtonClicked()
+    public void OnGraphButtonClicked()
     {
         showingGraph = !showingGraph;
         showGraph(showingGraph);
@@ -160,18 +150,45 @@ public class MainLogic : MonoBehaviour
         VisulizerRemakeAllBrandNew();
 
         graphVisulizer.ClearGraph();
+    }
 
+    public void OnNewWorldButtonClicked()
+    {
+        HandleEvent(State.NewWorldState);
+    }
+
+    public void OnRunButtonClicked()
+    {
+        HandleEvent(State.RunningState);
+    }
+
+    public void OnPauseButtonClicked()
+    {
+        HandleEvent(State.StoppedState);
     }
 
     public void ToggleUseCustomMap()
     {
         worldGenerator.useCustomMap = !worldGenerator.useCustomMap;
+        Debug.Log("changed");
+    }
+
+    public void SetSimulationSpeed(float newSpeed)
+    {
+        speedOfUpdates = newSpeed;
     }
 
 
 
 
 
+    public void ApplyInputValues()
+    {
+        worldGenerator.worldWidth = inputHandler.worldWidth;
+        worldGenerator.worldDepth = inputHandler.worldDepth;
+        worldGenerator.rivers = inputHandler.rivers;
+        worldGenerator.lakeThreshold = inputHandler.lakeThreshold;
+    }
 
     public void GenereteNewWorld()
     {

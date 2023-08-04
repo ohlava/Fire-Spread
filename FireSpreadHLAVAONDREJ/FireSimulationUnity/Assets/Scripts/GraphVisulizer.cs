@@ -21,7 +21,7 @@ public class GraphVisulizer : MonoBehaviour
 
     void Start()
     {
-        // Adjust panel to cover left half of screen
+        // Adjust panel to cover left half of screen if it previously was the whole screen
         panel.anchorMin = new Vector2(0, 0);
         panel.anchorMax = new Vector2(0.5f, 1);
         panel.offsetMin = new Vector2(0, 0);

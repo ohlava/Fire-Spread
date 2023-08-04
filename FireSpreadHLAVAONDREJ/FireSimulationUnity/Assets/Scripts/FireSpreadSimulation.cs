@@ -95,7 +95,7 @@ public class FireSpreadSimulation
         // precalculate?
 
         float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
-        // loat moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
+        // float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
         // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
         float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
 
