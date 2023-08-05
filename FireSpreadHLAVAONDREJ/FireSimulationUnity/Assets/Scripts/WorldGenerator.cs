@@ -6,41 +6,28 @@ using UnityEngine;
 [Serializable]
 public class WorldGenerator : MonoBehaviour
 {
-    public int worldWidth = 10;
-    public int worldDepth = 10;
+    public int worldWidth;
+    public int worldDepth;
 
-    private IMapImporter mapImporter; // This will be set dynamically
+    private IMapImporter mapImporter = new HeightMapImporter(); // this will be set dynamically
     public bool useCustomMap = false;
-    public string mapFilePath;
-    public int mapSeed;
 
-    // TODO combine all to WorldGenerationSettings
-    public int octaves = 5;
-    public float persistence = 0.4f;
-    public float lakeThreshold = 0.12f; // 0-1 adjust this to control how often lakes appear
-    public int rivers = 1; 
+    public float lakeThreshold; // 0-1 how often lakes appear
+    public int rivers; 
 
     public World GetWorld()
     {
         World world;
 
-        if (useCustomMap)
-        {
-            mapImporter = new FileMapImporter(mapFilePath);
-        }
-        else
-        {
-            mapImporter = new SeedMapImporter(mapSeed);
-        }
-
-
         // get heightMap different ways
-        float[,] heightMap;
+        float[,] heightMap = new float[worldWidth,worldDepth];
         if (useCustomMap)
         {
-            heightMap = mapImporter.GetMap(); // returns different size that default worldWidth and worldDepth
-            worldWidth = heightMap.GetLength(0);
-            worldDepth = heightMap.GetLength(1);
+            heightMap = mapImporter.GetMap(worldWidth, worldDepth);
+            if (heightMap.GetLength(0) != worldWidth || heightMap.GetLength(1) != worldDepth)
+            {
+                Debug.LogError("Didn't returned required size");
+            }
         }
         else
         {
@@ -163,6 +150,9 @@ public class WorldGenerator : MonoBehaviour
     private float[,] GenerateBaseTerrain()
     {
         float[,] heightMap = new float[worldWidth, worldDepth];
+
+        int octaves = 5;
+        float persistence = 0.4f;
 
         int seed = (int)System.DateTime.Now.Ticks;
         UnityEngine.Random.InitState(seed);

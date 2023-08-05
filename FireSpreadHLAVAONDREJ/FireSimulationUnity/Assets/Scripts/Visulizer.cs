@@ -287,10 +287,10 @@ public class Visulizer : MonoBehaviour
     }
 
     public Camera mainCamera;
-    public void SetCameraPositionAndOrientation(World world)
+    public void SetCameraPositionAndOrientation(int worldWidth, int worldDepth)
     {
         // The diagonal of the world in Unity units
-        float diagonal = Mathf.Sqrt(world.Width * world.Width + world.Depth * world.Depth);
+        float diagonal = Mathf.Sqrt(worldWidth * worldWidth + worldDepth * worldDepth);
 
         // Calculate the optimal distance required to view the entire map based on the diagonal.
         // This is derived from the formula of tangent in a right-angled triangle, tan(FOV/2) = (diagonal/2) / distance,
@@ -299,9 +299,9 @@ public class Visulizer : MonoBehaviour
         float cameraDistance = (diagonal / 2)* getCloserPar / Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
 
         // Set the camera's position to the center of the world, and above it at the calculated distance.
-        mainCamera.transform.position = new Vector3(world.Width / 2f, cameraDistance, 0);
+        mainCamera.transform.position = new Vector3(worldWidth / 2f, cameraDistance, 0);
 
         // Adjust the camera's orientation to look towards the center of the world.
-        mainCamera.transform.LookAt(new Vector3(world.Width / 2f, 0, world.Depth / 2f));
+        mainCamera.transform.LookAt(new Vector3(worldWidth / 2f, 0, worldDepth / 2f));
     }
 }

@@ -60,9 +60,9 @@ public class InputHandler : MonoBehaviour
 
     public float simulationSpeed { get; private set; }
     public int worldWidth { get; private set; }
-    public int MaxWorldWidth = 250;
+    public int MaxWorldWidth = 150;
     public int worldDepth { get; private set; }
-    public int MaxWorldDepth = 250;
+    public int MaxWorldDepth = 150;
     public int rivers { get; private set; }
     public int MaxRivers = 50;
     public float lakeThreshold { get; private set; }
@@ -75,7 +75,7 @@ public class InputHandler : MonoBehaviour
         worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
         riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
 
-        simulationSpeed = 1f;
+        simulationSpeed = 2f; // speed is set as reverse of slider so define number of seconds with minus
         worldWidth = 20;
         worldDepth = 20;
         rivers = 1;
@@ -93,6 +93,7 @@ public class InputHandler : MonoBehaviour
         HandleTileClick();
         HandleCameraMove();
         HandleCameraAngleChange();
+        HandleActionButtons();
     }
 
     private void HandleTileClick()
@@ -165,6 +166,15 @@ public class InputHandler : MonoBehaviour
             Camera.main.transform.Rotate(Vector3.up * speed * Time.deltaTime, Space.World);
         }
     }
+
+    private void HandleActionButtons()
+    {
+        if (Input.GetKey(KeyCode.R))
+            visulizer.SetCameraPositionAndOrientation(worldWidth, worldDepth);
+        if (Input.GetKey(KeyCode.Space))
+            TriggerRun();
+    }
+
 
     public void TriggerGraph()
     {
@@ -243,8 +253,8 @@ public class InputHandler : MonoBehaviour
 
     public void SetSimulationSpeed(float value)
     {
-        simulationSpeed = 5.5f - value;
-        simulationSpeed = Mathf.Max(simulationSpeed, 0);
+        simulationSpeed = simulationSpeedSlider.maxValue - value;
+        simulationSpeed = Mathf.Max(simulationSpeed, 0.1f);
 
         onSimulationSpeedChange?.Invoke(simulationSpeed);
     }

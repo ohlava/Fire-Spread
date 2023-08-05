@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public enum State
 {
@@ -26,11 +27,13 @@ public class MainLogic : MonoBehaviour
 
     GraphVisulizer graphVisulizer;
 
+    [SerializeField] TextMeshProUGUI InfoPanel;
+
     private float elapsed = 0f;
-    public float speedOfUpdates = 1f; // in seconds
+    private float speedOfUpdates { get; set; } // in seconds
     FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
 
-    public bool showingGraph = false;
+    private bool showingGraph = false;
     private State currentState = State.NewWorldState;
 
     void Awake()
@@ -93,10 +96,12 @@ public class MainLogic : MonoBehaviour
                         currentState = State.RunningState;
                         fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
                         graphVisulizer.ClearGraph();
+                        InfoPanel.text = "Simulation running";
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
+                        InfoPanel.text = "New world - set fire";
                         break;
                 }
                 break;
@@ -106,11 +111,13 @@ public class MainLogic : MonoBehaviour
                 {
                     case State.StoppedState:
                         currentState = State.StoppedState;
+                        InfoPanel.text = "Simulation paused";
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
                         graphVisulizer.ClearGraph();
+                        InfoPanel.text = "New world - set fire";
                         break;
                 }
                 break;
@@ -120,11 +127,13 @@ public class MainLogic : MonoBehaviour
                 {
                     case State.RunningState:
                         currentState = State.RunningState;
+                        InfoPanel.text = "Simulation running";
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
                         graphVisulizer.ClearGraph();
+                        InfoPanel.text = "New world - set fire";
                         break;
                 }
                 break;
@@ -142,12 +151,13 @@ public class MainLogic : MonoBehaviour
     public void OnResetButtonClicked()
     {
         currentState = State.NewWorldState;
+        InfoPanel.text = "New world - set fire";
 
         world.Reset();
 
         initBurningTiles.Clear();
 
-        VisulizerRemakeAllBrandNew();
+        VisulizerRemakeAll();
 
         graphVisulizer.ClearGraph();
     }
@@ -170,7 +180,6 @@ public class MainLogic : MonoBehaviour
     public void ToggleUseCustomMap()
     {
         worldGenerator.useCustomMap = !worldGenerator.useCustomMap;
-        Debug.Log("changed");
     }
 
     public void SetSimulationSpeed(float newSpeed)
@@ -182,7 +191,7 @@ public class MainLogic : MonoBehaviour
 
 
 
-    public void ApplyInputValues()
+    private void ApplyInputValues()
     {
         worldGenerator.worldWidth = inputHandler.worldWidth;
         worldGenerator.worldDepth = inputHandler.worldDepth;
@@ -192,20 +201,28 @@ public class MainLogic : MonoBehaviour
 
     public void GenereteNewWorld()
     {
+        currentState = State.NewWorldState;
+        InfoPanel.text = "New world - set fire";
+
         world = worldGenerator.GetWorld();
 
         int numberOfTiles = world.Width * world.Depth;
-        if (numberOfTiles <= 6000)
+        if (numberOfTiles <= 3000)
         {
             visulizer.mode = VisulizerMode.Standard;
+        }
+        else
+        {
+            visulizer.mode = VisulizerMode.Simplified;
         }
 
         initBurningTiles.Clear();
 
-        VisulizerRemakeAllBrandNew();
+        VisulizerRemakeAll();
+
     }
 
-    private void VisulizerRemakeAllBrandNew()
+    private void VisulizerRemakeAll()
     {
         visulizer.DestroyAllTile();
         visulizer.DestroyAllVegetation();
@@ -213,7 +230,7 @@ public class MainLogic : MonoBehaviour
 
         visulizer.CreateWorldTiles(world);
         visulizer.CreateAllVegetation(world);
-        visulizer.SetCameraPositionAndOrientation(world);
+        visulizer.SetCameraPositionAndOrientation(world.Width, world.Depth);
     }
 
 
@@ -271,18 +288,19 @@ public class MainLogic : MonoBehaviour
             else
             {
                 currentState = State.StoppedState;
+                InfoPanel.text = "Simulation paused";
             }
-            
-            Debug.Log("RUNNING");
+
+            Debug.Log("Simulation running");
 
         }
         else if (currentState == State.StoppedState) // simulation not running
         {
-            Debug.Log("NOT running");
+            Debug.Log("Simulation paused");
         }
         else // simulation not running State.NewWorldState
         {
-            Debug.Log("NEW WORLD");
+            Debug.Log("New: set tiles on fire");
         }
         
     }

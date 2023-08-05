@@ -36,8 +36,8 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets/Scripts/MapImporter.cs" />
      <Compile Include="Assets/Scripts/SettingsMenu.cs" />
+     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
      <Compile Include="Assets/Scripts/InputHandler.cs" />
      <Compile Include="Assets/Scripts/WorldGenerator.cs" />
      <Compile Include="Assets/Scripts/GraphVisulizer.cs" />
