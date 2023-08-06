@@ -16,9 +16,6 @@ public class MainLogic : MonoBehaviour
     FireSpreadSimulation fireSpreadSimulation = null;
     List<Tile> initBurningTiles = new List<Tile>();
 
-    WorldGenerator worldGenerator;
-    [SerializeField] GameObject generatorObj;
-
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
 
@@ -32,13 +29,14 @@ public class MainLogic : MonoBehaviour
     private float elapsed = 0f;
     private float speedOfUpdates { get; set; } // in seconds
     FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+    private WorldGenerator worldGenerator;
 
     private bool showingGraph = false;
     private State currentState = State.NewWorldState;
 
     void Awake()
     {
-        worldGenerator = generatorObj.GetComponent<WorldGenerator>();
+        worldGenerator = new WorldGenerator();
         visulizer = visulizerObj.GetComponent<Visulizer>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
@@ -193,8 +191,8 @@ public class MainLogic : MonoBehaviour
 
     private void ApplyInputValues()
     {
-        worldGenerator.worldWidth = inputHandler.worldWidth;
-        worldGenerator.worldDepth = inputHandler.worldDepth;
+        worldGenerator.width = inputHandler.worldWidth;
+        worldGenerator.depth = inputHandler.worldDepth;
         worldGenerator.rivers = inputHandler.rivers;
         worldGenerator.lakeThreshold = inputHandler.lakeThreshold;
     }
@@ -204,7 +202,7 @@ public class MainLogic : MonoBehaviour
         currentState = State.NewWorldState;
         InfoPanel.text = "New world - set fire";
 
-        world = worldGenerator.GetWorld();
+        world = worldGenerator.Generate();
 
         int numberOfTiles = world.Width * world.Depth;
         if (numberOfTiles <= 3000)

@@ -5,19 +5,20 @@ using UnityEditor;
 using System.IO;
 using UnityEngine.UI;
 
+
 public interface IMapImporter
 {
-    float[,] GetMap(int width, int depth);
+    Map<float> GetMap(int width, int depth);
 }
 
 public class HeightMapImporter : IMapImporter
 {
-    private float[,] heightMap;
+    private Map<float> heightMap;
 
     // Adjust this to change how the height values will be scaled
     public float HeightMultiplier = 20f;
 
-    public float[,] GetMap(int requiredWidth, int requiredDepth)
+    public Map<float> GetMap(int requiredWidth, int requiredDepth)
     {
         if (ImportHeightMap(requiredWidth, requiredDepth) == true)
         {
@@ -28,12 +29,12 @@ public class HeightMapImporter : IMapImporter
             Debug.Log("Something went wrong with map Import");
 
             // return plain map
-            float[,] plainMap = new float[requiredWidth, requiredDepth];
+            Map<float> plainMap = new Map<float>(requiredWidth, requiredDepth);
             for (int i = 0; i < requiredWidth; i++)
             {
                 for (int j = 0; j < requiredDepth; j++)
                 {
-                    plainMap[i, j] = 1f;
+                    plainMap.Data[i, j] = 1f;
                 }
             }
             return plainMap;
@@ -42,8 +43,9 @@ public class HeightMapImporter : IMapImporter
 
     private bool ImportHeightMap(int requiredWidth, int requiredDepth)
     {
-        string path = EditorUtility.OpenFilePanel("Overwrite with png", "", "png"); // CONNOT BE used outside of unity editor
-        if (path.Length != 0)
+        string path = Path.Combine(Application.persistentDataPath, "map.png");
+
+        if (File.Exists(path))
         {
             var fileContent = File.ReadAllBytes(path);
 
@@ -63,9 +65,10 @@ public class HeightMapImporter : IMapImporter
         return false;
     }
 
-    private float[,] ConvertToHeightmap(Texture2D tex, int requiredWidth, int requiredDepth)
+
+    private Map<float> ConvertToHeightmap(Texture2D tex, int requiredWidth, int requiredDepth)
     {
-        float[,] heights = new float[requiredWidth, requiredDepth];
+        Map<float> heights = new Map<float>(requiredWidth, requiredDepth);
 
         int widthSampleRatio = (int)((float)tex.width / requiredWidth);
         int depthSampleRatio = (int)((float)tex.height / requiredDepth);
@@ -87,7 +90,7 @@ public class HeightMapImporter : IMapImporter
                 }
 
                 // Scale the height value and assign it to the heightmap
-                heights[i, j] = heightValue * HeightMultiplier;
+                heights.Data[i, j] = heightValue * HeightMultiplier;
             }
         }
         return heights;

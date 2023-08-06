@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
-using UnityEditor.Presets;
 
 // publisher class
 public class InputHandler : MonoBehaviour
@@ -64,7 +63,7 @@ public class InputHandler : MonoBehaviour
     public int worldDepth { get; private set; }
     public int MaxWorldDepth = 150;
     public int rivers { get; private set; }
-    public int MaxRivers = 50;
+    public int MaxRivers = 25;
     public float lakeThreshold { get; private set; }
 
 
@@ -76,9 +75,9 @@ public class InputHandler : MonoBehaviour
         riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
 
         simulationSpeed = 2f; // speed is set as reverse of slider so define number of seconds with minus
-        worldWidth = 20;
-        worldDepth = 20;
-        rivers = 1;
+        worldWidth = 30;
+        worldDepth = 30;
+        rivers = 3;
         lakeThreshold = 0.12f;
 
         simulationSpeedSlider.value = simulationSpeed;
