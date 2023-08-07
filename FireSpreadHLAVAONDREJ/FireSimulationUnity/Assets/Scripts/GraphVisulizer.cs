@@ -50,7 +50,7 @@ public class GraphVisulizer : MonoBehaviour
         // rename the axes
         yAxisLabel.text = Y_text;
         xAxisLabel.text = X_text;
-        last_maxLabel.text = data.Last().Value + "/" + data.Values.Max();
+        last_maxLabel.text = data.Last().Value + " current" +  " / " + data.Values.Max() + " max";
 
         // show all
         panel.gameObject.SetActive(true);

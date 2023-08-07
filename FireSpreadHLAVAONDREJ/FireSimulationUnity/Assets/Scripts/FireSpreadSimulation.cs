@@ -51,7 +51,7 @@ public class FireSpreadSimulation
             foreach (Tile neighborTile in _world.GetNeighborTiles(tile))
             {
                 // Calculate the fire spread probability.
-                float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _world.Weather, _parameters);
+                float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _parameters);
 
                 // Check if fire spread.
                 if (UnityEngine.Random.value < spreadProbability)
@@ -89,7 +89,7 @@ public class FireSpreadSimulation
         return _eventLogger.GetBurningTilesOverTime();
     }
 
-    private float CalculateFireSpreadProbability(Tile source, Tile target, Weather weather, FireSpreadParameters parameters)
+    private float CalculateFireSpreadProbability(Tile source, Tile target, FireSpreadParameters parameters)
     {
         // TODO implement more reminiscent of reality / something like cumulative probability being 0.20f-0.35f seems to be nice
         // precalculate?
@@ -188,6 +188,20 @@ public class FireSpreadSimulation
         {
             return 0.25f * spreadFactor;
         }
+    }
+}
+
+public class Event<T>
+{
+    public int Time { get; private set; }
+    public EventType Type { get; private set; }
+    public T Data { get; private set; }
+
+    public Event(int time, EventType type, T data)
+    {
+        Time = time;
+        Type = type;
+        Data = data;
     }
 }
 

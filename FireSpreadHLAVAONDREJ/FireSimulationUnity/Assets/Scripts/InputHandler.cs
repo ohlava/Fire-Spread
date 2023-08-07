@@ -29,8 +29,11 @@ public class InputHandler : MonoBehaviour
     public delegate void FieldValueChangeHandler();
     public event FieldValueChangeHandler OnFieldValueChange;
 
-    public delegate void ImportToggleHandler();
-    public event ImportToggleHandler OnImportToggle;
+    public delegate void ImportHandler();
+    public event ImportHandler OnImport;
+
+    public delegate void SaveHandler();
+    public event SaveHandler OnSave;
 
     public delegate void RunHandler();
     public event RunHandler OnRun;
@@ -174,7 +177,6 @@ public class InputHandler : MonoBehaviour
             TriggerRun();
     }
 
-
     public void TriggerGraph()
     {
         OnGraph?.Invoke();
@@ -190,9 +192,14 @@ public class InputHandler : MonoBehaviour
         OnGenerateWorld?.Invoke();
     }
 
-    public void TriggerImportToggle()
+    public void TriggerImport()
     {
-        OnImportToggle?.Invoke();
+        OnImport?.Invoke();
+    }
+
+    public void TriggerSave()
+    {
+        OnSave?.Invoke();
     }
 
     public void TriggerRun()
@@ -263,5 +270,4 @@ public class InputHandler : MonoBehaviour
         lakeThreshold = value;
         OnFieldValueChange?.Invoke();
     }
-
 }

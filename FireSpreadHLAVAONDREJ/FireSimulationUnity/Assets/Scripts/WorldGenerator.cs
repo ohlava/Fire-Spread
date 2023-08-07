@@ -19,6 +19,17 @@ public class Map<T>
         Depth = depth;
     }
 
+    public void FillWithDefault(T defaultValue)
+    {
+        for (int i = 0; i < Width; i++)
+        {
+            for (int j = 0; j < Depth; j++)
+            {
+                Data[i, j] = defaultValue;
+            }
+        }
+    }
+
     public static implicit operator Map<T>(T[,] data)
     {
         return new Map<T>(data.GetLength(0), data.GetLength(1)) { Data = data };
@@ -492,15 +503,11 @@ public class WorldGenerator
 {
     public int width;
     public int depth;
-    public bool useCustomMap = false;
     public int rivers;
     public float lakeThreshold;
-    private IMapImporter mapImporter;
 
     public WorldGenerator()
     {
-        mapImporter = new HeightMapImporter();
-
         UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks);
     }
 
@@ -508,20 +515,7 @@ public class WorldGenerator
     {
         IMapGenerator<float> heightMapGenerator = new BaseTerrainGenerator(width, depth);
 
-        Map<float> heightMap = null;
-
-        if (useCustomMap)
-        {
-            heightMap = mapImporter.GetMap(width, depth);
-            if (heightMap.Width != width || heightMap.Depth != depth)
-            {
-                Debug.LogError("Didn't returned required size");
-            }
-        }
-        else
-        {
-            heightMap = heightMapGenerator.Generate();
-        }
+        Map<float> heightMap = heightMapGenerator.Generate();
 
         Map<int> lakeMap = new LakeMapGenerator(heightMap, lakeThreshold).Generate(); // 0/1 - rivers can end in lakes
         Map<int> riverMap = new RiverMapGenerator(heightMap, lakeMap, rivers).Generate(); // 0/1 
@@ -539,10 +533,9 @@ public class WorldGenerator
         return GenerateWorldFromMaps(heightMap, moistureMap, vegetationMap);
     }
 
-    private World GenerateWorldFromMaps(Map<float> heightMap, Map<int> moistureMap, Map<VegetationType> vegetationMap)
+    public World GenerateWorldFromMaps(Map<float> heightMap, Map<int> moistureMap, Map<VegetationType> vegetationMap)
     {
         World world = new World(width, depth);
-        float heighestPoint = 0f;
 
         for (int x = 0; x < width; x++)
         {
@@ -561,13 +554,6 @@ public class WorldGenerator
 
                 // Put that tile in the world on correct position
                 world.Grid[x, y] = currTile;
-
-                // for the HighestTile of the world
-                if (height > heighestPoint)
-                {
-                    world.HighestTile = currTile;
-                    heighestPoint = height;
-                }
             }
         }
         return world;

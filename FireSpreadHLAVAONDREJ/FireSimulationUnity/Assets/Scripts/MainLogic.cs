@@ -37,6 +37,7 @@ public class MainLogic : MonoBehaviour
     void Awake()
     {
         worldGenerator = new WorldGenerator();
+
         visulizer = visulizerObj.GetComponent<Visulizer>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
@@ -51,7 +52,9 @@ public class MainLogic : MonoBehaviour
         inputHandler.OnReset += OnResetButtonClicked;
         inputHandler.OnGenerateWorld += GenereteNewWorld;
         inputHandler.OnFieldValueChange += ApplyInputValues;
-        inputHandler.OnImportToggle += ToggleUseCustomMap;
+        inputHandler.OnImport += OnImportClicked;
+        inputHandler.OnSave += OnSaveClicked;
+
         inputHandler.OnRun += OnRunButtonClicked;
         inputHandler.OnPause += OnPauseButtonClicked;
         inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
@@ -175,17 +178,48 @@ public class MainLogic : MonoBehaviour
         HandleEvent(State.StoppedState);
     }
 
-    public void ToggleUseCustomMap()
+    public void OnImportClicked()
     {
-        worldGenerator.useCustomMap = !worldGenerator.useCustomMap;
+        IMapImporter mapImporter = new HeightMapImporter();
+        int requiredWidth = inputHandler.worldWidth;
+        int requiredDepth = inputHandler.worldDepth;
+
+        Map<float> customHeightMap = mapImporter.GetMap(requiredWidth,requiredDepth);
+
+        // TODO import as well
+        Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
+        customMoistureMap.FillWithDefault(0);
+        Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
+        customVegetationMap.FillWithDefault(VegetationType.Grass);
+
+        if (customHeightMap != null)
+        {
+            Debug.Log("Import from PNG heighmap");
+
+            world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
+
+            WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
+            // Apply other maps if desired
+
+            PrepareForNewWorld();
+        }
+        else // use serialized World
+        {
+            world = World.Load();
+            PrepareForNewWorld();
+        }
+
+    }
+
+    public void OnSaveClicked()
+    {
+        world.Save();
     }
 
     public void SetSimulationSpeed(float newSpeed)
     {
         speedOfUpdates = newSpeed;
     }
-
-
 
 
 
@@ -197,27 +231,26 @@ public class MainLogic : MonoBehaviour
         worldGenerator.lakeThreshold = inputHandler.lakeThreshold;
     }
 
-    public void GenereteNewWorld()
+    private void GenereteNewWorld()
+    {
+        world = worldGenerator.Generate();
+
+        PrepareForNewWorld();
+    }
+
+    private void PrepareForNewWorld()
     {
         currentState = State.NewWorldState;
         InfoPanel.text = "New world - set fire";
 
-        world = worldGenerator.Generate();
-
-        int numberOfTiles = world.Width * world.Depth;
-        if (numberOfTiles <= 3000)
+        visulizer.mode = VisulizerMode.Simplified;
+        if (world.Width * world.Depth <= 3000) // number of tiles is small enough
         {
             visulizer.mode = VisulizerMode.Standard;
         }
-        else
-        {
-            visulizer.mode = VisulizerMode.Simplified;
-        }
 
         initBurningTiles.Clear();
-
         VisulizerRemakeAll();
-
     }
 
     private void VisulizerRemakeAll()

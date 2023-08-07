@@ -65,6 +65,7 @@
     <Compile Include="Assets/Scripts/FireSpreadSimulation.cs" />
     <Compile Include="Assets/Scripts/MainLogic.cs" />
     <Compile Include="Assets/Scripts/Visulizer.cs" />
+    <Compile Include="Assets/Scripts/WorldBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />

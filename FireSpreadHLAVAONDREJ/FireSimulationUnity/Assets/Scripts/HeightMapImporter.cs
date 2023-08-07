@@ -16,7 +16,7 @@ public class HeightMapImporter : IMapImporter
     private Map<float> heightMap;
 
     // Adjust this to change how the height values will be scaled
-    public float HeightMultiplier = 20f;
+    public float HeightMultiplier = 10f;
 
     public Map<float> GetMap(int requiredWidth, int requiredDepth)
     {
@@ -24,21 +24,22 @@ public class HeightMapImporter : IMapImporter
         {
             return heightMap;
         }
-        else
-        {
-            Debug.Log("Something went wrong with map Import");
+        Debug.Log("Something went wrong with map Import, check if there is a map:");
+        Debug.Log(Application.persistentDataPath);
+        return null;
+    }
 
-            // return plain map
-            Map<float> plainMap = new Map<float>(requiredWidth, requiredDepth);
-            for (int i = 0; i < requiredWidth; i++)
+    private Map<float> GetPlainMap(int requiredWidth, int requiredDepth)
+    {
+        Map<float> plainMap = new Map<float>(requiredWidth, requiredDepth);
+        for (int i = 0; i < requiredWidth; i++)
+        {
+            for (int j = 0; j < requiredDepth; j++)
             {
-                for (int j = 0; j < requiredDepth; j++)
-                {
-                    plainMap.Data[i, j] = 1f;
-                }
+                plainMap.Data[i, j] = 1f;
             }
-            return plainMap;
         }
+        return plainMap;
     }
 
     private bool ImportHeightMap(int requiredWidth, int requiredDepth)
