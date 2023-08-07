@@ -186,7 +186,7 @@ public class MainLogic : MonoBehaviour
 
         Map<float> customHeightMap = mapImporter.GetMap(requiredWidth,requiredDepth);
 
-        // TODO import as well
+        // TODO import other types as well
         Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
         customMoistureMap.FillWithDefault(0);
         Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
@@ -199,7 +199,7 @@ public class MainLogic : MonoBehaviour
             world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
 
             WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
-            // Apply other maps if desired
+            // Apply other maps if desired / only some can be applied
 
             PrepareForNewWorld();
         }

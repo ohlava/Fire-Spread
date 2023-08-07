@@ -95,16 +95,20 @@ public class FireSpreadSimulation
         // precalculate?
 
         float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
-        // float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
-        // float windFactor = GetWindFactor(source, target, weather, parameters.WindSpreadFactor);
+        float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
+        float windFactor = GetWindFactor(source, target, parameters.WindSpreadFactor);
         float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
 
-        float combined = (vegetationFactor + slopeFactor) / 2; // average
+        // First, average the vegetation and slope factors
+        float combined = (vegetationFactor + slopeFactor) / 2;
 
-        // float combined = GetStepFireProbability(vegetationFactor * moistureFactor * slopeFactor * windFactor, source.BurnTime)
-        // float combined = UnityEngine.Random.Range(0.25f, 0.35f);
+        // Now adjust the probability based on the moisture and wind
+        // The more moisture, the less likely the fire is to spread, hence we multiply by moistureFactor.
+        // The stronger the wind in the direction of the target, the more likely the fire is to spread, hence we multiply by windFactor.
+        // Apply the moisture and wind effects as percentage changes.
+        float adjustedProbability = combined * moistureFactor * windFactor;
 
-        return GetStepFireProbability(combined, source.BurnTime);
+        return GetStepFireProbability(adjustedProbability, source.BurnTime);
     }
 
     // Calculates the per-step probability of a tile catching fire, such that over the tile's BurnTime,
@@ -159,18 +163,47 @@ public class FireSpreadSimulation
 
     private float GetMoistureFactor(float moisture, float spreadFactor)
     {
-        // The spread factor will be higher for drier tiles.
-        return (1 - moisture) * spreadFactor;
+        //(1 - moisture) * spreadFactor;
+
+        /// The spread factor will be higher for drier tiles.
+        // Moisture value is between 0 (dry) and 1 (water). The factor will range from 0 (no effect) to -1 (full effect).
+
+        if (moisture > 85)
+        {
+            return 0.5f;
+        }
+        else if (moisture > 65)
+        {
+            return 0.7f;
+        }
+        else
+        {
+            return 0.88f;
+        }
     }
 
-    private float GetWindFactor(Tile source, Tile target, Weather weather, float spreadFactor)
+    private float GetWindFactor(Tile source, Tile target, float spreadFactor)
     {
         // It has been measured that with a wind speed of 10 km/h, the fire spreads through the Australian bush at a speed of about 0.5 km/h.
         // If the wind speed increases to 20 km/h, the speed of the fire will increase to 0.8 km/h. At a wind speed of 40 km/h, the speed of fire progress is already 1.8 km/h
+        // use interpolation
 
-        float windFactor = 1;
+        // Determine direction from source to target
+        Vector2 dirSourceToTarget = new Vector2(target.WidthPosition - source.WidthPosition, target.DepthPosition - source.DepthPosition).normalized;
+        Vector2 windDirectionVector = new Vector2(Mathf.Cos(source.Weather.WindDirection * Mathf.Deg2Rad), Mathf.Sin(source.Weather.WindDirection * Mathf.Deg2Rad));
 
-        return Mathf.Max(0, windFactor);
+        // Calculate the dot product between the wind direction and the direction to the target
+        float dotProduct = Vector2.Dot(windDirectionVector, dirSourceToTarget);
+
+        // If dotProduct is close to 1, it means the wind is roughly in the same direction.
+        if (dotProduct > 0.7)
+        {
+            return 1.1f;  // Increase the spread factor slightly
+        }
+        else
+        {
+            return 1;  // Default value when wind is not in the target direction
+        }
     }
 
     private float GetSlopeFactor(Tile source, Tile target, float spreadFactor)
