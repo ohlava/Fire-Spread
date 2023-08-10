@@ -39,10 +39,11 @@ public class MainLogic : MonoBehaviour
         worldGenerator = new WorldGenerator();
 
         visulizer = visulizerObj.GetComponent<Visulizer>();
-        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
         // object is attached to a main camera, this finds it, there is only one graphVisualizer
-        graphVisulizer = GameObject.FindObjectOfType<GraphVisulizer>();
+        graphVisulizer = FindObjectOfType<GraphVisulizer>();
+
+        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnCameraMove += HandleCameraMove;
@@ -51,10 +52,9 @@ public class MainLogic : MonoBehaviour
         inputHandler.OnGraph += OnGraphButtonClicked;
         inputHandler.OnReset += OnResetButtonClicked;
         inputHandler.OnGenerateWorld += GenereteNewWorld;
-        inputHandler.OnFieldValueChange += ApplyInputValues;
+        inputHandler.OnFieldValueChange += ApplyInputValues; // plus GenereteNewWorld with that - set in Unity
         inputHandler.OnImport += OnImportClicked;
         inputHandler.OnSave += OnSaveClicked;
-
         inputHandler.OnRun += OnRunButtonClicked;
         inputHandler.OnPause += OnPauseButtonClicked;
         inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
@@ -62,14 +62,27 @@ public class MainLogic : MonoBehaviour
 
     private void HandleCameraMove(Vector3 direction)
     {
-        // Implement your camera movement logic here, for example:
-        Camera.main.transform.Translate(direction * Time.deltaTime * 10);
+        // TODO calculate based on world size OR camera always pointing to the middle of the map
+        float speed = 10f;
+
+        Camera.main.transform.Translate(direction * speed * Time.deltaTime);
     }
 
     private void HandleCameraAngleChange(Vector3 rotationChange)
     {
-        // Implement your camera rotation logic here, for example:
-        Camera.main.transform.Rotate(rotationChange);
+        // TODO calculate based on world size OR camera always pointing to the middle of the map
+
+        float speed = 30.0f; 
+        float upDownSpeed = 30.0f;
+
+        Vector3 adjustedRotationChange = new Vector3(rotationChange.x * upDownSpeed * Time.deltaTime, rotationChange.y * speed * Time.deltaTime, rotationChange.z);
+
+        Vector3 newRotation = Camera.main.transform.eulerAngles + adjustedRotationChange;
+        // Ensure the rotation stays normal for the X-axis
+        if (newRotation.x > 90.0f && newRotation.x < 270.0f)
+            newRotation.x = 90.0f;
+
+        Camera.main.transform.eulerAngles = newRotation;
     }
 
     private void HandleTileClick(Tile clickedTile)

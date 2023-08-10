@@ -77,13 +77,13 @@ public class InputHandler : MonoBehaviour
         worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
         riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
 
-        simulationSpeed = 2f; // speed is set as reverse of slider so define number of seconds with minus
+        simulationSpeed = 2f; // speed is set as reverse of slider so define number of seconds
         worldWidth = 30;
         worldDepth = 30;
         rivers = 3;
         lakeThreshold = 0.12f;
 
-        simulationSpeedSlider.value = simulationSpeed;
+        simulationSpeedSlider.value = simulationSpeedSlider.maxValue - simulationSpeed;
         worldWidthInputField.text = worldWidth.ToString();
         worldDepthInputField.text = worldDepth.ToString();
         riversInputField.text = rivers.ToString();
@@ -139,34 +139,31 @@ public class InputHandler : MonoBehaviour
             direction += Vector3.right;
 
         if (direction != Vector3.zero)
+            // Notify about the rotation changes
             OnCameraMove?.Invoke(direction);
     }
 
     private void HandleCameraAngleChange()
     {
-        float speed = 25.0f; // Change to any speed you feel comfortable with.
-        float upDownSpeed = 0.5f;
-
         Vector3 rotationChange = new Vector3();
 
+        // Vertical rotation changes
         if (Input.GetKey(KeyCode.K))
             rotationChange += Vector3.right;
 
         if (Input.GetKey(KeyCode.I))
-            rotationChange -= Vector3.right;
+            rotationChange += Vector3.left;
 
-        if (rotationChange != Vector3.zero)
-            OnCameraAngleChange?.Invoke(rotationChange * upDownSpeed);
-
+        // Horizontal rotation changes
         if (Input.GetKey(KeyCode.J))
-        {
-            Camera.main.transform.Rotate(Vector3.down * speed * Time.deltaTime, Space.World);
-        }
+            rotationChange += Vector3.down;
 
         if (Input.GetKey(KeyCode.L))
-        {
-            Camera.main.transform.Rotate(Vector3.up * speed * Time.deltaTime, Space.World);
-        }
+            rotationChange += Vector3.up;
+
+        if (rotationChange != Vector3.zero)
+            // Notify about the rotation changes
+            OnCameraAngleChange?.Invoke(rotationChange);
     }
 
     private void HandleActionButtons()
