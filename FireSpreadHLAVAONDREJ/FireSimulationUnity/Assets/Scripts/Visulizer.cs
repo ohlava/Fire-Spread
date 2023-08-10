@@ -37,7 +37,8 @@ public class Visulizer : MonoBehaviour
 {
     public VisulizerMode mode = VisulizerMode.Simplified; // Do NOT change during the simulation TODO make it so we can change
 
-    public GameObject tilePrefab;
+    public GameObject TilePrefab;
+    public float TileHeightMultiplier = 4.0f;
     private Dictionary<Tile, GameObject> tileToInstanceDict = new Dictionary<Tile, GameObject>();
 
     // Add the layer mask for the tileInstances - for handling Raycasting
@@ -53,9 +54,9 @@ public class Visulizer : MonoBehaviour
                 Tile worldTile = world.GetTileAt(x, y);
                 float height = worldTile.Height;
 
-                GameObject tileInstance = Instantiate(tilePrefab, new Vector3(x, height, y), Quaternion.identity);
+                GameObject tileInstance = Instantiate(TilePrefab, new Vector3(x, height, y), Quaternion.identity);
 
-                tileInstance.transform.localScale = new Vector3(1, height * 4, 1);
+                tileInstance.transform.localScale = new Vector3(1, height * TileHeightMultiplier, 1);
                 tileInstance.transform.position = new Vector3(x, tileInstance.transform.localScale.y / 2, y);
 
                 // dictinary to connect tiles to their instances
@@ -268,8 +269,6 @@ public class Visulizer : MonoBehaviour
         tileToInstanceDict.Clear();
     }
 
-
-
     // for clicking on some tile instance = to see which we clicked in combination with RayCast
     public Tile GetWorldTileFromInstance(GameObject instance)
     {
@@ -289,17 +288,14 @@ public class Visulizer : MonoBehaviour
     public Camera mainCamera;
     public void SetCameraPositionAndOrientation(int worldWidth, int worldDepth)
     {
+        // TODO calculate also based on the world height
+
         // The diagonal of the world in Unity units
         float diagonal = Mathf.Sqrt(worldWidth * worldWidth + worldDepth * worldDepth);
-
-        // Calculate the optimal distance required to view the entire map based on the diagonal.
-        // This is derived from the formula of tangent in a right-angled triangle, tan(FOV/2) = (diagonal/2) / distance,
-        // hence distance = (diagonal/2) / tan(FOV/2).
-        float getCloserPar = 0.65f;
-        float cameraDistance = (diagonal / 2)* getCloserPar / Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        float zoom = 0.7f;
 
         // Set the camera's position to the center of the world, and above it at the calculated distance.
-        mainCamera.transform.position = new Vector3(worldWidth / 2f, cameraDistance, 0);
+        mainCamera.transform.position = new Vector3(worldWidth / 2f, diagonal * zoom, 0);
 
         // Adjust the camera's orientation to look towards the center of the world.
         mainCamera.transform.LookAt(new Vector3(worldWidth / 2f, 0, worldDepth / 2f));

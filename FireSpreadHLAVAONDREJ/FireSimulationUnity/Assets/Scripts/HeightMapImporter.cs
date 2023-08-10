@@ -84,6 +84,7 @@ public class HeightMapImporter : IMapImporter
                 if (i < tex.width && j < tex.height)
                 {
                     heightValue = tex.GetPixel(i * sampleRatio, j * sampleRatio).grayscale;
+                    Debug.Log(heightValue);
                 }
                 else
                 {
