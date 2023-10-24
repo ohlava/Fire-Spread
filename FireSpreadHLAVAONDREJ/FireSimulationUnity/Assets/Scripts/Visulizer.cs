@@ -4,47 +4,38 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public static class GameObjectExtensions
-{
-    // set color for GameObject instance
-    public static void setColorTo(this GameObject instance, Color color)
-    {
-        Renderer renderer = instance.transform.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            renderer.material.color = color;
-        }
-    }
-
-    public static Vector3 GetPosition(this GameObject instance)
-    {
-        return instance.transform.position;
-    }
-
-    public static float GetHeight(this GameObject instance)
-    {
-        return instance.transform.localScale.y;
-    }
-}
-
-public enum VisulizerMode
-{
-    Standard,
-    Simplified
-}
+public enum VisulizerMode { Standard, Simplified }
 
 public class Visulizer : MonoBehaviour
 {
-    public VisulizerMode mode = VisulizerMode.Simplified; // Do NOT change during the simulation TODO make it so we can change
+    public VisulizerMode mode = VisulizerMode.Simplified; // Do NOT change during the simulation TODO make it so we can change / set as property
 
-    public GameObject TilePrefab;
-    public float TileHeightMultiplier = 4.0f;
+    // Create a new Dictionary to keep track of GameObjects created on Tiles
+    private Dictionary<Tile, GameObject> tileToVegetationInstanceDict = new Dictionary<Tile, GameObject>();
+
+    // Create a new Dictionary to keep track of GameObjects created on Tiles
+    private Dictionary<Tile, GameObject> tileToFireInstanceDict = new Dictionary<Tile, GameObject>();
+
+    // corresponds to VegetationTypes
+    [SerializeField] GameObject grassPrefab;
+    [SerializeField] GameObject forestPrefab;
+    [SerializeField] GameObject sparsePrefab;
+    [SerializeField] GameObject swampPrefab;
+
+    [SerializeField] Material grassMaterial;
+    [SerializeField] Material waterMaterial;
+    [SerializeField] Material fireMaterial;
+
+    [SerializeField] GameObject TilePrefab;
+    [SerializeField] GameObject firePrefab;
+
+    [SerializeField] const float TileHeightMultiplier = 3.0f;
+
     private Dictionary<Tile, GameObject> tileToInstanceDict = new Dictionary<Tile, GameObject>();
 
     // Add the layer mask for the tileInstances - for handling Raycasting
-    public LayerMask tileLayer;
+    [SerializeField] LayerMask tileLayer;
 
-    // Generate tileInstances - is called no matter the mode
     public void CreateWorldTiles(World world)
     {
         for (int x = 0; x < world.Width; x++)
@@ -66,43 +57,48 @@ public class Visulizer : MonoBehaviour
                 SetAppropriateColor(worldTile);
             }
         }
+
+        // TODO combine all water tiles into one mesh / they are not changing / dont forget to destroy it when DestroyAllTile
     }
 
-    public void MakeTileBurned(Tile tile)
-    {
-        SetColorOnTile(tile, new Color32(92, 64, 51, 255));
-    }
-
-    private void SetColorOnTile(Tile tile, Color color)
+    // Returns a specific tileInstance GameObject representing that tile
+    private GameObject GetTileInstance(Tile tile)
     {
         if (tileToInstanceDict.TryGetValue(tile, out GameObject tileInstance))
         {
-            tileInstance.setColorTo(color);
+            return tileInstance;
         }
         else
         {
-            Debug.LogError("No created instance found for the given tile to set color. It doesnt exist anymore in vizulizer data.");
+            Debug.LogError("No created instance found for the given tile. It doesn't exist anymore in visualizer data.");
+            return null;
         }
     }
 
+    // Tile instance should already be in the tileToInstanceDict
     private void SetAppropriateColor(Tile tile)
     {
         int maxVegetationType = Enum.GetNames(typeof(VegetationType)).Length;
 
         if (tile.Moisture == 100) // If tile is a water tile, color it blue
         {
-            SetColorOnTile(tile, Color.blue);
+            // GetTileInstance(tile).SetColorTo(Color.blue);
+            GetTileInstance(tile).SetMaterialTo(waterMaterial);
         }
         else // Set tile color based on vegetation level
         {
             float greenValue = 0.4f + (0.2f / (maxVegetationType - 1)) * (int)tile.Vegetation;
-            SetColorOnTile(tile, new Color(0, greenValue, 0));  // RGB color with variable green value/shade
+            GetTileInstance(tile).SetColorTo(new Color(0, greenValue, 0));  // RGB color with variable green value/shade
         }
     }
 
+    public void MakeTileBurned(Tile tile)
+    {
+        // GetTileInstance(tile).SetColorTo(new Color32(92, 64, 51, 255));
+        GetTileInstance(tile).SetMaterialTo(fireMaterial);
+    }
 
-
-    // Generate vegetationInstances - for the standard mode
+    // Generate all vegetationInstances - for the standard mode
     public void CreateAllVegetation(World world)
     {
         if (mode == VisulizerMode.Standard)
@@ -117,14 +113,7 @@ public class Visulizer : MonoBehaviour
         }
     }
 
-    // Create a new Dictionary to keep track of GameObjects created on Tiles
-    private Dictionary<Tile, GameObject> tileToVegetationInstanceDict = new Dictionary<Tile, GameObject>();
-
-    // corresponds to VegetationTypes
-    public GameObject grassPrefab;
-    public GameObject forestPrefab;
-    public GameObject sparsePrefab;
-    public GameObject swampPrefab;
+    // Method to create a vegetation instance on a specific tile
     private void CreateVegetationOnTile(Tile tile, VegetationType vegetation)
     {
         GameObject tileInstance = tileToInstanceDict[tile];
@@ -168,7 +157,7 @@ public class Visulizer : MonoBehaviour
         }
     }
 
-    // Method to destroy an instance on a specific tile
+    // Method to destroy a vegetation instance on a specific tile
     public void DestroyVegetationOnTile(Tile tile)
     {
         if (mode == VisulizerMode.Standard)
@@ -186,18 +175,13 @@ public class Visulizer : MonoBehaviour
         }
     }
 
-
-
-    // Create a new Dictionary to keep track of GameObjects created on Tiles
-    private Dictionary<Tile, GameObject> tileToFireInstanceDict = new Dictionary<Tile, GameObject>();
-
-    public GameObject firePrefab; // Assign a prefab for the fire you want to create
+    // Method to create a fire instance on a specific tile
     public void CreateFireOnTile(Tile tile)
     {
         GameObject tileInstance = tileToInstanceDict[tile];
         if (mode == VisulizerMode.Standard)
         {
-            tileInstance.setColorTo(Color.red);
+            tileInstance.SetColorTo(Color.red);
 
             // Get the position and height of the tile instance
             Vector3 tilePosition = tileInstance.GetPosition();
@@ -211,11 +195,11 @@ public class Visulizer : MonoBehaviour
         }
         else
         {
-            tileInstance.setColorTo(Color.red);
+            tileInstance.SetColorTo(Color.red);
         }
     }
 
-    // Method to destroy an instance on a specific tile
+    // Method to destroy a fire instance on a specific tile
     public void DestroyFireOnTile(Tile tile)
     {
         if (mode == VisulizerMode.Standard)
@@ -233,7 +217,6 @@ public class Visulizer : MonoBehaviour
         }
     }
 
-
     //
     // Destruction Methods
     //
@@ -245,9 +228,9 @@ public class Visulizer : MonoBehaviour
         {
             Destroy(instance);
         }
-        // Clear the dictionary
         tileToVegetationInstanceDict.Clear(); 
     }
+
     // Method to destroy all created fire instances
     public void DestroyAllFire()
     {
@@ -255,9 +238,9 @@ public class Visulizer : MonoBehaviour
         {
             Destroy(instance);
         }
-        // Clear the dictionary
         tileToFireInstanceDict.Clear(); 
     }
+
     // Method to destroy all created tile instances
     public void DestroyAllTile()
     {
@@ -265,7 +248,6 @@ public class Visulizer : MonoBehaviour
         {
             Destroy(instance);
         }
-        // Clear the dictionary
         tileToInstanceDict.Clear();
     }
 
@@ -284,20 +266,35 @@ public class Visulizer : MonoBehaviour
         Debug.LogError("No Tile found for the given instance.");
         return ft;
     }
+}
 
-    public Camera mainCamera;
-    public void SetCameraPositionAndOrientation(int worldWidth, int worldDepth)
+public static class TileInstancesExtensions
+{
+    public static void SetMaterialTo(this GameObject instance, Material material)
     {
-        // TODO calculate also based on the world height
+        Renderer renderer = instance.transform.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.material = material;
+        }
+    }
 
-        // The diagonal of the world in Unity units
-        float diagonal = Mathf.Sqrt(worldWidth * worldWidth + worldDepth * worldDepth);
-        float zoom = 0.7f;
+    public static void SetColorTo(this GameObject instance, Color color)
+    {
+        Renderer renderer = instance.transform.GetComponent<Renderer>();
+        if (renderer != null)
+        {
+            renderer.material.color = color;
+        }
+    }
 
-        // Set the camera's position to the center of the world, and above it at the calculated distance.
-        mainCamera.transform.position = new Vector3(worldWidth / 2f, diagonal * zoom, 0);
+    public static Vector3 GetPosition(this GameObject instance)
+    {
+        return instance.transform.position;
+    }
 
-        // Adjust the camera's orientation to look towards the center of the world.
-        mainCamera.transform.LookAt(new Vector3(worldWidth / 2f, 0, worldDepth / 2f));
+    public static float GetHeight(this GameObject instance)
+    {
+        return instance.transform.localScale.y;
     }
 }

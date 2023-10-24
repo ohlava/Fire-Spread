@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571337, b: 0.3069219, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1024,6 +1024,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visulizerObj: {fileID: 804466386}
+  cameraHandlerObj: {fileID: 888089273}
   inputHandlerObj: {fileID: 846402035}
   InfoPanel: {fileID: 834873593}
 --- !u!1 &490140661
@@ -2080,18 +2081,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309c5ecbbefd042d6805adead5bf0c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mode: 1
-  TilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
-  TileHeightMultiplier: 4
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 8
+  mode: 0
   grassPrefab: {fileID: 8903058273634794869, guid: f1fc5bb90ac285e4486771552d63bcb8, type: 3}
   forestPrefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
   sparsePrefab: {fileID: 38335279662140195, guid: 34d3f526198dae440bb2ce6005d86055, type: 3}
   swampPrefab: {fileID: 4661435515762455780, guid: e289bf5debb17f6459818c207d781953, type: 3}
+  grassMaterial: {fileID: 2100000, guid: 215df4cd82bd1406aa4f1f96eb8c53e9, type: 2}
+  waterMaterial: {fileID: 2100000, guid: 06975463dd7b8488099ac2ead8d5ed2c, type: 2}
+  fireMaterial: {fileID: 2100000, guid: 1f86dec3cb1714dafb1a8e480705aa48, type: 2}
+  TilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
   firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
-  mainCamera: {fileID: 963194227}
+  tileLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!4 &804466388
 Transform:
   m_ObjectHideFlags: 0
@@ -2275,6 +2277,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   visulizerObj: {fileID: 804466386}
+  cameraHandlerObj: {fileID: 888089273}
   simulationSpeedSlider: {fileID: 1021912702}
   worldWidthInputFieldObj: {fileID: 377332769}
   worldDepthInputFieldObj: {fileID: 1899859749}
@@ -2719,6 +2722,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886525531}
   m_CullTransparentMesh: 1
+--- !u!1 &888089273
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 888089275}
+  - component: {fileID: 888089274}
+  m_Layer: 0
+  m_Name: CameraHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &888089274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888089273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3336d53e0823d43379aac0c21f520b53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 963194227}
+--- !u!4 &888089275
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888089273}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 507.03104, y: 308.47156, z: -6.600666}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &907295610
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,6 +48,8 @@ public class InputHandler : MonoBehaviour
 
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
+    CameraHandler cameraHandler;
+    [SerializeField] GameObject cameraHandlerObj;
 
     // These references for fields are there to later be change in case user for example exceeds limit for Max value
     [SerializeField] private Slider simulationSpeedSlider;
@@ -73,6 +75,8 @@ public class InputHandler : MonoBehaviour
     void Awake()
     {
         visulizer = visulizerObj.GetComponent<Visulizer>();
+        cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
+
         worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
         worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
         riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
@@ -169,7 +173,7 @@ public class InputHandler : MonoBehaviour
     private void HandleActionButtons()
     {
         if (Input.GetKey(KeyCode.R))
-            visulizer.SetCameraPositionAndOrientation(worldWidth, worldDepth);
+            cameraHandler.SetCameraPositionAndOrientation(worldWidth, worldDepth);
         if (Input.GetKey(KeyCode.Space))
             TriggerRun();
     }

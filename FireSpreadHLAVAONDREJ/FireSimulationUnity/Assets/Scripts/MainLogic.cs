@@ -19,6 +19,9 @@ public class MainLogic : MonoBehaviour
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
 
+    CameraHandler cameraHandler;
+    [SerializeField] GameObject cameraHandlerObj;
+
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
 
@@ -39,6 +42,8 @@ public class MainLogic : MonoBehaviour
         worldGenerator = new WorldGenerator();
 
         visulizer = visulizerObj.GetComponent<Visulizer>();
+
+        cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
 
         // object is attached to a main camera, this finds it, there is only one graphVisualizer
         graphVisulizer = FindObjectOfType<GraphVisulizer>();
@@ -249,6 +254,8 @@ public class MainLogic : MonoBehaviour
         world = worldGenerator.Generate();
 
         PrepareForNewWorld();
+
+        cameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
     }
 
     private void PrepareForNewWorld()
@@ -274,7 +281,6 @@ public class MainLogic : MonoBehaviour
 
         visulizer.CreateWorldTiles(world);
         visulizer.CreateAllVegetation(world);
-        visulizer.SetCameraPositionAndOrientation(world.Width, world.Depth);
     }
 
 
