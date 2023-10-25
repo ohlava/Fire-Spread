@@ -2,21 +2,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum VisulizerMode { Standard, Simplified }
 
 public class Visulizer : MonoBehaviour
 {
-    public VisulizerMode mode = VisulizerMode.Simplified; // Do NOT change during the simulation TODO make it so we can change / set as property
+    public VisulizerMode mode = VisulizerMode.Simplified;
 
-    // Create a new Dictionary to keep track of GameObjects created on Tiles
+    // To keep track of actuall tile instance GameObject created for each Tile
+    private Dictionary<Tile, GameObject> tileToInstanceDict = new Dictionary<Tile, GameObject>();
+
+    // To keep track of vegetation GameObject created on each Tile
     private Dictionary<Tile, GameObject> tileToVegetationInstanceDict = new Dictionary<Tile, GameObject>();
 
-    // Create a new Dictionary to keep track of GameObjects created on Tiles
+    // To keep track of fire GameObject created on each Tile
     private Dictionary<Tile, GameObject> tileToFireInstanceDict = new Dictionary<Tile, GameObject>();
 
-    // corresponds to VegetationTypes
+    // To keep track of combined water tiles - chunks
+    private List<GameObject> waterChunks = new List<GameObject>();
+
+    // Corresponds to VegetationTypes
     [SerializeField] GameObject grassPrefab;
     [SerializeField] GameObject forestPrefab;
     [SerializeField] GameObject sparsePrefab;
@@ -30,8 +37,6 @@ public class Visulizer : MonoBehaviour
     [SerializeField] GameObject firePrefab;
 
     [SerializeField] const float TileHeightMultiplier = 3.0f;
-
-    private Dictionary<Tile, GameObject> tileToInstanceDict = new Dictionary<Tile, GameObject>();
 
     // Add the layer mask for the tileInstances - for handling Raycasting
     [SerializeField] LayerMask tileLayer;
@@ -47,18 +52,191 @@ public class Visulizer : MonoBehaviour
 
                 GameObject tileInstance = Instantiate(TilePrefab, new Vector3(x, height, y), Quaternion.identity);
 
-                tileInstance.transform.localScale = new Vector3(1, height * TileHeightMultiplier, 1);
+                tileInstance.transform.localScale = new Vector3(1, (float) (height * TileHeightMultiplier + 1), 1);
                 tileInstance.transform.position = new Vector3(x, tileInstance.transform.localScale.y / 2, y);
 
-                // dictinary to connect tiles to their instances
                 tileToInstanceDict[worldTile] = tileInstance;
 
-                // after tileInstance is in the tileToInstanceDict, set its color
-                SetAppropriateColor(worldTile);
+                SetAppropriateMaterial(worldTile);
             }
         }
 
-        // TODO combine all water tiles into one mesh / they are not changing / dont forget to destroy it when DestroyAllTile
+        // Transforms all water tiles into list of bigger chunks - waterChunks. Combining all water tiles into one improves speed and performance
+        CombineAllWaterTiles(world);
+    }
+
+    private void CombineAllWaterTiles(World world)
+    {
+        List<List<GameObject>> groups = FindContiguousWaterTileGroups(world);
+
+        foreach (List<GameObject> group in groups)
+        {
+            GameObject combinedWater = CombineWaterTilesOfGroup(group, world);
+            waterChunks.Add(combinedWater);
+        }
+    }
+
+    /// <summary>
+    /// Finds and groups contiguous water tiles in the world.
+    /// </summary>
+    /// <param name="world">The world containing the tiles.</param>
+    /// <returns>A list of tile groups, where each group contains GameObjects of contiguous water tiles.</returns>
+    private List<List<GameObject>> FindContiguousWaterTileGroups(World world)
+    {
+        // List to store groups of contiguous water tiles
+        List<List<GameObject>> groups = new List<List<GameObject>>();
+
+        // Set to keep track of tiles that have already been visited
+        HashSet<Tile> visitedTiles = new HashSet<Tile>();
+
+        for (int x = 0; x < world.Width; x++)
+        {
+            for (int y = 0; y < world.Depth; y++)
+            {
+                Tile tile = world.GetTileAt(x, y);
+
+                // Skip the tile if it has already been visited or if it's not a water tile
+                if (visitedTiles.Contains(tile) || tile.Moisture != 100)
+                    continue;
+
+                List<GameObject> group = new List<GameObject>();
+                Queue<Tile> queue = new Queue<Tile>();
+                queue.Enqueue(tile);
+
+                // BFS to find all tiles in the current contiguous group
+                while (queue.Count > 0)
+                {
+                    Tile currentTile = queue.Dequeue();
+                    if (visitedTiles.Contains(currentTile))
+                        continue;
+
+                    visitedTiles.Add(currentTile);
+                    group.Add(tileToInstanceDict[currentTile]);
+
+                    foreach (Tile neighbor in world.GetEdgeNeighborTiles(currentTile))
+                    {
+                        if (neighbor.Moisture == 100 && !visitedTiles.Contains(neighbor))
+                        {
+                            queue.Enqueue(neighbor);
+                        }
+                    }
+                }
+
+                if (group.Count > 0)
+                    groups.Add(group);
+            }
+        }
+
+        return groups;
+    }
+
+    /// <summary>
+    /// Combines multiple water tiles into a single mesh for optimization. This method works by merging 
+    /// the vertices of contiguous water tiles and selectively excluding faces that are internal to the group, 
+    /// thus creating a simplified mesh representation. The top and bottom faces of each tile are always retained, 
+    /// while the side faces are excluded if they're facing another tile in the group. 
+    /// </summary>
+    /// <param name="tiles">A list of water tile GameObjects to be combined.</param>
+    /// <param name="world">The world instance containing information about the tile grid.</param>
+    /// <returns>A new GameObject with a combined mesh representing the group of water tiles.</returns>
+    private GameObject CombineWaterTilesOfGroup(List<GameObject> tiles, World world)
+    {
+        // Lists to store the combined mesh's vertices and triangles
+        List<Vector3> combinedVertices = new List<Vector3>();
+        List<int> combinedTriangles = new List<int>();
+
+        // Iterate over each water tile GameObject in the list
+        foreach (GameObject tileGO in tiles)
+        {
+            Mesh tileMesh = tileGO.GetComponent<MeshFilter>().mesh;
+
+            Vector3[] vertices = tileMesh.vertices;
+            int[] triangles = tileMesh.triangles;
+
+            // Transform local vertices to world space coordinates
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = tileGO.transform.TransformPoint(vertices[i]);
+            }
+
+            // Retrieve the Tile instance corresponding to the current GameObject
+            Tile tile = tileToInstanceDict.FirstOrDefault(kvp => kvp.Value == tileGO).Key;
+
+            IEnumerable<Tile> neighbors = world.GetEdgeNeighborTiles(tile);
+
+            for (int faceIndex = 0; faceIndex < 6; faceIndex++)
+            {
+                bool skipFace = false;
+
+                // Get the normal direction of the current face
+                Vector3 faceNormal = tileGO.transform.TransformDirection(TileFaceNormals(faceIndex));
+
+                if (faceNormal != Vector3.up && faceNormal != Vector3.down)
+                {
+                    foreach (Tile neighbor in neighbors)
+                    {
+                        if (tiles.Contains(tileToInstanceDict[neighbor])) // check if it is also water tile instance
+                        {
+                            // Check if the current face is facing the neighbor directly
+                            // This means the face is internal and should be skipped
+                            if (faceNormal == Vector3.left && world.GetDifferenceBetweenTiles(tile, neighbor) == (1, 0) ||
+                                faceNormal == Vector3.right && world.GetDifferenceBetweenTiles(tile, neighbor) == (-1, 0) ||
+                                faceNormal == Vector3.forward && world.GetDifferenceBetweenTiles(tile, neighbor) == (0, 1) ||
+                                faceNormal == Vector3.back && world.GetDifferenceBetweenTiles(tile, neighbor) == (0, -1))
+                            {
+                                skipFace = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // If the face is not to be skipped, add its triangles to the combinedTriangles list
+                if (!skipFace)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        combinedTriangles.Add(combinedVertices.Count + triangles[faceIndex * 6 + i]);
+                    }
+                }
+            }
+
+            // Add the vertices of the current tile to the combinedVertices list
+            combinedVertices.AddRange(vertices);
+
+            // Destroy the original tile GameObject as it's no longer needed
+            Destroy(tileGO);
+        }
+
+        // Create a new mesh and assign the combined vertices and triangles
+        Mesh combinedMesh = new Mesh();
+        combinedMesh.vertices = combinedVertices.ToArray();
+        combinedMesh.triangles = combinedTriangles.ToArray();
+        combinedMesh.RecalculateNormals();
+
+        // Create a new GameObject to hold the combined mesh
+        GameObject combinedGO = new GameObject("CombinedWaterTiles");
+        combinedGO.AddComponent<MeshFilter>().mesh = combinedMesh;
+        combinedGO.AddComponent<MeshRenderer>().material = waterMaterial;
+
+        return combinedGO;
+    }
+
+    // Utility function to return the normal of a face given its index
+    private Vector3 TileFaceNormals(int faceIndex)
+    {
+        switch (faceIndex)
+        {
+            case 0: return Vector3.back;
+            case 1: return Vector3.up;
+            case 2: return Vector3.forward;
+            case 3: return Vector3.down;
+            case 4: return Vector3.left;
+            case 5: return Vector3.right;
+            default:
+                Debug.LogError($"Invalid face index: {faceIndex}");
+                return Vector3.zero;
+        }
     }
 
     // Returns a specific tileInstance GameObject representing that tile
@@ -76,11 +254,12 @@ public class Visulizer : MonoBehaviour
     }
 
     // Tile instance should already be in the tileToInstanceDict
-    private void SetAppropriateColor(Tile tile)
+    private void SetAppropriateMaterial(Tile tile)
     {
         int maxVegetationType = Enum.GetNames(typeof(VegetationType)).Length;
 
-        if (tile.Moisture == 100) // If tile is a water tile, color it blue
+        // If tile is a water tile
+        if (tile.Moisture == 100)
         {
             // GetTileInstance(tile).SetColorTo(Color.blue);
             GetTileInstance(tile).SetMaterialTo(waterMaterial);
@@ -249,6 +428,13 @@ public class Visulizer : MonoBehaviour
             Destroy(instance);
         }
         tileToInstanceDict.Clear();
+
+        // Also destroy water mesh - sort of tiles merged together
+        foreach (GameObject chunk in waterChunks)
+        {
+            Destroy(chunk);
+        }
+        waterChunks.Clear();
     }
 
     // for clicking on some tile instance = to see which we clicked in combination with RayCast

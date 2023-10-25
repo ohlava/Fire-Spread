@@ -31,6 +31,14 @@ public class World
         Grid = new Tile[width, depth];
     }
 
+    public (int xDiff, int yDiff) GetDifferenceBetweenTiles(Tile tile1, Tile tile2)
+    {
+        int xDiff = tile1.WidthPosition - tile2.WidthPosition;
+        int yDiff = tile1.DepthPosition - tile2.DepthPosition;
+
+        return (xDiff, yDiff);
+    }
+
     public void UpdateWeather(Weather newWeather)
     {
         // TODO some alogorithm that updates weather
@@ -71,6 +79,24 @@ public class World
         }
     }
 
+    public IEnumerable<Tile> GetEdgeNeighborTiles(Tile tile)
+    {
+        int x = tile.WidthPosition;
+        int y = tile.DepthPosition;
+
+        if (x + 1 < Grid.GetLength(0)) // check right boundary
+            yield return GetTileAt(x + 1, y);
+
+        if (x - 1 >= 0) // check left boundary
+            yield return GetTileAt(x - 1, y);
+
+        if (y + 1 < Grid.GetLength(1)) // check lower boundary
+            yield return GetTileAt(x, y + 1);
+
+        if (y - 1 >= 0) // check upper boundary
+            yield return GetTileAt(x, y - 1);
+    }
+
     // Reset the world, reset all non static atributes for all the tiles. 
     public void Reset()
     {
@@ -109,8 +135,8 @@ public class World
 
 public class Tile
 {
-    private int widthPosition; // x position in the world
-    private int depthPosition; // y position in the world
+    public int widthPosition; // x position in the world
+    public int depthPosition; // y position in the world
     private float height;
 
     private int moisture; // in percents, 100 is water

@@ -263,8 +263,7 @@ public class MainLogic : MonoBehaviour
         currentState = State.NewWorldState;
         InfoPanel.text = "New world - set fire";
 
-        visulizer.mode = VisulizerMode.Simplified;
-        if (world.Width * world.Depth <= 3000) // number of tiles is small enough
+        if (world.Width * world.Depth >= 3000) // number of tiles is small enough
         {
             visulizer.mode = VisulizerMode.Standard;
         }
@@ -341,16 +340,16 @@ public class MainLogic : MonoBehaviour
                 InfoPanel.text = "Simulation paused";
             }
 
-            Debug.Log("Simulation running");
+            //Debug.Log("Simulation running");
 
         }
         else if (currentState == State.StoppedState) // simulation not running
         {
-            Debug.Log("Simulation paused");
+            //Debug.Log("Simulation paused");
         }
         else // simulation not running State.NewWorldState
         {
-            Debug.Log("New: set tiles on fire");
+            //Debug.Log("New: set tiles on fire");
         }
         
     }
