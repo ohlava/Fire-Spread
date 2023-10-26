@@ -240,7 +240,7 @@ public class Visulizer : MonoBehaviour
     }
 
     // Returns a specific tileInstance GameObject representing that tile
-    private GameObject GetTileInstance(Tile tile)
+    public GameObject GetTileInstance(Tile tile)
     {
         if (tileToInstanceDict.TryGetValue(tile, out GameObject tileInstance))
         {

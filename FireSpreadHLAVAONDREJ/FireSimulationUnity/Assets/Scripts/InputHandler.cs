@@ -5,9 +5,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-// publisher class
 public class InputHandler : MonoBehaviour
 {
+    public delegate void TileHoverHandler(bool hovered, Tile hoveredOverTile);
+    public event TileHoverHandler OnTileHovered;
+
     public delegate void TileClickHandler(Tile clickedTile);
     public event TileClickHandler OnTileClicked;
 
@@ -51,7 +53,6 @@ public class InputHandler : MonoBehaviour
     CameraHandler cameraHandler;
     [SerializeField] GameObject cameraHandlerObj;
 
-    // These references for fields are there to later be change in case user for example exceeds limit for Max value
     [SerializeField] private Slider simulationSpeedSlider;
     [SerializeField] private GameObject worldWidthInputFieldObj;
     TMP_InputField worldWidthInputField;
@@ -60,7 +61,6 @@ public class InputHandler : MonoBehaviour
     [SerializeField] private GameObject riversInputFieldObj;
     TMP_InputField riversInputField;
     [SerializeField] private Slider lakeThresholdSlider;
-
 
     public float simulationSpeed { get; private set; }
     public int worldWidth { get; private set; }
@@ -81,7 +81,7 @@ public class InputHandler : MonoBehaviour
         worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
         riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
 
-        simulationSpeed = 2f; // speed is set as reverse of slider so define number of seconds
+        simulationSpeed = 2f; // speed is set as reverse of slider, define number of seconds
         worldWidth = 30;
         worldDepth = 30;
         rivers = 3;
@@ -97,19 +97,45 @@ public class InputHandler : MonoBehaviour
     void Update()
     {
         HandleTileClick();
+        HandleTileHover();
         HandleCameraMove();
         HandleCameraAngleChange();
         HandleActionButtons();
     }
 
+    private void HandleTileHover()
+    {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return; // ignore if over UI object
+
+        // Cast a ray from camera to click point
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~ignoreLayer))
+        {
+            Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
+            if (worldTile != null)
+            {
+                // Trigger the over Tile Hovered event
+                OnTileHovered?.Invoke(true, worldTile);
+            }
+        }
+        else
+        {
+            OnTileHovered?.Invoke(false,null);
+        }
+    }
+
+
+
     private void HandleTileClick()
     {
         // Checks if the left mouse button is pressed and ensures that the pointer is not over a UI object 
-        if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) // Input.GetMouseButtonDown(0) - (user can hold) / Input.GetMouseButtonDown(0) (only clicking)
         {
             // Cast a ray from camera to click point
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
             RaycastHit hitInfo;
 
             // If ray hits a tile

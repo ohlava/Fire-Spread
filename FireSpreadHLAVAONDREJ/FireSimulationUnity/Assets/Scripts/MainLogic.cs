@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public enum State
-{
-    NewWorldState,
-    RunningState,
-    StoppedState
-}
+public enum State { NewWorldState, RunningState, StoppedState }
 
 public class MainLogic : MonoBehaviour
 {
     World world;
+
+    FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
     FireSpreadSimulation fireSpreadSimulation = null;
     List<Tile> initBurningTiles = new List<Tile>();
 
@@ -29,9 +26,13 @@ public class MainLogic : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI InfoPanel;
 
+    // for tile hover feature
+    private Tile currentlyHoveredTile = null;
+    private Color originalTileColor;
+
     private float elapsed = 0f;
     private float speedOfUpdates { get; set; } // in seconds
-    FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
+
     private WorldGenerator worldGenerator;
 
     private bool showingGraph = false;
@@ -41,16 +42,17 @@ public class MainLogic : MonoBehaviour
     {
         worldGenerator = new WorldGenerator();
 
+        // object is attached to a main camera, this finds it, there is only one graphVisualizer
+        graphVisulizer = FindObjectOfType<GraphVisulizer>();
+
         visulizer = visulizerObj.GetComponent<Visulizer>();
 
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
 
-        // object is attached to a main camera, this finds it, there is only one graphVisualizer
-        graphVisulizer = FindObjectOfType<GraphVisulizer>();
-
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
         inputHandler.OnTileClicked += HandleTileClick;
+        inputHandler.OnTileHovered += HandleTileHover;
         inputHandler.OnCameraMove += HandleCameraMove;
         inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
 
@@ -64,6 +66,84 @@ public class MainLogic : MonoBehaviour
         inputHandler.OnPause += OnPauseButtonClicked;
         inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
     }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        GenereteNewWorld();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        elapsed += Time.deltaTime;
+        if (elapsed >= speedOfUpdates) // is called once every speedOfUpdates seconds
+        {
+            elapsed = elapsed % speedOfUpdates;
+
+            if (currentState == State.RunningState)
+            {
+                //Debug.Log("Simulation running");
+                updateWorld();
+
+                if (showingGraph) // TODO just show, update seperately
+                {
+                    showGraph(showingGraph); // for graph update
+                }
+            }
+            else if (currentState == State.StoppedState) // simulation not running
+            {
+                //Debug.Log("Simulation paused");
+            }
+            else
+            {
+                //Debug.Log("NewWorldState: set tiles on fire");
+            }
+        }
+    }
+
+    private void updateWorld()
+    {
+        if (fireSpreadSimulation == null)
+        {
+            return;
+        }
+
+        // Run and then automatically stop running after simulation finishes
+        if (!fireSpreadSimulation.Finished())
+        {
+            fireSpreadSimulation.Update();
+
+            // Get the events from the last update
+            List<FireEvent> events = fireSpreadSimulation.GetLastUpdateEvents();
+
+            // Handle these events, for example by visualizing them
+            foreach (FireEvent evt in events)
+            {
+                if (evt.Type == EventType.StartedBurning)
+                {
+                    visulizer.CreateFireOnTile(evt.Tile);
+                }
+                else if (evt.Type == EventType.StoppedBurning)
+                {
+                    visulizer.DestroyFireOnTile(evt.Tile);
+                    visulizer.DestroyVegetationOnTile(evt.Tile);
+                    visulizer.MakeTileBurned(evt.Tile);
+                }
+            }
+        }
+        else
+        {
+            currentState = State.StoppedState;
+            InfoPanel.text = "Simulation paused";
+        }
+    }
+
+
+
+
+
+
 
     private void HandleCameraMove(Vector3 direction)
     {
@@ -102,6 +182,51 @@ public class MainLogic : MonoBehaviour
             }
         }
     }
+
+    private void HandleTileHover(bool hovered, Tile hoveredOverTile)
+    {
+        if (hovered == true)
+        {
+            if (currentState == State.NewWorldState)
+            {
+                if (currentlyHoveredTile != hoveredOverTile) // Check if we're hovering a new tile
+                {
+                    ResetHoveredTileColor(); // Reset the old tile's color
+
+                    currentlyHoveredTile = hoveredOverTile;
+                    GameObject tileInstance = visulizer.GetTileInstance(hoveredOverTile);
+                    if (tileInstance != null)
+                    {
+                        Renderer renderer = tileInstance.GetComponent<Renderer>();
+                        if (renderer != null)
+                        {
+                            originalTileColor = renderer.material.color; // store original color
+                            renderer.material.color = Color.white;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            ResetHoveredTileColor();
+        }
+        
+    }
+
+    private void ResetHoveredTileColor()
+    {
+        if (currentlyHoveredTile != null)
+        {
+            GameObject tileInstance = visulizer.GetTileInstance(currentlyHoveredTile);
+            if (tileInstance != null)
+            {
+                tileInstance.SetColorTo(originalTileColor);
+            }
+            currentlyHoveredTile = null;
+        }
+    }
+
 
     // Handling program states and possible state transitions
     public void HandleEvent(State nextState)
@@ -226,7 +351,6 @@ public class MainLogic : MonoBehaviour
             world = World.Load();
             PrepareForNewWorld();
         }
-
     }
 
     public void OnSaveClicked()
@@ -238,8 +362,6 @@ public class MainLogic : MonoBehaviour
     {
         speedOfUpdates = newSpeed;
     }
-
-
 
     private void ApplyInputValues()
     {
@@ -280,78 +402,6 @@ public class MainLogic : MonoBehaviour
 
         visulizer.CreateWorldTiles(world);
         visulizer.CreateAllVegetation(world);
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        GenereteNewWorld();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        elapsed += Time.deltaTime;
-        if (elapsed >= speedOfUpdates)
-        {
-            elapsed = elapsed % speedOfUpdates;
-
-            // is called once every speedOfUpdates seconds
-            RunEverything();
-        }
-    }
-
-    private void RunEverything()
-    {
-        if (currentState == State.RunningState)
-        {
-            // Run and then automatically stop running after simulation finishes
-            if (!fireSpreadSimulation.Finished())
-            {
-                fireSpreadSimulation.Update();
-
-                // Get the events from the last update
-                List<FireEvent> events = fireSpreadSimulation.GetLastUpdateEvents();
-
-                // Handle these events, for example by visualizing them
-                foreach (FireEvent evt in events)
-                {
-                    if (evt.Type == EventType.StartedBurning)
-                    {
-                        visulizer.CreateFireOnTile(evt.Tile);
-                    }
-                    else if (evt.Type == EventType.StoppedBurning)
-                    {
-                        visulizer.DestroyFireOnTile(evt.Tile);
-                        visulizer.DestroyVegetationOnTile(evt.Tile);
-                        visulizer.MakeTileBurned(evt.Tile);
-                    }
-                }
-
-                if (showingGraph)
-                {
-                    showGraph(showingGraph); // for graph update
-                }
-            }
-            else
-            {
-                currentState = State.StoppedState;
-                InfoPanel.text = "Simulation paused";
-            }
-
-            //Debug.Log("Simulation running");
-
-        }
-        else if (currentState == State.StoppedState) // simulation not running
-        {
-            //Debug.Log("Simulation paused");
-        }
-        else // simulation not running State.NewWorldState
-        {
-            //Debug.Log("New: set tiles on fire");
-        }
-        
     }
 
     // Uses GraphVisulizer to draw the graph of all the simulation update states, now tiles burning over time
