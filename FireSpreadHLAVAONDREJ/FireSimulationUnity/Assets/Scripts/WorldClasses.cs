@@ -12,6 +12,8 @@ public class World
 
     public Tile[,] Grid;
 
+    public Weather Weather =  new Weather(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0f, 15f));
+
     public int Width
     {
         get { return width; }
@@ -39,10 +41,31 @@ public class World
         return (xDiff, yDiff);
     }
 
-    public void UpdateWeather(Weather newWeather)
+    public void UpdateWeather()
     {
-        // TODO some alogorithm that updates weather
-        return;
+        // TODO log weather change / make newWeather
+
+        // Randomly change the wind direction by +/- 10 degrees
+        int windDirectionChange = UnityEngine.Random.Range(-10, 10);
+        Weather.WindDirection += windDirectionChange;
+
+        // Randomly change the wind strength by +/- 5 km/h
+        float windStrengthChange = UnityEngine.Random.Range(-5f, 5f);
+        Weather.WindSpeed += windStrengthChange;
+
+        // Randomly change the temperature by +/- 2 degrees Celsius
+        //float temperatureChange = UnityEngine.Random.Range(-2f, 2f);
+        //Weather.Temperature += temperatureChange;
+
+        // other changes
+
+        // Ensure the wind direction stays within 0-359 degrees
+        if (Weather.WindDirection < 0) Weather.WindDirection += 360;
+        if (Weather.WindDirection >= 360) Weather.WindDirection -= 360;
+
+        // Ensure the wind strength is not negative
+        Weather.WindSpeed = Mathf.Max(0f, Weather.WindSpeed);
+
     }
 
     // Return the tile at the specified position in the grid.
@@ -133,6 +156,14 @@ public class World
     }
 }
 
+public enum VegetationType
+{
+    Grass,
+    Sparse,
+    Forest,
+    Swamp
+}
+
 public class Tile
 {
     public int widthPosition; // x position in the world
@@ -142,7 +173,6 @@ public class Tile
     private int moisture; // in percents, 100 is water
     public VegetationType Vegetation { get; set; }
     public bool HasBurned { get; set; }
-    public Weather Weather;
 
     private int burnTime; // number of episodes required to burn this tile
     private int burningFor; // number of burning episodes - Non static during simulation
@@ -195,7 +225,7 @@ public class Tile
         Height = height;
         Moisture = moisture;
         Vegetation = vegetation;
-        Weather = new Weather(0, 1);
+
         isBurning = false;
         BurningFor = 0;
         // TODO adjust rules for BurnTime
@@ -247,35 +277,42 @@ public class Tile
 
 public class Weather
 {
-    private float windDirection { get; set; } // in degrees, 0-359
-    private float windStrength; // in km/h
+    private int windDirection { get; set; } // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
+    private float windSpeed; // in km/h
+    //private float temperature { get; set; } // in degrees Celsius
+    //private float humidity; // in percentage, 0-100
+    //private float precipitation; // in mm
 
-    public float WindDirection
+    public int WindDirection
     {
         get { return windDirection; }
-        set { windDirection = value < 0 ? 0 : (value >= 360 ? 359 : value); }
+        set {
+            windDirection = value % 360;
+            if (windDirection < 0)
+            {
+                windDirection += 360;
+            }
+        }
     }
 
-    public float WindStrength
+    public float WindSpeed
     {
-        get { return windStrength; }
-        set { windStrength = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
+        get { return windSpeed; }
+        set { windSpeed = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
     }
 
-    public Weather(float windDirection, float windStrength)
+    public float Temperature { get; set; }
+
+    public Weather(int windDirection, float windStrength)
     {
         WindDirection = windDirection;
-        WindStrength = windStrength;
+        WindSpeed = windStrength;
     }
 }
 
-public enum VegetationType
-{
-    Grass,
-    Sparse,
-    Forest,
-    Swamp
-}
+
+
+
 
 
 

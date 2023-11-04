@@ -22,7 +22,13 @@ public class MainLogic : MonoBehaviour
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
 
+    WindIndicator windIndicator;
+    [SerializeField] GameObject windIndicatorObj;
+
     GraphVisulizer graphVisulizer;
+
+    [SerializeField] private Camera secondaryWindArrowCamera;
+    [SerializeField] private GameObject arrow; // for wind indicator
 
     [SerializeField] TextMeshProUGUI InfoPanel;
 
@@ -50,6 +56,8 @@ public class MainLogic : MonoBehaviour
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
 
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+
+        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
 
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnTileHovered += HandleTileHover;
@@ -85,6 +93,9 @@ public class MainLogic : MonoBehaviour
             {
                 //Debug.Log("Simulation running");
                 updateWorld();
+
+                world.UpdateWeather();
+                windIndicator.UpdateIndicator(world.Weather);
 
                 if (showingGraph) // TODO just show, update seperately
                 {
@@ -168,6 +179,31 @@ public class MainLogic : MonoBehaviour
             newRotation.x = 90.0f;
 
         Camera.main.transform.eulerAngles = newRotation;
+
+        // Second camera for wind indicator is responsible for maintaining same angle as the first so we see 
+        SetWindIndicatorCamera();
+
+        return;
+    }
+
+    private void SetWindIndicatorCamera()
+    {
+        // Calculate the direction vector from the main camera to its focal point (assuming it's the world's center)
+        Vector3 mainCameraDirection = Camera.main.transform.forward;
+
+        // Determine the distance from the arrow to the secondary camera
+        float distanceToArrow = (secondaryWindArrowCamera.transform.position - arrow.transform.position).magnitude;
+
+        // Update the secondary camera's position to be at the same distance from the arrow but in the opposite direction of the main camera
+        // Here we invert the direction by using -mainCameraDirection
+        Vector3 secondaryCameraPosition = arrow.transform.position - mainCameraDirection * distanceToArrow;
+
+        secondaryWindArrowCamera.transform.position = secondaryCameraPosition;
+
+        // Now, make the secondary camera LookAt the arrow
+        secondaryWindArrowCamera.transform.LookAt(arrow.transform.position);
+
+        return;
     }
 
     private void HandleTileClick(Tile clickedTile)
@@ -378,6 +414,8 @@ public class MainLogic : MonoBehaviour
         PrepareForNewWorld();
 
         cameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
+
+        SetWindIndicatorCamera();
     }
 
     private void PrepareForNewWorld()

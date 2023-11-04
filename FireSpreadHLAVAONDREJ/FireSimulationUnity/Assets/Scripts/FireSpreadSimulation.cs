@@ -51,7 +51,7 @@ public class FireSpreadSimulation
             foreach (Tile neighborTile in _world.GetNeighborTiles(tile))
             {
                 // Calculate the fire spread probability.
-                float spreadProbability = CalculateFireSpreadProbability(tile, neighborTile, _parameters);
+                float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
 
                 // Check if fire spread.
                 if (UnityEngine.Random.value < spreadProbability)
@@ -89,14 +89,14 @@ public class FireSpreadSimulation
         return _eventLogger.GetBurningTilesOverTime();
     }
 
-    private float CalculateFireSpreadProbability(Tile source, Tile target, FireSpreadParameters parameters)
+    private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSpreadParameters parameters)
     {
         // TODO implement more reminiscent of reality / something like cumulative probability being 0.20f-0.35f seems to be nice
         // precalculate?
 
         float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
         float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
-        float windFactor = GetWindFactor(source, target, parameters.WindSpreadFactor);
+        float windFactor = GetWindFactor(world, source, target, parameters.WindSpreadFactor);
         float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
 
         // First, average the vegetation and slope factors
@@ -182,7 +182,7 @@ public class FireSpreadSimulation
         }
     }
 
-    private float GetWindFactor(Tile source, Tile target, float spreadFactor)
+    private float GetWindFactor(World world, Tile source, Tile target, float spreadFactor)
     {
         // It has been measured that with a wind speed of 10 km/h, the fire spreads through the Australian bush at a speed of about 0.5 km/h.
         // If the wind speed increases to 20 km/h, the speed of the fire will increase to 0.8 km/h. At a wind speed of 40 km/h, the speed of fire progress is already 1.8 km/h
@@ -190,7 +190,7 @@ public class FireSpreadSimulation
 
         // Determine direction from source to target
         Vector2 dirSourceToTarget = new Vector2(target.WidthPosition - source.WidthPosition, target.DepthPosition - source.DepthPosition).normalized;
-        Vector2 windDirectionVector = new Vector2(Mathf.Cos(source.Weather.WindDirection * Mathf.Deg2Rad), Mathf.Sin(source.Weather.WindDirection * Mathf.Deg2Rad));
+        Vector2 windDirectionVector = new Vector2(Mathf.Cos(world.Weather.WindDirection * Mathf.Deg2Rad), Mathf.Sin(world.Weather.WindDirection * Mathf.Deg2Rad));
 
         // Calculate the dot product between the wind direction and the direction to the target
         float dotProduct = Vector2.Dot(windDirectionVector, dirSourceToTarget);
@@ -198,11 +198,11 @@ public class FireSpreadSimulation
         // If dotProduct is close to 1, it means the wind is roughly in the same direction.
         if (dotProduct > 0.7)
         {
-            return 1.1f;  // Increase the spread factor slightly
+            return 1.5f;  // Increase the spread factor slightly
         }
         else
         {
-            return 1;  // Default value when wind is not in the target direction
+            return 1f;  // Default value when wind is not in the target direction
         }
     }
 
@@ -347,17 +347,24 @@ public enum EventType
 
 public class FireSpreadParameters
 {
-    public float VegetationSpreadFactor { get; set; }
-    public float MoistureSpreadFactor { get; set; }
-    public float WindSpreadFactor { get; set; }
-    public float SlopeSpreadFactor { get; set; }
+    // Use bool to indicate whether a parameter is counted or not.
+    public bool IncludeVegetationSpread { get; set; }
+    public bool IncludeMoistureSpread { get; set; }
+    public bool IncludeWindSpread { get; set; }
+    public bool IncludeSlopeSpread { get; set; }
+
+    // Instead of using float for factors, you use the boolean properties to determine whether to count the factor (1) or not (0).
+    public float VegetationSpreadFactor => IncludeVegetationSpread ? 1.0f : 0.0f;
+    public float MoistureSpreadFactor => IncludeMoistureSpread ? 1.0f : 0.0f;
+    public float WindSpreadFactor => IncludeWindSpread ? 1.0f : 0.0f;
+    public float SlopeSpreadFactor => IncludeSlopeSpread ? 1.0f : 0.0f;
 
     public FireSpreadParameters()
     {
-        // Set default values for the spread factors.
-        VegetationSpreadFactor = 1.0f;
-        MoistureSpreadFactor = 1.0f;
-        WindSpreadFactor = 1.0f;
-        SlopeSpreadFactor = 1.0f;
+        // Set default values for including spread factors.
+        IncludeVegetationSpread = true; // 1 when counted, 0 when not
+        IncludeMoistureSpread = true;   // 1 when counted, 0 when not
+        IncludeWindSpread = true;       // 1 when counted, 0 when not
+        IncludeSlopeSpread = true;      // 1 when counted, 0 when not
     }
 }
