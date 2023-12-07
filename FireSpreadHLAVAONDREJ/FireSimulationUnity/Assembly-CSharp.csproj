@@ -56,6 +56,8 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/MonoBundle/Addins/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Scripts/CameraHandler.cs" />
+    <Compile Include="Assets/Scripts/WindIndicator.cs" />
     <Compile Include="Assets/Scripts/SettingsMenu.cs" />
     <Compile Include="Assets/Scripts/WorldBuilder.cs" />
     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Assets/Scripts/FireSpreadSimulation.cs" />
     <Compile Include="Assets/Scripts/MainLogic.cs" />
     <Compile Include="Assets/Scripts/Visulizer.cs" />
+    <Compile Include="Assets\Scripts\NewClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
