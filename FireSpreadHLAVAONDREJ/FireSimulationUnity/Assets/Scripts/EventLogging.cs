@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using UnityEngine;
 
 // Represents a calendar for managing time within the simulation.
 public class SimulationCalendar
@@ -117,7 +117,7 @@ public class WeatherChangeLogger : EventLogger<WeatherEvent>
     }
 
     // Prints a summary of all logged weather change events.
-    public void PrintWeatherChangeLogs()
+    public void PrintWeatherSummary()
     {
         foreach (var evt in logs)
         {
@@ -129,6 +129,16 @@ public class WeatherChangeLogger : EventLogger<WeatherEvent>
 // Logger class specific to fire events.
 public class FireEventsLogger : EventLogger<FireEvent>
 {
+    public void LogTileStartedBurning(int time, Tile tile)
+    {
+        LogEvent(new FireEvent(time, EventType.TileStartedBurning, tile));
+    }
+
+    public void LogTileStoppedBurning(int time, Tile tile)
+    {
+        LogEvent(new FireEvent(time, EventType.TileStoppedBurning, tile));
+    }
+
     // Calculates and returns the number of burning tiles over time.
     public Dictionary<int, int> GetBurningTilesOverTime()
     {
@@ -156,5 +166,27 @@ public class FireEventsLogger : EventLogger<FireEvent>
         }
 
         return burningTilesOverTime;
+
+    }
+
+    // Returns number of all fire events 
+    private int GetTotalFireEventsCount()
+    {
+        return _events.Sum(e => e.Value.Count);
+    }
+
+    // Method to get a summary of fire events
+    public void PrintFireEventsSummary()
+    {
+        int totalEvents = GetTotalFireEventsCount();
+        Debug.Log($"Total Fire Events: {totalEvents}");
+
+        foreach (var kvp in _events)
+        {
+            foreach (var evt in kvp.Value)
+            {
+                Debug.Log($"Time: {evt.Time}, Type: {evt.Type}");
+            }
+        }
     }
 }

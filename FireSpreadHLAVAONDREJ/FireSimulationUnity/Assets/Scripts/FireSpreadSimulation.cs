@@ -24,7 +24,7 @@ public class FireSpreadSimulation
         _burningTiles = initBurningTiles; // When creating the simulation we have to tell what we set on fire.
         foreach (Tile tile in initBurningTiles)
         {
-            _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.TileStartedBurning, tile));
+            _eventLogger.LogTileStartedBurning(_calendar.CurrentTime, tile);
         }
     }
     public bool Finished()
@@ -60,7 +60,7 @@ public class FireSpreadSimulation
                     if (ignited && !nextBurningTiles.Contains(neighborTile))
                     {
                         nextBurningTiles.Add(neighborTile);
-                        _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.TileStartedBurning, neighborTile));
+                        _eventLogger.LogTileStartedBurning(_calendar.CurrentTime, neighborTile);
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class FireSpreadSimulation
             {
                 tile.Extinguish();
                 nextBurningTiles.Remove(tile);
-                _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.TileStoppedBurning, tile));
+                _eventLogger.LogTileStoppedBurning(_calendar.CurrentTime, tile);
             }
         }
 
