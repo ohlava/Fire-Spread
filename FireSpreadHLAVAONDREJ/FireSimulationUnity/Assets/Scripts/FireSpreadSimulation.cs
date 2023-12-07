@@ -12,19 +12,19 @@ public class FireSpreadSimulation
     private World _world;
     private List<Tile> _burningTiles;
     private SimulationCalendar _calendar;
-    private EventLogger _eventLogger;
+    private FireEventsLogger _eventLogger;
 
     public FireSpreadSimulation(FireSpreadParameters parameters, World world, List<Tile> initBurningTiles)
     {
         _parameters = parameters;
         _world = world;
-        _eventLogger = new EventLogger();
+        _eventLogger = new FireEventsLogger();
         _calendar = new SimulationCalendar();
 
         _burningTiles = initBurningTiles; // When creating the simulation we have to tell what we set on fire.
         foreach (Tile tile in initBurningTiles)
         {
-            _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StartedBurning, tile));
+            _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.TileStartedBurning, tile));
         }
     }
     public bool Finished()
@@ -60,7 +60,7 @@ public class FireSpreadSimulation
                     if (ignited && !nextBurningTiles.Contains(neighborTile))
                     {
                         nextBurningTiles.Add(neighborTile);
-                        _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StartedBurning, neighborTile));
+                        _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.TileStartedBurning, neighborTile));
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class FireSpreadSimulation
             {
                 tile.Extinguish();
                 nextBurningTiles.Remove(tile);
-                _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.StoppedBurning, tile));
+                _eventLogger.LogEvent(new FireEvent(_calendar.CurrentTime, EventType.TileStoppedBurning, tile));
             }
         }
 
@@ -224,126 +224,15 @@ public class FireSpreadSimulation
     }
 }
 
-public class Event<T>
-{
-    public int Time { get; private set; }
-    public EventType Type { get; private set; }
-    public T Data { get; private set; }
 
-    public Event(int time, EventType type, T data)
-    {
-        Time = time;
-        Type = type;
-        Data = data;
-    }
-}
 
-public class EventLogger
-{
-    // The key is the time, and the value is a list of events that happened at that time.
-    private Dictionary<int, List<FireEvent>> _events;
 
-    public EventLogger()
-    {
-        // Initialize the dictionary in the constructor
-        _events = new Dictionary<int, List<FireEvent>>();
-    }
 
-    public void LogEvent(FireEvent evt)
-    {
-        // Extract the time from the event
-        int time = evt.Time;
 
-        // Check if there are already events at this time
-        if (_events.ContainsKey(time))
-        {
-            // If there are, add the new event to the existing list
-            _events[time].Add(evt);
-        }
-        else
-        {
-            // If there are no events at this time, create a new list and add the event
-            _events[time] = new List<FireEvent>() { evt };
-        }
-    }
 
-    public List<FireEvent> GetLastUpdateEvents(int time)
-    {
-        // First, check if there are events at this time
-        if (!_events.ContainsKey(time))
-        {
-            // If there are no events, return an empty list
-            return new List<FireEvent>();
-        }
 
-        // If there are events, return the list of events
-        return _events[time];
-    }
 
-    public Dictionary<int, int> GetBurningTilesOverTime()
-    {
-        Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>();
 
-        // Track current count of burning tiles
-        int currentBurningCount = 0;
-
-        // Iterate over events in chronological order
-        foreach (var timeEvents in _events)
-        {
-            // At each time step, calculate the count of burning tiles
-            foreach (FireEvent evt in timeEvents.Value)
-            {
-                if (evt.Type == EventType.StartedBurning)
-                {
-                    currentBurningCount++;
-                }
-                else if (evt.Type == EventType.StoppedBurning)
-                {
-                    currentBurningCount--;
-                }
-            }
-
-            burningTilesOverTime[timeEvents.Key] = currentBurningCount;
-        }
-
-        return burningTilesOverTime;
-    }
-}
-
-public class SimulationCalendar
-{
-    public int CurrentTime { get; private set; }
-
-    public SimulationCalendar()
-    {
-        CurrentTime = 0;
-    }
-
-    public void AdvanceTime()
-    {
-        CurrentTime++;
-    }
-}
-
-public class FireEvent
-{
-    public int Time { get; private set; }
-    public EventType Type { get; private set; }
-    public Tile Tile { get; private set; }
-
-    public FireEvent(int time, EventType type, Tile tile)
-    {
-        Time = time;
-        Type = type;
-        Tile = tile;
-    }
-}
-
-public enum EventType
-{
-    StartedBurning,
-    StoppedBurning
-}
 
 public class FireSpreadParameters
 {

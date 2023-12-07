@@ -131,11 +131,11 @@ public class MainLogic : MonoBehaviour
             // Handle these events, for example by visualizing them
             foreach (FireEvent evt in events)
             {
-                if (evt.Type == EventType.StartedBurning)
+                if (evt.Type == EventType.TileStartedBurning)
                 {
                     visulizer.CreateFireOnTile(evt.Tile);
                 }
-                else if (evt.Type == EventType.StoppedBurning)
+                else if (evt.Type == EventType.TileStoppedBurning)
                 {
                     visulizer.DestroyFireOnTile(evt.Tile);
                     visulizer.DestroyVegetationOnTile(evt.Tile);

@@ -332,44 +332,6 @@ public class Weather
     }
 }
 
-public class WeatherChangeLogger
-{
-    private List<WeatherChangeLog> logs = new List<WeatherChangeLog>();
-
-    public void LogChange(string property, object oldValue, object newValue)
-    {
-        logs.Add(new WeatherChangeLog(DateTime.Now, property, oldValue, newValue));
-    }
-
-    public void PrintLogs()
-    {
-        foreach (WeatherChangeLog log in logs)
-        {
-            Debug.Log($"[{log.ChangeTime}] {log.Property} changed from {log.OldValue} to {log.NewValue}");
-        }
-    }
-}
-
-public struct WeatherChangeLog
-{
-    public DateTime ChangeTime { get; }
-    public string Property { get; }
-    public object OldValue { get; }
-    public object NewValue { get; }
-
-    public WeatherChangeLog(DateTime changeTime, string property, object oldValue, object newValue)
-    {
-        ChangeTime = changeTime;
-        Property = property;
-        OldValue = oldValue;
-        NewValue = newValue;
-    }
-}
-
-
-
-
-
 
 
 
