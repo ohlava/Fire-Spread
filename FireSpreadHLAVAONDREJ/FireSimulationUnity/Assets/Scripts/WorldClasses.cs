@@ -7,65 +7,39 @@ using UnityEngine;
 
 public class World
 {
-    private int width;
-    private int depth;
+    public World(int width, int depth)
+    {
+        Width = Math.Max(0, width);
+        Depth = Math.Max(0, depth);
+        Grid = new Tile[Width, Depth];
+        Weather = new Weather(0, 0);
+    }
+
+    // Reset the weather and reset all non static atributes for all the tiles. 
+    public void Reset()
+    {
+        // Reset weather to init state
+        Weather.Reset();
+
+        // Reset every Tile to init state
+        foreach (Tile tile in Grid)
+        {
+            tile.Reset();
+        }
+    }
+
+    public int Width { get; }
+    public int Depth { get; }
 
     public Tile[,] Grid;
 
-    public Weather Weather =  new Weather(UnityEngine.Random.Range(0, 360), UnityEngine.Random.Range(0f, 15f));
-
-    public int Width
-    {
-        get { return width; }
-        set { width = Math.Max(0, value); }
-    }
-
-    public int Depth
-    {
-        get { return depth; }
-        set { depth = Math.Max(0, value); }
-    }
-
-    public World(int width, int depth)
-    {
-        Width = width;
-        Depth = depth;
-        Grid = new Tile[width, depth];
-    }
-
-    public (int xDiff, int yDiff) GetDifferenceBetweenTiles(Tile tile1, Tile tile2)
+    // Return how many tiles you have to move from one tile to get to the second tile for x, y position.
+    public (int xDiff, int yDiff) GetTilesDistanceXY(Tile tile1, Tile tile2)
     {
         int xDiff = tile1.WidthPosition - tile2.WidthPosition;
         int yDiff = tile1.DepthPosition - tile2.DepthPosition;
 
         return (xDiff, yDiff);
-    }
-
-    public void UpdateWeather()
-    {
-        // TODO log weather change / make newWeather
-
-        // Randomly change the wind direction by +/- 10 degrees
-        int windDirectionChange = UnityEngine.Random.Range(-10, 10);
-        Weather.WindDirection += windDirectionChange;
-
-        // Randomly change the wind strength by +/- 5 km/h
-        float windStrengthChange = UnityEngine.Random.Range(-5f, 5f);
-        Weather.WindSpeed += windStrengthChange;
-
-        // Randomly change the temperature by +/- 2 degrees Celsius
-        //float temperatureChange = UnityEngine.Random.Range(-2f, 2f);
-        //Weather.Temperature += temperatureChange;
-
-        // other changes
-
-        // Ensure the wind direction stays within 0-359 degrees
-        if (Weather.WindDirection < 0) Weather.WindDirection += 360;
-        if (Weather.WindDirection >= 360) Weather.WindDirection -= 360;
-
-        // Ensure the wind strength is not negative
-        Weather.WindSpeed = Mathf.Max(0f, Weather.WindSpeed);
-
     }
 
     // Return the tile at the specified position in the grid.
@@ -78,22 +52,22 @@ public class World
         return Grid[x, y];
     }
 
-    // Returns a list of neighboring tiles given some tile.
-    public IEnumerable<Tile> GetNeighborTiles(Tile tile)
+    // Returns a list of all neighboring tiles given some tile.
+    public IEnumerable<Tile> GetNeighborTiles(Tile tile, int distance = 1)
     {
         int x = tile.WidthPosition;
         int y = tile.DepthPosition;
 
-        for (int i = -1; i <= 1; i++)
+        for (int i = -distance; i <= distance; i++)
         {
-            for (int j = -1; j <= 1; j++)
+            for (int j = -distance; j <= distance; j++)
             {
                 int nx = x + i;
                 int ny = y + j;
 
-                if (nx != x || ny != y) // not the same
+                if (nx != x || ny != y) // not the same position
                 {
-                    if (nx >= 0 && nx < Width && ny >= 0 && ny < Depth)
+                    if (nx >= 0 && nx < Grid.GetLength(0) && ny >= 0 && ny < Grid.GetLength(1))
                     {
                         yield return GetTileAt(nx, ny);
                     }
@@ -102,6 +76,7 @@ public class World
         }
     }
 
+    // Returns a list of neighboring tiles given some tile but only ones that are neighbouring with some edge.
     public IEnumerable<Tile> GetEdgeNeighborTiles(Tile tile)
     {
         int x = tile.WidthPosition;
@@ -120,16 +95,20 @@ public class World
             yield return GetTileAt(x, y - 1);
     }
 
-    // Reset the world, reset all non static atributes for all the tiles. 
-    public void Reset()
+    public Weather Weather;
+
+    public void UpdateWeather()
     {
-        foreach (Tile tile in Grid)
-        {
-            tile.IsBurning = false;
-            tile.HasBurned = false;
-            tile.BurningFor = 0;
-        }
+        // Randomly change the wind direction by +/- 10 degrees
+        int windDirectionChange = UnityEngine.Random.Range(-15, 15);
+
+        // Randomly change the wind strength by +/- 5 km/h
+        float windStrengthChange = UnityEngine.Random.Range(-4f, 4f);
+
+        Weather.ChangeWindDirection(Weather.WindDirection + windDirectionChange);
+        Weather.ChangeWindSpeed(Weather.WindSpeed + windStrengthChange);
     }
+
 
     private static readonly string SAVE_FILE_NAME = "worldSave.json";
     private static readonly string SAVE_FILE_PATH = Path.Combine(Application.persistentDataPath, SAVE_FILE_NAME);
@@ -166,8 +145,53 @@ public enum VegetationType
 
 public class Tile
 {
-    public int widthPosition; // x position in the world
-    public int depthPosition; // y position in the world
+    public Tile(float height, int moisture, VegetationType vegetation, int positionX, int positionY)
+    {
+        Height = height;
+        Moisture = moisture;
+        Vegetation = vegetation;
+
+        isBurning = false;
+        BurningFor = 0;
+
+        // TODO adjust rules for BurnTime / these rules should be outside interpreted by a firesimulation based on 
+        switch (vegetation)
+        {
+            case VegetationType.Grass:
+                BurnTime = 1;
+                break;
+            case VegetationType.Sparse:
+                BurnTime = 2;
+                break;
+            case VegetationType.Swamp:
+                BurnTime = 3;
+                break;
+            case VegetationType.Forest:
+                BurnTime = 4;
+                break;
+            default:
+                Debug.Log("Some vegetation type is not handled.");
+                break;
+        }
+        if (moisture >= 50)
+        {
+            BurnTime++;
+        }
+
+        widthPosition = positionX;
+        depthPosition = positionY;
+    }
+
+    // Resets non static variables
+    public void Reset()
+    {
+        IsBurning = false;
+        HasBurned = false;
+        BurningFor = 0;
+    }
+
+    private int widthPosition; // x position in the world
+    private int depthPosition; // y position in the world
     private float height;
 
     private int moisture; // in percents, 100 is water
@@ -220,41 +244,6 @@ public class Tile
         set { isBurning = value && !HasBurned; } // Ensure it won't be set if HasBurned is true.
     }
 
-    public Tile(float height, int moisture, VegetationType vegetation, int positionX, int positionY)
-    {
-        Height = height;
-        Moisture = moisture;
-        Vegetation = vegetation;
-
-        isBurning = false;
-        BurningFor = 0;
-        // TODO adjust rules for BurnTime
-        switch (vegetation)
-        {
-            case VegetationType.Grass:
-                BurnTime = 1;
-                break;
-            case VegetationType.Sparse:
-                BurnTime = 2;
-                break;
-            case VegetationType.Swamp:
-                BurnTime = 3;
-                break;
-            case VegetationType.Forest:
-                BurnTime = 4;
-                break;
-            default:
-                Debug.Log("Some vegetation type is not handled.");
-                break;
-        }
-        if (moisture >= 50)
-        {
-            BurnTime++;
-        }
-        widthPosition = positionX;
-        depthPosition = positionY;
-    }
-
     // Start burning this tile just if it's not already burning or burned.
     public bool Ignite()
     {
@@ -275,10 +264,27 @@ public class Tile
     }
 }
 
+
+
 public class Weather
 {
-    private int windDirection { get; set; } // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
+    public Weather(int windDirection, float windStrength)
+    {
+        WindDirection = windDirection;
+        WindSpeed = windStrength;
+        logger = new WeatherChangeLogger();
+    }
+
+    public void Reset()
+    {
+        WindDirection = UnityEngine.Random.Range(0, 360);
+        WindSpeed = UnityEngine.Random.Range(0f, 15f);
+        logger = new WeatherChangeLogger();
+    }
+
+    private int windDirection; // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
     private float windSpeed; // in km/h
+
     //private float temperature { get; set; } // in degrees Celsius
     //private float humidity; // in percentage, 0-100
     //private float precipitation; // in mm
@@ -301,14 +307,66 @@ public class Weather
         set { windSpeed = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
     }
 
-    public float Temperature { get; set; }
+    private WeatherChangeLogger logger;
 
-    public Weather(int windDirection, float windStrength)
+    public void ChangeWindDirection(int newDirection)
     {
-        WindDirection = windDirection;
-        WindSpeed = windStrength;
+        int oldDirection = WindDirection;
+        WindDirection = newDirection;
+
+        // Ensure the wind direction stays within 0-359 degrees
+        if (WindDirection < 0) newDirection += 360;
+        if (WindDirection >= 360) newDirection -= 360;
+
+        logger.LogChange("WindDirection", oldDirection, WindDirection);
+    }
+
+    public void ChangeWindSpeed(float newSpeed)
+    {
+        float oldSpeed = WindSpeed;
+
+        // Ensure the wind strength is not negative
+        WindSpeed = Mathf.Max(0f, newSpeed);
+
+        logger.LogChange("WindSpeed", oldSpeed, WindSpeed);
     }
 }
+
+public class WeatherChangeLogger
+{
+    private List<WeatherChangeLog> logs = new List<WeatherChangeLog>();
+
+    public void LogChange(string property, object oldValue, object newValue)
+    {
+        logs.Add(new WeatherChangeLog(DateTime.Now, property, oldValue, newValue));
+    }
+
+    public void PrintLogs()
+    {
+        foreach (WeatherChangeLog log in logs)
+        {
+            Debug.Log($"[{log.ChangeTime}] {log.Property} changed from {log.OldValue} to {log.NewValue}");
+        }
+    }
+}
+
+public struct WeatherChangeLog
+{
+    public DateTime ChangeTime { get; }
+    public string Property { get; }
+    public object OldValue { get; }
+    public object NewValue { get; }
+
+    public WeatherChangeLog(DateTime changeTime, string property, object oldValue, object newValue)
+    {
+        ChangeTime = changeTime;
+        Property = property;
+        OldValue = oldValue;
+        NewValue = newValue;
+    }
+}
+
+
 
 
 
