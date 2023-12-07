@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/CameraHandler.cs" />
     <Compile Include="Assets/Scripts/WindIndicator.cs" />
+    <Compile Include="Assets/Scripts/Events.cs" />
     <Compile Include="Assets/Scripts/SettingsMenu.cs" />
     <Compile Include="Assets/Scripts/WorldBuilder.cs" />
     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
@@ -66,9 +67,8 @@
     <Compile Include="Assets/Scripts/GraphVisulizer.cs" />
     <Compile Include="Assets/Scripts/WorldClasses.cs" />
     <Compile Include="Assets/Scripts/FireSpreadSimulation.cs" />
-    <Compile Include="Assets\Scripts\New.cs" />
+    <Compile Include="Assets/Scripts/MainLogic.cs" />
     <Compile Include="Assets/Scripts/Visulizer.cs" />
-    <Compile Include="Assets\Scripts\Events.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
