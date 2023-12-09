@@ -151,37 +151,39 @@ public class MainLogic : MonoBehaviour
     }
 
 
+    
 
-    private void HandleCameraMove(Vector3 direction)
+    private void HandleCameraMove(float zoomChange)
     {
-        // TODO calculate based on world size OR camera always pointing to the middle of the map
-        float speed = 10f;
+        float minZoom = 5f;
+        float maxZoom = 50f;
+        float zoomChangeSpeed = 0.05f;
 
-        Camera.main.transform.Translate(direction * speed * Time.deltaTime);
-        SetWindIndicatorCamera();
-
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + zoomChange * zoomChangeSpeed, minZoom, maxZoom);
     }
 
     private void HandleCameraAngleChange(Vector3 rotationChange)
     {
-        // TODO calculate based on world size OR camera always pointing to the middle of the map
+        Vector3 worldCenter = new Vector3(world.Width / 2f, 0, world.Depth / 2f);
+        float upDownSpeed = 50f;
+        float speed = 50f;
+        float cameraDistance = 100f;
 
-        float speed = 30.0f; 
-        float upDownSpeed = 30.0f;
+        // Calculate new rotation angles
+        Vector3 angles = Camera.main.transform.eulerAngles + new Vector3(-1 * rotationChange.x * upDownSpeed * Time.deltaTime, -1 * rotationChange.y * speed * Time.deltaTime, 0);
 
-        Vector3 adjustedRotationChange = new Vector3(rotationChange.x * upDownSpeed * Time.deltaTime, rotationChange.y * speed * Time.deltaTime, rotationChange.z);
+        angles.x = Mathf.Clamp(angles.x, 10f, 89f); // Min/max angle range
 
-        Vector3 newRotation = Camera.main.transform.eulerAngles + adjustedRotationChange;
-        // Ensure the rotation stays normal for the X-axis
-        if (newRotation.x > 90.0f && newRotation.x < 270.0f)
-            newRotation.x = 90.0f;
+        Camera.main.transform.eulerAngles = angles;
 
-        Camera.main.transform.eulerAngles = newRotation;
+        // Move camera to new position
+        Camera.main.transform.position = worldCenter - (Camera.main.transform.forward * cameraDistance);
 
-        // Second camera for wind indicator is responsible for maintaining same angle as the first so we see 
+        // Always look at the world center
+        Camera.main.transform.LookAt(worldCenter);
+
+        // Update Wind Indicator
         SetWindIndicatorCamera();
-
-        return;
     }
 
     private void SetWindIndicatorCamera()

@@ -13,7 +13,7 @@ public class InputHandler : MonoBehaviour
     public delegate void TileClickHandler(Tile clickedTile);
     public event TileClickHandler OnTileClicked;
 
-    public delegate void CameraMoveHandler(Vector3 direction);
+    public delegate void CameraMoveHandler(float zoomChange);
     public event CameraMoveHandler OnCameraMove;
 
     public delegate void CameraAngleChangeHandler(Vector3 rotation);
@@ -154,23 +154,18 @@ public class InputHandler : MonoBehaviour
 
     private void HandleCameraMove()
     {
-        Vector3 direction = new Vector3();
+        float zoomChange = 0;
 
-        if (Input.GetKey(KeyCode.W))
-            direction += Vector3.forward;
+        if (Input.GetKey(KeyCode.I))
+            zoomChange -= 1;
 
-        if (Input.GetKey(KeyCode.S))
-            direction += Vector3.back;
+        if (Input.GetKey(KeyCode.K))
+            zoomChange += 1;
 
-        if (Input.GetKey(KeyCode.A))
-            direction += Vector3.left;
-
-        if (Input.GetKey(KeyCode.D))
-            direction += Vector3.right;
-
-        if (direction != Vector3.zero)
-            // Notify about the rotation changes
-            OnCameraMove?.Invoke(direction);
+        if (zoomChange != 0)
+        {
+            OnCameraMove?.Invoke(zoomChange);
+        }
     }
 
     private void HandleCameraAngleChange()
@@ -178,17 +173,17 @@ public class InputHandler : MonoBehaviour
         Vector3 rotationChange = new Vector3();
 
         // Vertical rotation changes
-        if (Input.GetKey(KeyCode.K))
+        if (Input.GetKey(KeyCode.S))
             rotationChange += Vector3.right;
 
-        if (Input.GetKey(KeyCode.I))
+        if (Input.GetKey(KeyCode.W))
             rotationChange += Vector3.left;
 
         // Horizontal rotation changes
-        if (Input.GetKey(KeyCode.J))
+        if (Input.GetKey(KeyCode.A))
             rotationChange += Vector3.down;
 
-        if (Input.GetKey(KeyCode.L))
+        if (Input.GetKey(KeyCode.D))
             rotationChange += Vector3.up;
 
         if (rotationChange != Vector3.zero)
