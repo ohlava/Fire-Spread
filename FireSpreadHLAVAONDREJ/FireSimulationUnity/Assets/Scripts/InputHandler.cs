@@ -50,8 +50,6 @@ public class InputHandler : MonoBehaviour
 
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
-    CameraHandler cameraHandler;
-    [SerializeField] GameObject cameraHandlerObj;
 
     [SerializeField] private Slider simulationSpeedSlider;
     [SerializeField] private GameObject worldWidthInputFieldObj;
@@ -75,7 +73,6 @@ public class InputHandler : MonoBehaviour
     void Awake()
     {
         visulizer = visulizerObj.GetComponent<Visulizer>();
-        cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
 
         worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
         worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
@@ -194,7 +191,11 @@ public class InputHandler : MonoBehaviour
     private void HandleActionButtons()
     {
         if (Input.GetKey(KeyCode.R))
-            cameraHandler.SetCameraPositionAndOrientation(worldWidth, worldDepth);
+        {
+            CameraHandler.SetCameraPositionAndOrientation(worldWidth, worldDepth);
+            OnCameraAngleChange?.Invoke(new Vector3(0,0,0));
+        }
+            
         if (Input.GetKey(KeyCode.Space))
             TriggerRun();
     }

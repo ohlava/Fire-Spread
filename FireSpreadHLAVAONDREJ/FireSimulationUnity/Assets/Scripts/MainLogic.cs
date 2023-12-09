@@ -16,9 +16,6 @@ public class MainLogic : MonoBehaviour
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
 
-    CameraHandler cameraHandler;
-    [SerializeField] GameObject cameraHandlerObj;
-
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
 
@@ -52,8 +49,6 @@ public class MainLogic : MonoBehaviour
         graphVisulizer = FindObjectOfType<GraphVisulizer>();
 
         visulizer = visulizerObj.GetComponent<Visulizer>();
-
-        cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
 
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
@@ -422,7 +417,10 @@ public class MainLogic : MonoBehaviour
 
         PrepareForNewWorld();
 
-        cameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
+
+        CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
+        // trigger with default zero vector so cameras size is set correctly
+        HandleCameraAngleChange(new Vector3(0, 0, 0));
 
         SetWindIndicatorCamera();
     }
