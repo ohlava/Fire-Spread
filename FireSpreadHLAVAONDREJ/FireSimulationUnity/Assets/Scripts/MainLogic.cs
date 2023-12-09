@@ -27,8 +27,8 @@ public class MainLogic : MonoBehaviour
 
     GraphVisulizer graphVisulizer;
 
-    [SerializeField] private Camera secondaryWindArrowCamera;
-    [SerializeField] private GameObject arrow; // for wind indicator
+    [SerializeField] private Camera windArrowCamera;
+    [SerializeField] private GameObject windArrow; // for wind indicator
 
     [SerializeField] TextMeshProUGUI InfoPanel;
 
@@ -152,16 +152,14 @@ public class MainLogic : MonoBehaviour
 
 
 
-
-
-
-
     private void HandleCameraMove(Vector3 direction)
     {
         // TODO calculate based on world size OR camera always pointing to the middle of the map
         float speed = 10f;
 
         Camera.main.transform.Translate(direction * speed * Time.deltaTime);
+        SetWindIndicatorCamera();
+
     }
 
     private void HandleCameraAngleChange(Vector3 rotationChange)
@@ -191,17 +189,26 @@ public class MainLogic : MonoBehaviour
         // Calculate the direction vector from the main camera to its focal point (assuming it's the world's center)
         Vector3 mainCameraDirection = Camera.main.transform.forward;
 
-        // Determine the distance from the arrow to the secondary camera
-        float distanceToArrow = (secondaryWindArrowCamera.transform.position - arrow.transform.position).magnitude;
+        // Determine the distance from the arrow to the windArrowCamera
+        float distanceToArrow = (windArrowCamera.transform.position - windArrow.transform.position).magnitude;
 
         // Update the secondary camera's position to be at the same distance from the arrow but in the opposite direction of the main camera
         // Here we invert the direction by using -mainCameraDirection
-        Vector3 secondaryCameraPosition = arrow.transform.position - mainCameraDirection * distanceToArrow;
+        Vector3 windArrowCameraPosition = windArrow.transform.position - mainCameraDirection * distanceToArrow;
 
-        secondaryWindArrowCamera.transform.position = secondaryCameraPosition;
+        windArrowCamera.transform.position = windArrowCameraPosition;
 
-        // Now, make the secondary camera LookAt the arrow
-        secondaryWindArrowCamera.transform.LookAt(arrow.transform.position);
+        // Check if the main camera is looking straight down
+        if (mainCameraDirection == Vector3.down)
+        {
+            // If yes, copy the rotation of the main camera to the windArrowCamera
+            windArrowCamera.transform.rotation = Camera.main.transform.rotation;
+        }
+        else
+        {
+            // Otherwise, make the windArrowCamera LookAt the arrow center
+            windArrowCamera.transform.LookAt(windArrow.transform.position);
+        }
 
         return;
     }

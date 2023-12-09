@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028326, g: 0.22571333, b: 0.30692202, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028373, g: 0.22571398, b: 0.30692294, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -636,7 +636,7 @@ GameObject:
   - component: {fileID: 175735167}
   - component: {fileID: 175735166}
   m_Layer: 0
-  m_Name: secondaryWindCamera
+  m_Name: windArrowCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -718,7 +718,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 175735165}
   m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
-  m_LocalPosition: {x: 29.55, y: 510.8, z: 742}
+  m_LocalPosition: {x: 475.55, y: 510.31, z: -814.34033}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -737,7 +737,7 @@ GameObject:
   - component: {fileID: 212925921}
   - component: {fileID: 212925920}
   m_Layer: 5
-  m_Name: wind speed
+  m_Name: windSpeed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -872,7 +872,7 @@ GameObject:
   - component: {fileID: 314896830}
   - component: {fileID: 314896829}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: windArrowTexture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -887,8 +887,8 @@ RectTransform:
   m_GameObject: {fileID: 314896827}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1712206359}
   m_RootOrder: 6
@@ -1337,8 +1337,8 @@ MonoBehaviour:
   cameraHandlerObj: {fileID: 888089273}
   inputHandlerObj: {fileID: 846402035}
   windIndicatorObj: {fileID: 1212355966}
-  secondaryWindArrowCamera: {fileID: 175735168}
-  arrow: {fileID: 1554117721}
+  windArrowCamera: {fileID: 175735168}
+  windArrow: {fileID: 1554117721}
   InfoPanel: {fileID: 834873593}
 --- !u!1 &490140661
 GameObject:
@@ -3304,8 +3304,8 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0.6039216, b: 0.85882354, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3321,8 +3321,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -3728,7 +3728,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1212355966}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30, y: 493.49, z: 758.34033}
+  m_LocalPosition: {x: 476, y: 493, z: -798}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3996,7 +3996,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6087225115361130385, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
       propertyPath: m_Name
-      value: arrow
+      value: windArrow
       objectReference: {fileID: 0}
     - target: {fileID: 6859538934173527339, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
       propertyPath: m_RootOrder
@@ -4004,15 +4004,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6859538934173527339, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30
+      value: 476
       objectReference: {fileID: 0}
     - target: {fileID: 6859538934173527339, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 500
+      value: 499.51
       objectReference: {fileID: 0}
     - target: {fileID: 6859538934173527339, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 750
+      value: -806.34033
       objectReference: {fileID: 0}
     - target: {fileID: 6859538934173527339, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
       propertyPath: m_LocalRotation.w
