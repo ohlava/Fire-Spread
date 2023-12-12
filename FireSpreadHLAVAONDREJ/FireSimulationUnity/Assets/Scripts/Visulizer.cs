@@ -31,6 +31,7 @@ public class Visulizer : MonoBehaviour
 
     [SerializeField] Material grassMaterial;
     [SerializeField] Material waterMaterial;
+    [SerializeField] Material burnedMaterial;
     [SerializeField] Material fireMaterial;
 
     [SerializeField] GameObject TilePrefab;
@@ -254,15 +255,17 @@ public class Visulizer : MonoBehaviour
     }
 
     // Tile instance should already be in the tileToInstanceDict
-    private void SetAppropriateMaterial(Tile tile)
+    public void SetAppropriateMaterial(Tile tile)
     {
         int maxVegetationType = Enum.GetNames(typeof(VegetationType)).Length;
 
-        // If tile is a water tile
-        if (tile.Moisture == 100)
+        if (tile.Moisture == 100)  // Is a water tile
         {
-            // GetTileInstance(tile).SetColorTo(Color.blue);
             GetTileInstance(tile).SetMaterialTo(waterMaterial);
+        }
+        else if (tile.IsBurning)
+        {
+            GetTileInstance(tile).SetMaterialTo(fireMaterial);
         }
         else // Set tile color based on vegetation level
         {
@@ -273,8 +276,7 @@ public class Visulizer : MonoBehaviour
 
     public void MakeTileBurned(Tile tile)
     {
-        // GetTileInstance(tile).SetColorTo(new Color32(92, 64, 51, 255));
-        GetTileInstance(tile).SetMaterialTo(fireMaterial);
+        GetTileInstance(tile).SetMaterialTo(burnedMaterial);
     }
 
     // Generate all vegetationInstances - for the standard mode
@@ -358,10 +360,12 @@ public class Visulizer : MonoBehaviour
     public void CreateFireOnTile(Tile tile)
     {
         GameObject tileInstance = tileToInstanceDict[tile];
+
+        tileInstance.SetMaterialTo(fireMaterial);
+
+        // In addition if operating in standard settings add nicer fire animation on top of this tile
         if (mode == VisulizerMode.Standard)
         {
-            tileInstance.SetColorTo(Color.red);
-
             // Get the position and height of the tile instance
             Vector3 tilePosition = tileInstance.GetPosition();
             float tileHeight = tileInstance.GetHeight();
@@ -371,10 +375,6 @@ public class Visulizer : MonoBehaviour
 
             // Add the created GameObject to the Dictionary
             tileToFireInstanceDict[tile] = fireInstance;
-        }
-        else
-        {
-            tileInstance.SetColorTo(Color.red);
         }
     }
 

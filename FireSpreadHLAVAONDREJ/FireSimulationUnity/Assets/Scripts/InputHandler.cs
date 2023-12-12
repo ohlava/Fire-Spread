@@ -129,7 +129,7 @@ public class InputHandler : MonoBehaviour
     private void HandleTileClick()
     {
         // Checks if the left mouse button is pressed and ensures that the pointer is not over a UI object 
-        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) // Input.GetMouseButtonDown(0) - (user can hold) / Input.GetMouseButtonDown(0) (only clicking)
+        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) // Input.GetMouseButton(0) - (user can hold) / Input.GetMouseButtonDown(0) (only clicking)
         {
             // Cast a ray from camera to click point
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

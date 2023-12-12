@@ -24,14 +24,12 @@ public class MainLogic : MonoBehaviour
 
     GraphVisulizer graphVisulizer;
 
+    private Tile currentlyHoveredTile = null;
+
     [SerializeField] private Camera windArrowCamera;
     [SerializeField] private GameObject windArrow; // for wind indicator
 
     [SerializeField] TextMeshProUGUI InfoPanel;
-
-    // for tile hover feature
-    private Tile currentlyHoveredTile = null;
-    private Color originalTileColor;
 
     private float elapsed = 0f;
     private float speedOfUpdates { get; set; } // in seconds
@@ -145,9 +143,6 @@ public class MainLogic : MonoBehaviour
         }
     }
 
-
-    
-
     private void HandleCameraMove(float zoomChange)
     {
         float minZoom = 5f;
@@ -225,33 +220,22 @@ public class MainLogic : MonoBehaviour
 
     private void HandleTileHover(bool hovered, Tile hoveredOverTile)
     {
-        if (hovered == true)
-        {
-            if (currentState == State.NewWorldState)
-            {
-                if (currentlyHoveredTile != hoveredOverTile) // Check if we're hovering a new tile
-                {
-                    ResetHoveredTileColor(); // Reset the old tile's color
+        ResetHoveredTileColor(); // Reset the old tile's color
 
-                    currentlyHoveredTile = hoveredOverTile;
-                    GameObject tileInstance = visulizer.GetTileInstance(hoveredOverTile);
-                    if (tileInstance != null)
-                    {
-                        Renderer renderer = tileInstance.GetComponent<Renderer>();
-                        if (renderer != null)
-                        {
-                            originalTileColor = renderer.material.color; // store original color
-                            renderer.material.color = Color.white;
-                        }
-                    }
+        // NewWorld state and also check if we're hovering a new tile
+        if (hovered == true && currentState == State.NewWorldState && currentlyHoveredTile != hoveredOverTile)
+        {
+            currentlyHoveredTile = hoveredOverTile;
+            GameObject tileInstance = visulizer.GetTileInstance(hoveredOverTile);
+            if (tileInstance != null)
+            {
+                Renderer renderer = tileInstance.GetComponent<Renderer>();
+                if (renderer != null)
+                {
+                    renderer.material.color = Color.white;
                 }
             }
         }
-        else
-        {
-            ResetHoveredTileColor();
-        }
-        
     }
 
     private void ResetHoveredTileColor()
@@ -261,12 +245,12 @@ public class MainLogic : MonoBehaviour
             GameObject tileInstance = visulizer.GetTileInstance(currentlyHoveredTile);
             if (tileInstance != null)
             {
-                tileInstance.SetColorTo(originalTileColor);
+                // set color back to its original color
+                visulizer.SetAppropriateMaterial(currentlyHoveredTile);
             }
             currentlyHoveredTile = null;
         }
     }
-
 
     // Handling program states and possible state transitions
     public void HandleEvent(State nextState)
@@ -417,7 +401,6 @@ public class MainLogic : MonoBehaviour
 
         PrepareForNewWorld();
 
-
         CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
         // trigger with default zero vector so cameras size is set correctly
         HandleCameraAngleChange(new Vector3(0, 0, 0));
@@ -437,6 +420,8 @@ public class MainLogic : MonoBehaviour
 
         initBurningTiles.Clear();
         VisulizerRemakeAll();
+
+        currentlyHoveredTile = null;
     }
 
     private void VisulizerRemakeAll()
