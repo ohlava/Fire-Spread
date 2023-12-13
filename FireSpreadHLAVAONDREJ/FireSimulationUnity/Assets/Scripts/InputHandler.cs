@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class InputHandler : MonoBehaviour
 {
@@ -198,6 +199,11 @@ public class InputHandler : MonoBehaviour
             
         if (Input.GetKey(KeyCode.Space))
             TriggerRun();
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 
     public void TriggerGraph()

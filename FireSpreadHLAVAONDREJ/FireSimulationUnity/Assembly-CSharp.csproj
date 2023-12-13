@@ -63,6 +63,7 @@
     <Compile Include="Assets/Scripts/WorldClasses.cs" />
     <Compile Include="Assets/Scripts/InputHandler.cs" />
     <Compile Include="Assets/Scripts/WorldBuilder.cs" />
+    <Compile Include="Assets/Scripts/MainMenu.cs" />
     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
     <Compile Include="Assets/Scripts/Visulizer.cs" />
     <Compile Include="Assets/Scripts/GraphVisulizer.cs" />
