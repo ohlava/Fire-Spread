@@ -67,7 +67,6 @@
     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
     <Compile Include="Assets/Scripts/Visulizer.cs" />
     <Compile Include="Assets/Scripts/GraphVisulizer.cs" />
-    <Compile Include="Assets/Scripts/TutorialManager.cs" />
     <Compile Include="Assets/Scripts/FireSpreadSimulation.cs" />
     <Compile Include="Assets/Scripts/Events.cs" />
     <Compile Include="Assets/Scripts/MainLogic.cs" />

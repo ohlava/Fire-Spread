@@ -88,10 +88,7 @@ public class MainLogic : MonoBehaviour
 
                 updateWindIndicator();
 
-                if (showingGraph) // TODO just show, update seperately
-                {
-                    showGraph(showingGraph); // for graph update
-                }
+                UpdateGraph();
             }
             else if (currentState == State.StoppedState) // simulation not running
             {
@@ -247,7 +244,6 @@ public class MainLogic : MonoBehaviour
                     case State.RunningState:
                         currentState = State.RunningState;
                         fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
-                        graphVisulizer.ClearGraph();
                         InfoPanel.text = "Simulation running";
                         break;
                     case State.NewWorldState:
@@ -268,7 +264,6 @@ public class MainLogic : MonoBehaviour
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        graphVisulizer.ClearGraph();
                         InfoPanel.text = "New world - set fire";
                         break;
                 }
@@ -284,7 +279,6 @@ public class MainLogic : MonoBehaviour
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        graphVisulizer.ClearGraph();
                         InfoPanel.text = "New world - set fire";
                         break;
                 }
@@ -297,21 +291,36 @@ public class MainLogic : MonoBehaviour
     public void OnGraphButtonClicked()
     {
         showingGraph = !showingGraph;
-        showGraph(showingGraph);
+
+        UpdateGraph();
+    }
+
+    private void UpdateGraph()
+    {
+        if (graphVisulizer == null) return;
+
+        if (showingGraph)
+        {
+            if (fireSpreadSimulation != null)
+            {
+                Dictionary<int, int> burningTilesOverTime = fireSpreadSimulation.GetBurningTilesOverTime();
+                graphVisulizer.ClearGraph();
+                graphVisulizer.SetData(burningTilesOverTime);
+                graphVisulizer.UpdateGraph();
+                graphVisulizer.ShowGraph();
+            }
+        }
+        else
+        {
+            graphVisulizer.HideGraph();
+        }
     }
 
     public void OnResetButtonClicked()
     {
-        currentState = State.NewWorldState;
-        InfoPanel.text = "New world - set fire";
-
         world.Reset();
 
-        initBurningTiles.Clear();
-
-        VisulizerRemakeAll();
-
-        graphVisulizer.ClearGraph();
+        PrepareForNewWorld();
     }
 
     public void OnNewWorldButtonClicked()
@@ -335,7 +344,7 @@ public class MainLogic : MonoBehaviour
         int requiredWidth = inputHandler.worldWidth;
         int requiredDepth = inputHandler.worldDepth;
 
-        Map<float> customHeightMap = mapImporter.GetMap(requiredWidth,requiredDepth);
+        Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth);
 
         // TODO import other types as well
         Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
@@ -405,6 +414,15 @@ public class MainLogic : MonoBehaviour
         VisulizerRemakeAll();
 
         currentlyHoveredTile = null;
+
+        if (graphVisulizer != null)
+        {
+            graphVisulizer.ClearGraph();
+            graphVisulizer.SetAxes("burning tiles", "time");
+            graphVisulizer.SetData(new Dictionary<int, int>());
+            graphVisulizer.UpdateGraph();
+            graphVisulizer.HideGraph();
+        }
     }
 
     private void VisulizerRemakeAll()
@@ -415,22 +433,5 @@ public class MainLogic : MonoBehaviour
 
         visulizer.CreateWorldTiles(world);
         visulizer.CreateAllVegetation(world);
-    }
-
-    // Uses GraphVisulizer to draw the graph of all the simulation update states, now tiles burning over time
-    private void showGraph(bool show)
-    {
-        if (showingGraph)
-        {
-            if (fireSpreadSimulation != null)
-            {
-                Dictionary<int, int> d = fireSpreadSimulation.GetBurningTilesOverTime();
-                graphVisulizer.DrawGraph(d, "burning tiles", "time");
-            }
-        }
-        else
-        {
-            graphVisulizer.HideGraph();
-        }
     }
 }

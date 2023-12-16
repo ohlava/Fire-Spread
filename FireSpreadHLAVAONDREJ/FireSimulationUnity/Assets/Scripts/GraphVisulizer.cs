@@ -5,16 +5,18 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 using System.Linq;
+using TMPro;
 
 public class GraphVisulizer : MonoBehaviour
 {
-    public RectTransform panel;
-    public GameObject pointPrefab;
-    public Text xAxisLabel;
-    public Text yAxisLabel;
-    public Text last_maxLabel;
+    [SerializeField] RectTransform panel;
+    [SerializeField] GameObject pointPrefab;
+    [SerializeField] TextMeshProUGUI xAxisLabel;
+    [SerializeField] TextMeshProUGUI yAxisLabel;
+    [SerializeField] TextMeshProUGUI lastMaxLabel;
 
-    private List<GameObject> points; // List to keep track of point instances
+    private List<GameObject> points = new List<GameObject>(); // List to keep track of point instances
+    private Dictionary<int, int> currentData;
 
     private float width;
     private float height;
@@ -31,43 +33,43 @@ public class GraphVisulizer : MonoBehaviour
         width = panel.rect.width * 0.85f;
         height = panel.rect.height * 0.85f;
 
-        // hide the panel and texts
+        // Hide the graph initially
         HideGraph();
-
-        points = new List<GameObject>();
     }
 
-    public void DrawGraph(Dictionary<int, int> data, string Y_text = "Y axis", string X_text = "X axis")
+    public void SetData(Dictionary<int, int> data)
     {
-        // clear previous graph
+        currentData = data;
+    }
+
+    public void SetAxes(string Y_text = "Y axis", string X_text = "X axis")
+    {
+        xAxisLabel.text = X_text;
+        yAxisLabel.text = Y_text;
+    }
+
+    public void UpdateGraph()
+    {
+        // Clear previously created Graph (points)
         ClearGraph();
 
-        if (data.Count == 0) // otherwise data.Values.Max() has a problem
+        if (currentData.Count == 0) // otherwise data.Values.Max() has a problem
         {
             return;
         }
 
-        // rename the axes
-        yAxisLabel.text = Y_text;
-        xAxisLabel.text = X_text;
-        last_maxLabel.text = data.Last().Value + " current" +  " / " + data.Values.Max() + " max";
-
-        // show all
-        panel.gameObject.SetActive(true);
-        xAxisLabel.gameObject.SetActive(true);
-        yAxisLabel.gameObject.SetActive(true);
-        last_maxLabel.gameObject.SetActive(true);
+        lastMaxLabel.text = currentData.Last().Value + " current" + " / " + currentData.Values.Max() + " max";
 
         // Calculate the intervals for the x and y axes
-        float xInterval = xInterval = width / (data.Count + 1);
-        float yInterval = yInterval = height / data.Values.Max(); ; //  Max cant handle empty data, careful for zero division!
+        float xInterval = xInterval = width / (currentData.Count + 1);
+        float yInterval = yInterval = height / currentData.Values.Max(); ; //  Max cant handle empty data, careful for zero division!
 
-        // Calculate the size of the points based on the count
-        Vector2 pointSize = AdjustPointSize(data.Count);
+        // Calculate the size of the points based of their counts
+        Vector2 pointSize = AdjustPointSize(currentData.Count);
 
         // Draw the graph
         int index = 1;
-        foreach (KeyValuePair<int, int> entry in data)
+        foreach (KeyValuePair<int, int> entry in currentData)
         {
             GameObject point = Instantiate(pointPrefab, panel);
             RectTransform pointTransform = point.GetComponent<RectTransform>();
@@ -83,10 +85,9 @@ public class GraphVisulizer : MonoBehaviour
             pointTransform.anchorMin = new Vector2(0, 0);
             pointTransform.anchorMax = new Vector2(0, 0);
             pointTransform.pivot = new Vector2(0.5f, 0.5f); // Center the pivot point
-            pointTransform.anchoredPosition = new Vector2(x+25f, y+25f); // 25f is just for the offset from the screen sides
+            pointTransform.anchoredPosition = new Vector2(x + 25f, y + 25f); // 25f is just for the offset from the screen sides
 
             index++;
-
         }
     }
 
@@ -101,14 +102,27 @@ public class GraphVisulizer : MonoBehaviour
         return new Vector2(newSize, newSize);
     }
 
+    public void ShowGraph()
+    {
+        if (currentData == null || currentData.Count == 0)
+        {
+            Debug.LogWarning("No data to display in graph.");
+            return;
+        }
+
+        // Show the panel and labels
+        panel.gameObject.SetActive(true);
+        xAxisLabel.gameObject.SetActive(true);
+        yAxisLabel.gameObject.SetActive(true);
+        lastMaxLabel.gameObject.SetActive(true);
+    }
 
     public void HideGraph()
     {
-        // hide all
-        panel.gameObject.SetActive(false);
         xAxisLabel.gameObject.SetActive(false);
         yAxisLabel.gameObject.SetActive(false);
-        last_maxLabel.gameObject.SetActive(false);
+        lastMaxLabel.gameObject.SetActive(false);
+        panel.gameObject.SetActive(false);
     }
 
     public void ClearGraph()
@@ -128,27 +142,6 @@ public class GraphVisulizer : MonoBehaviour
     }
 
 }
-
-// TODO own graph object and storing bunch different ones to easily vizulize different ones
-/*
-public class Graph : Dictionary<int, int>
-{
-    // unique type of graph
-    public Text xAxisLabel;
-    public Text yAxisLabel;
-
-    public void AddPoint(int x, int y)
-    {
-        this[x] = y;
-    }
-
-    public void RemovePoint(int x)
-    {
-        this.Remove(x);
-    }
-}
-*/
-
 
 // Helper class for serialization
 [System.Serializable]
