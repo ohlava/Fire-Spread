@@ -376,6 +376,18 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    public void ImportTutorialMap(int mapNumber)
+    {
+        string fileName = mapNumber + "TutorialMap.json";
+
+        world = World.Load(fileName);
+
+        PrepareForNewWorld();
+
+        CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
+        HandleCameraAngleChange(new Vector3(0, 0, 0)); // trigger with default zero vector so cameras size is set correctly
+    }
+
     public void OnSaveClicked()
     {
         world.Save();

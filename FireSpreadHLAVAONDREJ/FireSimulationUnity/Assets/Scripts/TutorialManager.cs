@@ -60,6 +60,7 @@ public class TutorialManager : MonoBehaviour
         UpdateTutorialSection();
     }
 
+    // Move to previous tutorial state
     public void HandlePrevious()
     {
         if (currentSection > 0)
@@ -69,6 +70,7 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    // Move to next tutorial state
     public void HandleNext()
     {
         if (currentSection < tutorialSections.Length - 1)
@@ -78,45 +80,18 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    // Based on currentSection number we modify the scene
     private void UpdateTutorialSection()
     {
         tutorialText.text = tutorialSections[currentSection];
+
         UpdateButtons();
 
-        UpdateTutorialWorld();
+        // Import corresponding map
+        mainLogic.ImportTutorialMap(currentSection);
     }
 
-    private void UpdateTutorialWorld()
-    {
-        switch (currentSection)
-        {
-            case 0:
-                Debug.Log("tut0");
-                mainLogic.GenereteNewWorld();
-                break;
-            case 1:
-                Debug.Log("tut1");
-                // TODO load specific worlds
-                mainLogic.OnImportClicked();
-                break;
-            case 2:
-                Debug.Log("tut2");
-                break;
-            case 3:
-                Debug.Log("tut3");
-                break;
-            case 4:
-                Debug.Log("tut4");
-                break;
-            case 5:
-                Debug.Log("tut5");
-                break;
-            default:
-                Debug.LogError("There is no implementation for this section");
-                break;
-        }
-    }
-
+    // If we are at the very beginning/end of tutorial, hide the previous/next buttons
     private void UpdateButtons()
     {
         GameObject previousButtonParent = previousButton.transform.parent.gameObject;
