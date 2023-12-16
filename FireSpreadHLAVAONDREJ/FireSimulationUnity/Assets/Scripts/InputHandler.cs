@@ -75,9 +75,16 @@ public class InputHandler : MonoBehaviour
     {
         visulizer = visulizerObj.GetComponent<Visulizer>();
 
-        worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
-        worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
-        riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
+        if (worldWidthInputFieldObj != null)
+            worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
+
+        if (worldDepthInputFieldObj != null)
+            worldDepthInputField = worldDepthInputFieldObj.GetComponent<TMP_InputField>();
+
+        if (riversInputFieldObj != null)
+            riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
+
+
 
         simulationSpeed = 2f; // speed is set as reverse of slider, define number of seconds
         worldWidth = 30;
@@ -85,11 +92,20 @@ public class InputHandler : MonoBehaviour
         rivers = 3;
         lakeThreshold = 0.12f;
 
-        simulationSpeedSlider.value = simulationSpeedSlider.maxValue - simulationSpeed;
-        worldWidthInputField.text = worldWidth.ToString();
-        worldDepthInputField.text = worldDepth.ToString();
-        riversInputField.text = rivers.ToString();
-        lakeThresholdSlider.value = lakeThreshold;
+        if (simulationSpeedSlider != null)
+            simulationSpeedSlider.value = simulationSpeedSlider.maxValue - simulationSpeed;
+
+        if (worldWidthInputField != null)
+            worldWidthInputField.text = worldWidth.ToString();
+
+        if (worldDepthInputField != null)
+            worldDepthInputField.text = worldDepth.ToString();
+
+        if (riversInputField != null)
+            riversInputField.text = rivers.ToString();
+
+        if (lakeThresholdSlider != null)
+            lakeThresholdSlider.value = lakeThreshold;
     }
 
     void Update()
@@ -124,8 +140,6 @@ public class InputHandler : MonoBehaviour
             OnTileHovered?.Invoke(false,null);
         }
     }
-
-
 
     private void HandleTileClick()
     {
@@ -243,6 +257,8 @@ public class InputHandler : MonoBehaviour
 
     public void SetWorldWidth(string widthString)
     {
+        if (worldWidthInputField == null) return; // Early exit if the field is not present
+
         int parsedValue;
         if (int.TryParse(widthString, out parsedValue))
         {
@@ -258,6 +274,8 @@ public class InputHandler : MonoBehaviour
 
     public void SetWorldDepth(string depthString)
     {
+        if (worldDepthInputField == null) return; // Early exit if the field is not present
+
         int parsedValue;
         if (int.TryParse(depthString, out parsedValue))
         {
@@ -273,6 +291,8 @@ public class InputHandler : MonoBehaviour
 
     public void SetRivers(string riversString)
     {
+        if (riversInputField == null) return; // Early exit if the field is not present
+
         int parsedValue;
         if (int.TryParse(riversString, out parsedValue))
         {
@@ -288,6 +308,8 @@ public class InputHandler : MonoBehaviour
 
     public void SetSimulationSpeed(float value)
     {
+        if (simulationSpeedSlider == null) return; // Early exit if the field is not present
+
         simulationSpeed = simulationSpeedSlider.maxValue - value;
         simulationSpeed = Mathf.Max(simulationSpeed, 0.1f);
 
@@ -296,6 +318,8 @@ public class InputHandler : MonoBehaviour
 
     public void SetLakeThreshold(float value)
     {
+        if (lakeThresholdSlider == null) return; // Early exit if the field is not present
+
         lakeThreshold = value;
         OnFieldValueChange?.Invoke();
     }

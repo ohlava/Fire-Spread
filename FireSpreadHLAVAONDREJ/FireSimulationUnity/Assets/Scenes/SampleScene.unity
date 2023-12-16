@@ -1335,8 +1335,6 @@ MonoBehaviour:
   visulizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 846402035}
   windIndicatorObj: {fileID: 1212355966}
-  windArrowCamera: {fileID: 175735168}
-  windArrow: {fileID: 1554117721}
   InfoPanel: {fileID: 834873593}
 --- !u!1 &490140661
 GameObject:
@@ -3655,7 +3653,7 @@ GameObject:
   - component: {fileID: 1212355968}
   - component: {fileID: 1212355969}
   m_Layer: 0
-  m_Name: windHandler
+  m_Name: WindHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3688,8 +3686,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e23d6f8cce7e408bab0854efe5b787a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrowTransform: {fileID: 1554117724}
   windSpeedText: {fileID: 212925920}
+  windArrowCamera: {fileID: 175735168}
+  windArrow: {fileID: 1554117721}
 --- !u!1 &1217341509
 GameObject:
   m_ObjectHideFlags: 0
@@ -4682,11 +4681,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6087225115361130385, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
   m_PrefabInstance: {fileID: 1360653970}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1554117724 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6859538934173527339, guid: 7055dd3751d9f466398fa155e63dc631, type: 3}
-  m_PrefabInstance: {fileID: 1360653970}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1566345957
 GameObject:
   m_ObjectHideFlags: 0
@@ -5291,7 +5285,6 @@ RectTransform:
   m_LocalScale: {x: 0.46, y: 1.748, z: 1.8400006}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 2045085568}
   - {fileID: 834873592}
   - {fileID: 794626896}
   - {fileID: 1957208225}
@@ -6272,81 +6265,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2009093205}
   m_CullTransparentMesh: 1
---- !u!1 &2045085567
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2045085568}
-  - component: {fileID: 2045085570}
-  - component: {fileID: 2045085569}
-  m_Layer: 5
-  m_Name: Info panel background
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &2045085568
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045085567}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4, y: 1.0526316, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 1796715522}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 326.50003, y: -36.10521}
-  m_SizeDelta: {x: 140, y: 25}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2045085569
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045085567}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &2045085570
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045085567}
-  m_CullTransparentMesh: 1
 --- !u!1 &2048062004
 GameObject:
   m_ObjectHideFlags: 0
@@ -6433,6 +6351,6 @@ SceneRoots:
   - {fileID: 1804570620}
   - {fileID: 804466388}
   - {fileID: 846402037}
-  - {fileID: 175735169}
   - {fileID: 1212355968}
+  - {fileID: 175735169}
   - {fileID: 1360653970}

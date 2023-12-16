@@ -26,9 +26,6 @@ public class MainLogic : MonoBehaviour
 
     private Tile currentlyHoveredTile = null;
 
-    [SerializeField] private Camera windArrowCamera;
-    [SerializeField] private GameObject windArrow; // for wind indicator
-
     [SerializeField] TextMeshProUGUI InfoPanel;
 
     private float elapsed = 0f;
@@ -43,20 +40,20 @@ public class MainLogic : MonoBehaviour
     {
         worldGenerator = new WorldGenerator();
 
-        // object is attached to a main camera, this finds it, there is only one graphVisualizer
-        graphVisulizer = FindObjectOfType<GraphVisulizer>();
-
         visulizer = visulizerObj.GetComponent<Visulizer>();
 
-        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+        // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
+        graphVisulizer = FindObjectOfType<GraphVisulizer>();
 
         windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
+
+
+        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnTileHovered += HandleTileHover;
         inputHandler.OnCameraMove += HandleCameraMove;
         inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
-
         inputHandler.OnGraph += OnGraphButtonClicked;
         inputHandler.OnReset += OnResetButtonClicked;
         inputHandler.OnGenerateWorld += GenereteNewWorld;
@@ -88,7 +85,8 @@ public class MainLogic : MonoBehaviour
                 updateWorld();
 
                 world.UpdateWeather();
-                windIndicator.UpdateIndicator(world.Weather);
+
+                updateWindIndicator();
 
                 if (showingGraph) // TODO just show, update seperately
                 {
@@ -106,12 +104,27 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    private void updateWindIndicator()
+    {
+        if (windIndicator == null) return;
+
+        windIndicator.UpdateIndicator(world.Weather);
+
+        return;
+    }
+
+    private void updateWindCamera()
+    {
+        if (windIndicator == null) return;
+
+        windIndicator.UpdateCamera();
+
+        return;
+    }
+
     private void updateWorld()
     {
-        if (fireSpreadSimulation == null)
-        {
-            return;
-        }
+        if (fireSpreadSimulation == null) return;
 
         // Run and then automatically stop running after simulation finishes
         if (!fireSpreadSimulation.Finished())
@@ -172,37 +185,8 @@ public class MainLogic : MonoBehaviour
         // Always look at the world center
         Camera.main.transform.LookAt(worldCenter);
 
-        // Update Wind Indicator
-        SetWindIndicatorCamera();
-    }
-
-    private void SetWindIndicatorCamera()
-    {
-        // Calculate the direction vector from the main camera to its focal point (assuming it's the world's center)
-        Vector3 mainCameraDirection = Camera.main.transform.forward;
-
-        // Determine the distance from the arrow to the windArrowCamera
-        float distanceToArrow = (windArrowCamera.transform.position - windArrow.transform.position).magnitude;
-
-        // Update the secondary camera's position to be at the same distance from the arrow but in the opposite direction of the main camera
-        // Here we invert the direction by using -mainCameraDirection
-        Vector3 windArrowCameraPosition = windArrow.transform.position - mainCameraDirection * distanceToArrow;
-
-        windArrowCamera.transform.position = windArrowCameraPosition;
-
-        // Check if the main camera is looking straight down
-        if (mainCameraDirection == Vector3.down)
-        {
-            // If yes, copy the rotation of the main camera to the windArrowCamera
-            windArrowCamera.transform.rotation = Camera.main.transform.rotation;
-        }
-        else
-        {
-            // Otherwise, make the windArrowCamera LookAt the arrow center
-            windArrowCamera.transform.LookAt(windArrow.transform.position);
-        }
-
-        return;
+        // Update Wind Indicator camera
+        updateWindCamera();
     }
 
     private void HandleTileClick(Tile clickedTile)
@@ -402,10 +386,9 @@ public class MainLogic : MonoBehaviour
         PrepareForNewWorld();
 
         CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
-        // trigger with default zero vector so cameras size is set correctly
-        HandleCameraAngleChange(new Vector3(0, 0, 0));
+        HandleCameraAngleChange(new Vector3(0, 0, 0)); // trigger with default zero vector so cameras size is set correctly
 
-        SetWindIndicatorCamera();
+        updateWindCamera();
     }
 
     private void PrepareForNewWorld()
