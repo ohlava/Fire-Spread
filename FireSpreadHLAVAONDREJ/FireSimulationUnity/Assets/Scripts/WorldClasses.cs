@@ -109,28 +109,34 @@ public class World
         Weather.ChangeWindSpeed(Weather.WindSpeed + windStrengthChange);
     }
 
-
-    private static readonly string SAVE_FILE_NAME = "worldSave.json";
-    private static readonly string SAVE_FILE_PATH = Path.Combine(Application.persistentDataPath, SAVE_FILE_NAME);
+    private static readonly string FILE_NAME = "worldSave.json";
+    private static readonly string FILE_PATH = Path.Combine(Application.persistentDataPath, FILE_NAME);
     
     public void Save()
     {
         SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(this);
         string json = JsonUtility.ToJson(serializableWorld);
-        File.WriteAllText(SAVE_FILE_PATH, json);
+        File.WriteAllText(FILE_PATH, json);
     }
 
-    public static World Load()
+    public static World Load(string fileName = "worldSave.json")
     {
-        if (File.Exists(SAVE_FILE_PATH))
+        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+
+        if (fileName == "worldSave.json")
         {
-            string json = File.ReadAllText(SAVE_FILE_PATH);
+            filePath = FILE_PATH;
+        }
+
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
             SerializableWorld serializableWorld = JsonUtility.FromJson<SerializableWorld>(json);
             return SerializableConversion.ConvertFromWorldSerializable(serializableWorld);
         }
         else
         {
-            throw new FileNotFoundException($"Save file not found at {SAVE_FILE_PATH}");
+            throw new FileNotFoundException($"Save file not found at {filePath}");
         }
     }
 }

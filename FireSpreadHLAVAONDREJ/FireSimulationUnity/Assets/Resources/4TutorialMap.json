@@ -1,0 +1,4381 @@
+{
+  "Width": 25,
+  "Depth": 25,
+  "GridTiles": [
+    {
+      "widthPosition": 0,
+      "depthPosition": 0,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 1,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 2,
+      "moisture": 27,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 3,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 4,
+      "moisture": 20,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 5,
+      "moisture": 15,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 6,
+      "moisture": 12,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 7,
+      "moisture": 12,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 8,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 9,
+      "moisture": 72,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 10,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 11,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 12,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 13,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 14,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 15,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 16,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 17,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 18,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 19,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 20,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 21,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 22,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 23,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 0,
+      "depthPosition": 24,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 0,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 1,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 2,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 3,
+      "moisture": 23,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 4,
+      "moisture": 18,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 5,
+      "moisture": 14,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 6,
+      "moisture": 12,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 7,
+      "moisture": 13,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 8,
+      "moisture": 18,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 9,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 10,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 11,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 12,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 13,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 14,
+      "moisture": 59,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 15,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 16,
+      "moisture": 61,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 17,
+      "moisture": 58,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 18,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 19,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 20,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 21,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 22,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 23,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 1,
+      "depthPosition": 24,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 0,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 1,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 2,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 3,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 4,
+      "moisture": 19,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 5,
+      "moisture": 14,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 6,
+      "moisture": 13,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 7,
+      "moisture": 15,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 8,
+      "moisture": 21,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 9,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 10,
+      "moisture": 89,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 11,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 12,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 13,
+      "moisture": 60,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 14,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 15,
+      "moisture": 70,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 16,
+      "moisture": 70,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 17,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 18,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 19,
+      "moisture": 55,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 20,
+      "moisture": 50,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 21,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 22,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 23,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 2,
+      "depthPosition": 24,
+      "moisture": 40,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 0,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 1,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 2,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 3,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 4,
+      "moisture": 21,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 5,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 6,
+      "moisture": 15,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 7,
+      "moisture": 17,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 8,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 9,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 10,
+      "moisture": 93,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 11,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 12,
+      "moisture": 50,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 13,
+      "moisture": 65,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 14,
+      "moisture": 72,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 15,
+      "moisture": 77,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 16,
+      "moisture": 78,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 17,
+      "moisture": 75,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 18,
+      "moisture": 69,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 19,
+      "moisture": 61,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 20,
+      "moisture": 53,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 21,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 22,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 23,
+      "moisture": 40,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 3,
+      "depthPosition": 24,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 0,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 1,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 2,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 3,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 4,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 5,
+      "moisture": 18,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 6,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 7,
+      "moisture": 18,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 8,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 9,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 10,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 11,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 12,
+      "moisture": 59,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 13,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 14,
+      "moisture": 75,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 15,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 16,
+      "moisture": 82,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 17,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 18,
+      "moisture": 74,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 19,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 20,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 21,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 22,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 23,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 4,
+      "depthPosition": 24,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 0,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 1,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 2,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 3,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 4,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 5,
+      "moisture": 19,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 6,
+      "moisture": 16,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 7,
+      "moisture": 17,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 8,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 9,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 10,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 11,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 12,
+      "moisture": 57,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 13,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 14,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 15,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 16,
+      "moisture": 83,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 17,
+      "moisture": 81,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 18,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 19,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 20,
+      "moisture": 57,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 21,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 22,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 23,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 5,
+      "depthPosition": 24,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 0,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 1,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 2,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 3,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 4,
+      "moisture": 26,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 5,
+      "moisture": 18,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 6,
+      "moisture": 14,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 7,
+      "moisture": 14,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 8,
+      "moisture": 19,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 9,
+      "moisture": 28,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 10,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 11,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 12,
+      "moisture": 52,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 13,
+      "moisture": 60,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 14,
+      "moisture": 68,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 15,
+      "moisture": 76,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 16,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 17,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 18,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 19,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 20,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 21,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 22,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 23,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 6,
+      "depthPosition": 24,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 0,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 1,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 2,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 3,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 4,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 5,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 6,
+      "moisture": 11,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 7,
+      "moisture": 10,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 8,
+      "moisture": 14,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 9,
+      "moisture": 22,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 10,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 11,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 12,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 13,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 14,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 15,
+      "moisture": 71,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 16,
+      "moisture": 76,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 17,
+      "moisture": 77,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 18,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 19,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 20,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 21,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 22,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 23,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 7,
+      "depthPosition": 24,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 0,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 1,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 2,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 3,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 4,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 5,
+      "moisture": 15,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 6,
+      "moisture": 10,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 7,
+      "moisture": 8,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 8,
+      "moisture": 11,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 9,
+      "moisture": 17,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 10,
+      "moisture": 25,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 11,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 12,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 13,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 14,
+      "moisture": 55,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 15,
+      "moisture": 64,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 16,
+      "moisture": 70,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 17,
+      "moisture": 72,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 18,
+      "moisture": 69,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 19,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 20,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 21,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 22,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 23,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 8,
+      "depthPosition": 24,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 0,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 1,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 2,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 3,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 4,
+      "moisture": 23,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 5,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 6,
+      "moisture": 11,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 7,
+      "moisture": 9,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 8,
+      "moisture": 11,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 9,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 10,
+      "moisture": 22,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 11,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 12,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 13,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 14,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 15,
+      "moisture": 55,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 16,
+      "moisture": 61,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 17,
+      "moisture": 63,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 18,
+      "moisture": 61,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 19,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 20,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 21,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 22,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 23,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 9,
+      "depthPosition": 24,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 0,
+      "moisture": 40,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 1,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 2,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 3,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 4,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 5,
+      "moisture": 20,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 6,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 7,
+      "moisture": 15,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 8,
+      "moisture": 16,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 9,
+      "moisture": 19,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 10,
+      "moisture": 23,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 11,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 12,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 13,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 14,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 15,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 16,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 17,
+      "moisture": 52,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 18,
+      "moisture": 51,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 19,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 20,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 21,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 22,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 23,
+      "moisture": 29,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 10,
+      "depthPosition": 24,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 0,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 1,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 2,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 3,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 4,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 5,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 6,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 7,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 8,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 9,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 10,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 11,
+      "moisture": 28,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 12,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 13,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 14,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 15,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 16,
+      "moisture": 40,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 17,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 18,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 19,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 20,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 21,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 22,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 23,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 11,
+      "depthPosition": 24,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 0,
+      "moisture": 25,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 1,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 2,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 3,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 4,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 5,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 6,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 7,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 8,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 9,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 10,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 11,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 12,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 13,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 14,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 15,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 16,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 17,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 18,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 19,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 20,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 21,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 22,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 23,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 12,
+      "depthPosition": 24,
+      "moisture": 22,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 0,
+      "moisture": 22,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 1,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 2,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 3,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 4,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 5,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 6,
+      "moisture": 51,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 7,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 8,
+      "moisture": 52,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 9,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 10,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 11,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 12,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 13,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 14,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 15,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 16,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 17,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 18,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 19,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 20,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 21,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 22,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 23,
+      "moisture": 26,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 13,
+      "depthPosition": 24,
+      "moisture": 23,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 0,
+      "moisture": 23,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 1,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 2,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 3,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 4,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 5,
+      "moisture": 58,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 6,
+      "moisture": 64,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 7,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 8,
+      "moisture": 63,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 9,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 10,
+      "moisture": 51,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 11,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 12,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 13,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 14,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 15,
+      "moisture": 25,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 16,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 17,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 18,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 19,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 20,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 21,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 22,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 23,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 14,
+      "depthPosition": 24,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 0,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 1,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 2,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 3,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 4,
+      "moisture": 58,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 5,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 6,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 7,
+      "moisture": 74,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 8,
+      "moisture": 70,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 9,
+      "moisture": 64,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 10,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 11,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 13,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 14,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 15,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 16,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 17,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 18,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 19,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 20,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 21,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 22,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 23,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 15,
+      "depthPosition": 24,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 0,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 1,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 2,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 3,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 4,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 5,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 6,
+      "moisture": 78,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 7,
+      "moisture": 78,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 8,
+      "moisture": 74,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 9,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 13,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 14,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 15,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 16,
+      "moisture": 27,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 17,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 18,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 19,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 20,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 21,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 22,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 23,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 16,
+      "depthPosition": 24,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 0,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 1,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 2,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 3,
+      "moisture": 62,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 4,
+      "moisture": 71,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 5,
+      "moisture": 78,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 6,
+      "moisture": 82,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 7,
+      "moisture": 81,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 8,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 9,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 13,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 14,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 15,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 16,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 17,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 18,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 19,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 20,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 21,
+      "moisture": 51,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 22,
+      "moisture": 51,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 23,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 17,
+      "depthPosition": 24,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 0,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 1,
+      "moisture": 52,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 2,
+      "moisture": 59,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 3,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 4,
+      "moisture": 75,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 5,
+      "moisture": 81,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 6,
+      "moisture": 84,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 7,
+      "moisture": 83,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 8,
+      "moisture": 76,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 9,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 12,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 13,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 14,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 15,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 16,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 17,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 18,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 19,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 20,
+      "moisture": 55,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 21,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 22,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 23,
+      "moisture": 56,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 18,
+      "depthPosition": 24,
+      "moisture": 53,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 0,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 1,
+      "moisture": 52,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 2,
+      "moisture": 59,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 3,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 4,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 5,
+      "moisture": 82,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 6,
+      "moisture": 85,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 7,
+      "moisture": 83,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 8,
+      "moisture": 76,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 9,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 12,
+      "moisture": 43,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 13,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 14,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 15,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 16,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 17,
+      "moisture": 38,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 18,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 19,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 20,
+      "moisture": 59,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 21,
+      "moisture": 61,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 22,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 23,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 19,
+      "depthPosition": 24,
+      "moisture": 60,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 0,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 1,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 2,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 3,
+      "moisture": 64,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 4,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 5,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 6,
+      "moisture": 83,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 7,
+      "moisture": 82,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 8,
+      "moisture": 76,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 9,
+      "moisture": 67,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 13,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 14,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 15,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 16,
+      "moisture": 32,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 17,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 18,
+      "moisture": 45,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 19,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 20,
+      "moisture": 60,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 21,
+      "moisture": 63,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 22,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 23,
+      "moisture": 66,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 20,
+      "depthPosition": 24,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 0,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 1,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 2,
+      "moisture": 51,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 3,
+      "moisture": 59,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 4,
+      "moisture": 68,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 5,
+      "moisture": 76,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 6,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 7,
+      "moisture": 80,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 8,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 9,
+      "moisture": 66,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 13,
+      "moisture": 36,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 14,
+      "moisture": 30,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 15,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 16,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 17,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 18,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 19,
+      "moisture": 50,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 20,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 21,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 22,
+      "moisture": 65,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 23,
+      "moisture": 68,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 21,
+      "depthPosition": 24,
+      "moisture": 70,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 0,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 1,
+      "moisture": 39,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 2,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 3,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 4,
+      "moisture": 63,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 5,
+      "moisture": 71,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 6,
+      "moisture": 77,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 7,
+      "moisture": 77,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 8,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 9,
+      "moisture": 66,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 13,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 14,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 15,
+      "moisture": 25,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 16,
+      "moisture": 24,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 17,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 18,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 19,
+      "moisture": 44,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 20,
+      "moisture": 52,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 21,
+      "moisture": 58,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 22,
+      "moisture": 62,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 23,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 22,
+      "depthPosition": 24,
+      "moisture": 71,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 0,
+      "moisture": 27,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 1,
+      "moisture": 34,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 2,
+      "moisture": 41,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 3,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 4,
+      "moisture": 59,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 5,
+      "moisture": 68,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 6,
+      "moisture": 74,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 7,
+      "moisture": 76,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 8,
+      "moisture": 72,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 9,
+      "moisture": 65,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 13,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 14,
+      "moisture": 28,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 15,
+      "moisture": 22,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 16,
+      "moisture": 20,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 17,
+      "moisture": 22,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 18,
+      "moisture": 29,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 19,
+      "moisture": 37,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 20,
+      "moisture": 46,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 21,
+      "moisture": 53,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 22,
+      "moisture": 58,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 23,
+      "moisture": 64,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 23,
+      "depthPosition": 24,
+      "moisture": 71,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 0,
+      "moisture": 25,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 1,
+      "moisture": 33,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 2,
+      "moisture": 40,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 3,
+      "moisture": 48,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 4,
+      "moisture": 58,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 5,
+      "moisture": 67,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 6,
+      "moisture": 73,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 7,
+      "moisture": 75,
+      "Vegetation": 3,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 8,
+      "moisture": 72,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 9,
+      "moisture": 65,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 10,
+      "moisture": 57,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 11,
+      "moisture": 49,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 12,
+      "moisture": 42,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 13,
+      "moisture": 35,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 14,
+      "moisture": 26,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 15,
+      "moisture": 19,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 16,
+      "moisture": 16,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 17,
+      "moisture": 17,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 18,
+      "moisture": 23,
+      "Vegetation": 1,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 19,
+      "moisture": 31,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 20,
+      "moisture": 40,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 21,
+      "moisture": 47,
+      "Vegetation": 0,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 22,
+      "moisture": 54,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 23,
+      "moisture": 61,
+      "Vegetation": 2,
+      "Height": "1.0"
+    },
+    {
+      "widthPosition": 24,
+      "depthPosition": 24,
+      "moisture": 69,
+      "Vegetation": 2,
+      "Height": "1.0"
+    }
+  ]
+}

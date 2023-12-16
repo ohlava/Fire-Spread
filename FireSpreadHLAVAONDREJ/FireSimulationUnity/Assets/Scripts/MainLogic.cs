@@ -29,7 +29,7 @@ public class MainLogic : MonoBehaviour
     [SerializeField] TextMeshProUGUI InfoPanel;
 
     private float elapsed = 0f;
-    private float speedOfUpdates { get; set; } // in seconds
+    private float speedOfUpdates = 1.2f; // in seconds
 
     private WorldGenerator worldGenerator;
 
@@ -81,7 +81,7 @@ public class MainLogic : MonoBehaviour
 
             if (currentState == State.RunningState)
             {
-                //Debug.Log("Simulation running");
+                Debug.Log("Simulation running");
                 updateWorld();
 
                 world.UpdateWeather();
@@ -92,11 +92,11 @@ public class MainLogic : MonoBehaviour
             }
             else if (currentState == State.StoppedState) // simulation not running
             {
-                //Debug.Log("Simulation paused");
+                Debug.Log("Simulation paused");
             }
             else
             {
-                //Debug.Log("NewWorldState: set tiles on fire");
+                Debug.Log("NewWorldState: set tiles on fire");
             }
         }
     }
@@ -376,6 +376,18 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    public void ImportTutorialMap(int mapNumber)
+    {
+        string fileName = mapNumber + "TutorialMap.json";
+
+        world = World.Load(fileName);
+
+        PrepareForNewWorld();
+
+        CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
+        HandleCameraAngleChange(new Vector3(0, 0, 0)); // trigger with default zero vector so cameras size is set correctly
+    }
+
     public void OnSaveClicked()
     {
         world.Save();
@@ -386,7 +398,7 @@ public class MainLogic : MonoBehaviour
         speedOfUpdates = newSpeed;
     }
 
-    private void ApplyInputValues()
+    public void ApplyInputValues()
     {
         worldGenerator.width = inputHandler.worldWidth;
         worldGenerator.depth = inputHandler.worldDepth;
@@ -394,7 +406,7 @@ public class MainLogic : MonoBehaviour
         worldGenerator.lakeThreshold = inputHandler.lakeThreshold;
     }
 
-    private void GenereteNewWorld()
+    public void GenereteNewWorld()
     {
         world = worldGenerator.Generate();
 
