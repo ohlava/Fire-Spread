@@ -20,6 +20,12 @@ public class MainMenu : MonoBehaviour
         return;
     }
 
+    public void LoadTutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
+        return;
+    }
+
     public void LoadSandBox()
     {
         SceneManager.LoadScene("SampleScene");
