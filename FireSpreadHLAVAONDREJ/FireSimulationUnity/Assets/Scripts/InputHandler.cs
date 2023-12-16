@@ -86,7 +86,7 @@ public class InputHandler : MonoBehaviour
 
 
 
-        simulationSpeed = 2f; // speed is set as reverse of slider, define number of seconds
+        simulationSpeed = 1.2f; // speed is set as reverse of slider, define number of seconds
         worldWidth = 25;
         worldDepth = 25;
         rivers = 3;
