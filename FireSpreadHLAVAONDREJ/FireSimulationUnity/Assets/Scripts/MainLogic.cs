@@ -386,7 +386,7 @@ public class MainLogic : MonoBehaviour
         speedOfUpdates = newSpeed;
     }
 
-    private void ApplyInputValues()
+    public void ApplyInputValues()
     {
         worldGenerator.width = inputHandler.worldWidth;
         worldGenerator.depth = inputHandler.worldDepth;
@@ -394,7 +394,7 @@ public class MainLogic : MonoBehaviour
         worldGenerator.lakeThreshold = inputHandler.lakeThreshold;
     }
 
-    private void GenereteNewWorld()
+    public void GenereteNewWorld()
     {
         world = worldGenerator.Generate();
 
