@@ -251,6 +251,8 @@ public class MainLogic : MonoBehaviour
                         GenereteNewWorld();
                         InfoPanel.text = "New world - set fire";
                         break;
+                    default:
+                        return;
                 }
                 break;
 
@@ -266,6 +268,8 @@ public class MainLogic : MonoBehaviour
                         GenereteNewWorld();
                         InfoPanel.text = "New world - set fire";
                         break;
+                    default:
+                        return;
                 }
                 break;
 
@@ -281,6 +285,8 @@ public class MainLogic : MonoBehaviour
                         GenereteNewWorld();
                         InfoPanel.text = "New world - set fire";
                         break;
+                    default:
+                        return;
                 }
                 break;
         }
