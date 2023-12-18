@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class DataManager : MonoBehaviour
 {
-    // To your JSON files
+    // To store JSON files
     [SerializeField] private TextAsset[] initialJsonFiles; 
 
     private void Start()

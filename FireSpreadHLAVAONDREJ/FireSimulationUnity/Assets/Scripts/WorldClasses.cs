@@ -132,7 +132,17 @@ public class World
         {
             string json = File.ReadAllText(filePath);
             SerializableWorld serializableWorld = JsonUtility.FromJson<SerializableWorld>(json);
-            return SerializableConversion.ConvertFromWorldSerializable(serializableWorld);
+            if (serializableWorld is not null)
+            {
+                // The JSON was valid and deserialized correctly.
+                return SerializableConversion.ConvertFromWorldSerializable(serializableWorld);
+            }
+            else
+            {
+                // Handle the error, perhaps log an error message or throw an exception.
+                Debug.LogError("Invalid JSON format.");
+                return null; // Or handle it in another appropriate way.
+            }
         }
         else
         {

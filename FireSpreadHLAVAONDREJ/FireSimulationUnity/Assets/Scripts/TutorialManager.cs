@@ -18,7 +18,7 @@ public class TutorialManager : MonoBehaviour
         // Just one mainLogic should exist
         mainLogic = FindObjectOfType<MainLogic>();
 
-        // set default sizes for worldGenerator
+        // Set default sizes for worldGenerator
         mainLogic.ApplyInputValues();
 
         // Initialize tutorial sections content

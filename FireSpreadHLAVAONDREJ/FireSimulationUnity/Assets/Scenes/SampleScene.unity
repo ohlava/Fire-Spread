@@ -2640,8 +2640,9 @@ MonoBehaviour:
   waterMaterial: {fileID: 2100000, guid: 00649893e10a74924909988ed8ad08b6, type: 2}
   burnedMaterial: {fileID: 2100000, guid: 80258aaaee5a84f59a884bf5bcd8a323, type: 2}
   fireMaterial: {fileID: 2100000, guid: f431d44b98e354f5f90b54a6bcd388ae, type: 2}
-  TilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
+  tilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
   firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
+  TileHeightMultiplier: 3
   tileLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -2823,18 +2824,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8d288246bec748629a18f3e700f6868, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 64
   visulizerObj: {fileID: 804466386}
   simulationSpeedSlider: {fileID: 1021912702}
   worldWidthInputFieldObj: {fileID: 377332769}
   worldDepthInputFieldObj: {fileID: 1899859749}
   riversInputFieldObj: {fileID: 508024748}
   lakeThresholdSlider: {fileID: 558203656}
-  MaxWorldWidth: 150
-  MaxWorldDepth: 150
-  MaxRivers: 25
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!4 &846402037
 Transform:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class InputHandler : MonoBehaviour
 {
+    #region Delegates and Events
     public delegate void TileHoverHandler(bool hovered, Tile hoveredOverTile);
     public event TileHoverHandler OnTileHovered;
 
@@ -44,36 +45,48 @@ public class InputHandler : MonoBehaviour
     public delegate void PauseHandler();
     public event PauseHandler OnPause;
 
-    public delegate void OnSimulationSpeedChange(float newSpeed);
-    public event OnSimulationSpeedChange onSimulationSpeedChange;
+    public delegate void SimulationSpeedChangeHandler(float newSpeed);
+    public event SimulationSpeedChangeHandler onSimulationSpeedChange;
+    #endregion
 
-    public LayerMask ignoreLayer;
-
-    Visulizer visulizer;
-    [SerializeField] GameObject visulizerObj;
-
+    #region Serialized Fields
+    [SerializeField] private GameObject visulizerObj;
     [SerializeField] private Slider simulationSpeedSlider;
     [SerializeField] private GameObject worldWidthInputFieldObj;
-    TMP_InputField worldWidthInputField;
     [SerializeField] private GameObject worldDepthInputFieldObj;
-    TMP_InputField worldDepthInputField;
     [SerializeField] private GameObject riversInputFieldObj;
-    TMP_InputField riversInputField;
     [SerializeField] private Slider lakeThresholdSlider;
+    #endregion
 
-    public float simulationSpeed { get; private set; }
-    public int worldWidth { get; private set; }
-    public int MaxWorldWidth = 150;
-    public int worldDepth { get; private set; }
-    public int MaxWorldDepth = 150;
-    public int rivers { get; private set; }
-    public int MaxRivers = 25;
-    public float lakeThreshold { get; private set; }
+    #region Private Fields
+    private Visulizer visulizer;
+    private TMP_InputField worldWidthInputField;
+    private TMP_InputField worldDepthInputField;
+    private TMP_InputField riversInputField;
+    #endregion
 
+    #region Public Properties
+    public LayerMask ignoreLayer;
+    public float SimulationSpeed { get; private set; }
+    public int WorldWidth { get; private set; }
+    public int WorldDepth { get; private set; }
+    public int Rivers { get; private set; }
+    public float LakeThreshold { get; private set; }
 
-    void Awake()
+    public int MaxWorldWidth { get; private set; }
+    public int MaxWorldDepth { get; private set; }
+    public int MaxRivers { get; private set; }
+    #endregion
+
+    private void Awake()
     {
-        visulizer = visulizerObj.GetComponent<Visulizer>();
+        InitializeFields();
+        InitializeDefaultValues();
+    }
+
+    private void InitializeFields()
+    {
+        visulizer = visulizerObj?.GetComponent<Visulizer>();
 
         if (worldWidthInputFieldObj != null)
             worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
@@ -83,29 +96,34 @@ public class InputHandler : MonoBehaviour
 
         if (riversInputFieldObj != null)
             riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
+    }
 
+    private void InitializeDefaultValues()
+    {
+        SimulationSpeed = 1.2f;
+        WorldWidth = 25;
+        WorldDepth = 25;
+        Rivers = 3;
+        LakeThreshold = 0.12f;
 
-
-        simulationSpeed = 1.2f; // speed is set as reverse of slider, define number of seconds
-        worldWidth = 25;
-        worldDepth = 25;
-        rivers = 3;
-        lakeThreshold = 0.12f;
+        MaxWorldWidth = 150;
+        MaxWorldDepth = 150;
+        MaxRivers = 25;
 
         if (simulationSpeedSlider != null)
-            simulationSpeedSlider.value = simulationSpeedSlider.maxValue - simulationSpeed;
+            simulationSpeedSlider.value = simulationSpeedSlider.maxValue - SimulationSpeed;
 
         if (worldWidthInputField != null)
-            worldWidthInputField.text = worldWidth.ToString();
+            worldWidthInputField.text = WorldWidth.ToString();
 
         if (worldDepthInputField != null)
-            worldDepthInputField.text = worldDepth.ToString();
+            worldDepthInputField.text = WorldDepth.ToString();
 
         if (riversInputField != null)
-            riversInputField.text = rivers.ToString();
+            riversInputField.text = Rivers.ToString();
 
         if (lakeThresholdSlider != null)
-            lakeThresholdSlider.value = lakeThreshold;
+            lakeThresholdSlider.value = LakeThreshold;
     }
 
     void Update()
@@ -117,10 +135,10 @@ public class InputHandler : MonoBehaviour
         HandleActionButtons();
     }
 
+    // Detects if the mouse pointer is hovering over a game tile.
     private void HandleTileHover()
     {
-        if (EventSystem.current.IsPointerOverGameObject())
-            return; // ignore if over UI object
+        if (EventSystem.current.IsPointerOverGameObject()) return; // ignore if over UI object
 
         // Cast a ray from camera to click point
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -141,6 +159,7 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    // Detects mouse clicks on some world tile.
     private void HandleTileClick()
     {
         // Checks if the left mouse button is pressed and ensures that the pointer is not over a UI object 
@@ -164,6 +183,7 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    // Responds to specific key inputs to zoom the camera in or out.
     private void HandleCameraMove()
     {
         float zoomChange = 0;
@@ -175,11 +195,10 @@ public class InputHandler : MonoBehaviour
             zoomChange += 1;
 
         if (zoomChange != 0)
-        {
             OnCameraMove?.Invoke(zoomChange);
-        }
     }
 
+    // Responds to key inputs to change the camera's viewing angle vertically and horizontally.
     private void HandleCameraAngleChange()
     {
         Vector3 rotationChange = new Vector3();
@@ -198,27 +217,22 @@ public class InputHandler : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
             rotationChange += Vector3.up;
 
+
         if (rotationChange != Vector3.zero)
-            // Notify about the rotation changes
             OnCameraAngleChange?.Invoke(rotationChange);
     }
 
+    // Responds to key inputs for some extra key quick access features.
     private void HandleActionButtons()
     {
         if (Input.GetKeyDown(KeyCode.R))
-        {
             OnReset?.Invoke();
-        }
             
         if (Input.GetKeyDown(KeyCode.Space))
-        {
             TriggerRun();
-        }
 
         if (Input.GetKeyDown(KeyCode.Escape))
-        {
             SceneManager.LoadScene("MainMenu");
-        }
     }
 
     public void TriggerGraph()
@@ -263,11 +277,11 @@ public class InputHandler : MonoBehaviour
         int parsedValue;
         if (int.TryParse(widthString, out parsedValue))
         {
-            worldWidth = Mathf.Min(parsedValue, MaxWorldWidth);
-            worldWidth = Mathf.Max(worldWidth, 1);
+            WorldWidth = Mathf.Min(parsedValue, MaxWorldWidth);
+            WorldWidth = Mathf.Max(WorldWidth, 1);
 
             // Update the displayed value
-            worldWidthInputField.text = worldWidth.ToString();
+            worldWidthInputField.text = WorldWidth.ToString();
 
             OnFieldValueChange?.Invoke();
         }
@@ -280,11 +294,11 @@ public class InputHandler : MonoBehaviour
         int parsedValue;
         if (int.TryParse(depthString, out parsedValue))
         {
-            worldDepth = Mathf.Min(parsedValue, MaxWorldDepth);
-            worldDepth = Mathf.Max(worldDepth, 1);
+            WorldDepth = Mathf.Min(parsedValue, MaxWorldDepth);
+            WorldDepth = Mathf.Max(WorldDepth, 1);
 
             // Update the displayed value
-            worldDepthInputField.text = worldDepth.ToString();
+            worldDepthInputField.text = WorldDepth.ToString();
 
             OnFieldValueChange?.Invoke();
         }
@@ -297,11 +311,11 @@ public class InputHandler : MonoBehaviour
         int parsedValue;
         if (int.TryParse(riversString, out parsedValue))
         {
-            rivers = Mathf.Min(parsedValue, MaxRivers);
-            rivers = Mathf.Max(rivers, 0);
+            Rivers = Mathf.Min(parsedValue, MaxRivers);
+            Rivers = Mathf.Max(Rivers, 0);
 
             // Update the displayed value
-            riversInputField.text = rivers.ToString();
+            riversInputField.text = Rivers.ToString();
 
             OnFieldValueChange?.Invoke();
         }
@@ -311,17 +325,17 @@ public class InputHandler : MonoBehaviour
     {
         if (simulationSpeedSlider == null) return; // Early exit if the field is not present
 
-        simulationSpeed = simulationSpeedSlider.maxValue - value;
-        simulationSpeed = Mathf.Max(simulationSpeed, 0.1f);
+        SimulationSpeed = simulationSpeedSlider.maxValue - value;
+        SimulationSpeed = Mathf.Max(SimulationSpeed, 0.1f);
 
-        onSimulationSpeedChange?.Invoke(simulationSpeed);
+        onSimulationSpeedChange?.Invoke(SimulationSpeed);
     }
 
     public void SetLakeThreshold(float value)
     {
         if (lakeThresholdSlider == null) return; // Early exit if the field is not present
 
-        lakeThreshold = value;
+        LakeThreshold = value;
         OnFieldValueChange?.Invoke();
     }
 }

@@ -7,8 +7,12 @@ public class MainMenu : MonoBehaviour
 {
     void Update()
     {
-        // anytime ESC pressed, return back from any state
-        if (Input.GetKey(KeyCode.Escape))
+        HandleEscPressed();
+    }
+
+    private void HandleEscPressed()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("MainMenu");
         }

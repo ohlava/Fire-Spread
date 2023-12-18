@@ -9,38 +9,48 @@ public enum VisulizerMode { Standard, Simplified }
 
 public class Visulizer : MonoBehaviour
 {
-    public VisulizerMode mode = VisulizerMode.Simplified;
+    public VisulizerMode mode;
 
+    #region Tile Management Fields
     // To keep track of actuall tile instance GameObject created for each Tile
-    private Dictionary<Tile, GameObject> tileToInstanceDict = new Dictionary<Tile, GameObject>();
-
+    private Dictionary<Tile, GameObject> tileToInstanceDict;
     // To keep track of vegetation GameObject created on each Tile
-    private Dictionary<Tile, GameObject> tileToVegetationInstanceDict = new Dictionary<Tile, GameObject>();
-
+    private Dictionary<Tile, GameObject> tileToVegetationInstanceDict;
     // To keep track of fire GameObject created on each Tile
-    private Dictionary<Tile, GameObject> tileToFireInstanceDict = new Dictionary<Tile, GameObject>();
-
+    private Dictionary<Tile, GameObject> tileToFireInstanceDict;
     // To keep track of combined water tiles - chunks
-    private List<GameObject> waterChunks = new List<GameObject>();
+    private List<GameObject> waterChunks;
+    #endregion
 
     // Corresponds to VegetationTypes
-    [SerializeField] GameObject grassPrefab;
-    [SerializeField] GameObject forestPrefab;
-    [SerializeField] GameObject sparsePrefab;
-    [SerializeField] GameObject swampPrefab;
+    #region Prefabs and Materials
+    [SerializeField] GameObject grassPrefab, forestPrefab, sparsePrefab, swampPrefab;
+    [SerializeField] Material grassMaterial, waterMaterial, burnedMaterial, fireMaterial;
+    [SerializeField] GameObject tilePrefab, firePrefab;
+    #endregion
 
-    [SerializeField] Material grassMaterial;
-    [SerializeField] Material waterMaterial;
-    [SerializeField] Material burnedMaterial;
-    [SerializeField] Material fireMaterial;
+    [SerializeField] LayerMask tileLayer; // Add the layer mask for the tileInstances - for handling Raycasting
+    public float TileHeightMultiplier;
 
-    [SerializeField] GameObject TilePrefab;
-    [SerializeField] GameObject firePrefab;
+    private void Awake()
+    {
+        InitializeDictionaries();
+        InitializeDefaultValues();
+    }
 
-    public float TileHeightMultiplier = 3.0f;
+    private void InitializeDictionaries()
+    {
+        tileToInstanceDict = new Dictionary<Tile, GameObject>();
+        tileToVegetationInstanceDict = new Dictionary<Tile, GameObject>();
+        tileToFireInstanceDict = new Dictionary<Tile, GameObject>();
+        waterChunks = new List<GameObject>();
+    }
 
-    // Add the layer mask for the tileInstances - for handling Raycasting
-    [SerializeField] LayerMask tileLayer;
+    private void InitializeDefaultValues()
+    {
+        mode = VisulizerMode.Standard;
+        TileHeightMultiplier = 3.0f;
+    }
 
     public void CreateWorldTiles(World world)
     {
@@ -51,7 +61,7 @@ public class Visulizer : MonoBehaviour
                 Tile worldTile = world.GetTileAt(x, y);
                 float height = worldTile.Height;
 
-                GameObject tileInstance = Instantiate(TilePrefab, new Vector3(x, height, y), Quaternion.identity);
+                GameObject tileInstance = Instantiate(tilePrefab, new Vector3(x, height, y), Quaternion.identity);
 
                 tileInstance.transform.localScale = new Vector3(1, (float) (height * TileHeightMultiplier + 1), 1);
                 tileInstance.transform.position = new Vector3(x, tileInstance.transform.localScale.y / 2, y);

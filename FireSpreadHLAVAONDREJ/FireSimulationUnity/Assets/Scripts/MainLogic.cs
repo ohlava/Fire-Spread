@@ -9,9 +9,9 @@ public class MainLogic : MonoBehaviour
 {
     World world;
 
-    FireSpreadParameters fireSpreadParams = new FireSpreadParameters();
-    FireSpreadSimulation fireSpreadSimulation = null;
-    List<Tile> initBurningTiles = new List<Tile>();
+    FireSpreadParameters fireSpreadParams;
+    FireSpreadSimulation fireSpreadSimulation;
+    List<Tile> initBurningTiles;
 
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
@@ -24,32 +24,41 @@ public class MainLogic : MonoBehaviour
 
     GraphVisulizer graphVisulizer;
 
-    private Tile currentlyHoveredTile = null;
-
     [SerializeField] TextMeshProUGUI InfoPanel;
 
-    private float elapsed = 0f;
-    private float speedOfUpdates = 1.2f; // in seconds
+    private Tile currentlyHoveredTile;
+
+    private float elapsed;
+    private float speedOfUpdates;
 
     private WorldGenerator worldGenerator;
 
-    private bool showingGraph = false;
-    private State currentState = State.NewWorldState;
+    private bool showingGraph;
+    private State currentState;
 
     void Awake()
     {
         worldGenerator = new WorldGenerator();
+        fireSpreadParams = new FireSpreadParameters();
+        fireSpreadSimulation = null;
+        initBurningTiles = new List<Tile>();
+
+        currentlyHoveredTile = null;
+
+        elapsed = 0f;
+        speedOfUpdates = 1.2f; // seconds
+
+        showingGraph = false;
+        currentState = State.NewWorldState;
 
         visulizer = visulizerObj.GetComponent<Visulizer>();
+
+        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
 
         // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
         graphVisulizer = FindObjectOfType<GraphVisulizer>();
 
-        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
-
-
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
-
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnTileHovered += HandleTileHover;
         inputHandler.OnCameraMove += HandleCameraMove;
@@ -75,53 +84,52 @@ public class MainLogic : MonoBehaviour
     void Update()
     {
         elapsed += Time.deltaTime;
-        if (elapsed >= speedOfUpdates) // is called once every speedOfUpdates seconds
+        if (ShouldPerformUpdate())
         {
-            elapsed = elapsed % speedOfUpdates;
-
-            if (currentState == State.RunningState)
-            {
-                Debug.Log("Simulation running");
-                updateWorld();
-
-                world.UpdateWeather();
-
-                updateWindIndicator();
-
-                UpdateGraph();
-            }
-            else if (currentState == State.StoppedState) // simulation not running
-            {
-                Debug.Log("Simulation paused");
-            }
-            else
-            {
-                Debug.Log("NewWorldState: set tiles on fire");
-            }
+            PerformUpdate();
         }
     }
 
-    private void updateWindIndicator()
+    // Determines whether an update should be performed based on elapsed time and current state.
+    bool ShouldPerformUpdate()
     {
-        if (windIndicator == null) return;
+        return elapsed >= speedOfUpdates && currentState == State.RunningState;
+    }
+
+    // Carries out simulation updates and visual refreshes.
+    void PerformUpdate()
+    {
+        elapsed = elapsed % speedOfUpdates;
+        UpdateWorld();
+        world.UpdateWeather();
+        UpdateWindIndicator();
+        UpdateGraph();
+    }
+
+    // Updates the display of the wind indicator based on current weather conditions.
+    private void UpdateWindIndicator()
+    {
+        if (windIndicator is null) return;
 
         windIndicator.UpdateIndicator(world.Weather);
 
         return;
     }
 
-    private void updateWindCamera()
+    // Updates the camera position for the wind indicator.
+    private void UpdateWindCamera()
     {
-        if (windIndicator == null) return;
+        if (windIndicator is null) return;
 
         windIndicator.UpdateCamera();
 
         return;
     }
 
-    private void updateWorld()
+    // Updates the simulation state of the world and handles fire spread events.
+    private void UpdateWorld()
     {
-        if (fireSpreadSimulation == null) return;
+        if (fireSpreadSimulation is null) return;
 
         // Run and then automatically stop running after simulation finishes
         if (!fireSpreadSimulation.Finished())
@@ -153,6 +161,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    // Handles changes in camera zoom level.
     private void HandleCameraMove(float zoomChange)
     {
         float minZoom = 5f;
@@ -162,6 +171,7 @@ public class MainLogic : MonoBehaviour
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + zoomChange * zoomChangeSpeed, minZoom, maxZoom);
     }
 
+    // Adjusts the camera's rotation based on user input.
     private void HandleCameraAngleChange(Vector3 rotationChange)
     {
         Vector3 worldCenter = new Vector3(world.Width / 2f, 2f * visulizer.TileHeightMultiplier, world.Depth / 2f);
@@ -183,9 +193,10 @@ public class MainLogic : MonoBehaviour
         Camera.main.transform.LookAt(worldCenter);
 
         // Update Wind Indicator camera
-        updateWindCamera();
+        UpdateWindCamera();
     }
 
+    // Responds to clicks on tiles, igniting them if the simulation is in the appropriate state.
     private void HandleTileClick(Tile clickedTile)
     {
         // We can click on tiles only when simulation is not running
@@ -199,6 +210,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    // Updates the visual state of a tile when it is hovered over.
     private void HandleTileHover(bool hovered, Tile hoveredOverTile)
     {
         ResetHoveredTileColor(); // Reset the old tile's color
@@ -208,7 +220,7 @@ public class MainLogic : MonoBehaviour
         {
             currentlyHoveredTile = hoveredOverTile;
             GameObject tileInstance = visulizer.GetTileInstance(hoveredOverTile);
-            if (tileInstance != null)
+            if (tileInstance is not null)
             {
                 Renderer renderer = tileInstance.GetComponent<Renderer>();
                 if (renderer != null)
@@ -219,9 +231,10 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    // Resets the visual state of the previously hovered tile.
     private void ResetHoveredTileColor()
     {
-        if (currentlyHoveredTile != null)
+        if (currentlyHoveredTile is not null)
         {
             GameObject tileInstance = visulizer.GetTileInstance(currentlyHoveredTile);
             if (tileInstance != null)
@@ -233,7 +246,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
-    // Handling program states and possible state transitions
+    // Manages transitions between different states of the program.
     public void HandleEvent(State nextState)
     {
         switch (currentState)
@@ -294,6 +307,7 @@ public class MainLogic : MonoBehaviour
         currentState = nextState;
     }
 
+    // Toggles the visibility of the graph and updates its content.
     public void OnGraphButtonClicked()
     {
         showingGraph = !showingGraph;
@@ -301,15 +315,16 @@ public class MainLogic : MonoBehaviour
         UpdateGraph();
     }
 
+    // Updates the graph visualization with the latest simulation data.
     private void UpdateGraph()
     {
-        if (graphVisulizer == null) return;
+        if (graphVisulizer is null) return;
 
         if (showingGraph)
         {
             Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>{{ 0, 0 }};
 
-            if (fireSpreadSimulation != null)
+            if (fireSpreadSimulation is not null)
             {
                 burningTilesOverTime = fireSpreadSimulation.GetBurningTilesOverTime();
             }
@@ -325,6 +340,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    // Resets the world to its initial state.
     public void OnResetButtonClicked()
     {
         world.Reset();
@@ -332,6 +348,7 @@ public class MainLogic : MonoBehaviour
         PrepareForNewWorld();
     }
 
+    // Handles user input to generate a new world state.
     public void OnNewWorldButtonClicked()
     {
         HandleEvent(State.NewWorldState);
@@ -347,21 +364,21 @@ public class MainLogic : MonoBehaviour
         HandleEvent(State.StoppedState);
     }
 
+    // Handles the import button click event to load external maps or serialized worlds.
     public void OnImportClicked()
     {
         IMapImporter mapImporter = new HeightMapImporter();
-        int requiredWidth = inputHandler.worldWidth;
-        int requiredDepth = inputHandler.worldDepth;
+        int requiredWidth = inputHandler.WorldWidth;
+        int requiredDepth = inputHandler.WorldDepth;
 
         Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth);
 
-        // TODO import other types as well
         Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
         customMoistureMap.FillWithDefault(0);
         Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
         customVegetationMap.FillWithDefault(VegetationType.Grass);
 
-        if (customHeightMap != null)
+        if (customHeightMap is not null)
         {
             Debug.Log("Import from PNG heighmap");
 
@@ -379,6 +396,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    // Imports a tutorial map based on a given map number.
     public void ImportTutorialMap(int mapNumber)
     {
         string fileName = mapNumber + "TutorialMap.json";
@@ -387,8 +405,7 @@ public class MainLogic : MonoBehaviour
 
         PrepareForNewWorld();
 
-        // Set init camera position and rotation
-        HandleCameraAngleChange(new Vector3(0, 0, 0));
+        HandleCameraAngleChange(new Vector3(0, 0, 0)); // Set init camera position and rotation
     }
 
     public void OnSaveClicked()
@@ -403,24 +420,25 @@ public class MainLogic : MonoBehaviour
 
     public void ApplyInputValues()
     {
-        worldGenerator.width = inputHandler.worldWidth;
-        worldGenerator.depth = inputHandler.worldDepth;
-        worldGenerator.rivers = inputHandler.rivers;
-        worldGenerator.lakeThreshold = inputHandler.lakeThreshold;
+        worldGenerator.width = inputHandler.WorldWidth;
+        worldGenerator.depth = inputHandler.WorldDepth;
+        worldGenerator.rivers = inputHandler.Rivers;
+        worldGenerator.lakeThreshold = inputHandler.LakeThreshold;
     }
 
+    // Generates a new world based on the current parameters set in the world generator.
     public void GenereteNewWorld()
     {
         world = worldGenerator.Generate();
 
         PrepareForNewWorld();
 
-        // Set init camera position and rotation
-        HandleCameraAngleChange(new Vector3(0, 0, 0));
+        HandleCameraAngleChange(new Vector3(0, 0, 0)); // Set init camera position and rotation
 
-        updateWindCamera();
+        UpdateWindCamera();
     }
 
+    // Prepares the simulation and visualization for a new world.
     private void PrepareForNewWorld()
     {
         currentState = State.NewWorldState;
@@ -436,7 +454,7 @@ public class MainLogic : MonoBehaviour
 
         currentlyHoveredTile = null;
 
-        if (graphVisulizer != null)
+        if (graphVisulizer is not null)
         {
             graphVisulizer.ClearGraph();
             graphVisulizer.SetAxes("burning tiles", "time");
@@ -446,6 +464,7 @@ public class MainLogic : MonoBehaviour
         }
     }
 
+    // Reconstructs the entire visual representation of the world.
     private void VisulizerRemakeAll()
     {
         visulizer.DestroyAllTile();
