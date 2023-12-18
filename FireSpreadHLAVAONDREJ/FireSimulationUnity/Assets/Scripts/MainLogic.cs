@@ -164,7 +164,7 @@ public class MainLogic : MonoBehaviour
 
     private void HandleCameraAngleChange(Vector3 rotationChange)
     {
-        Vector3 worldCenter = new Vector3(world.Width / 2f, 0, world.Depth / 2f);
+        Vector3 worldCenter = new Vector3(world.Width / 2f, 2f * visulizer.TileHeightMultiplier, world.Depth / 2f);
         float upDownSpeed = 50f;
         float speed = 50f;
         float cameraDistance = 100f;
@@ -387,8 +387,8 @@ public class MainLogic : MonoBehaviour
 
         PrepareForNewWorld();
 
-        CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
-        HandleCameraAngleChange(new Vector3(0, 0, 0)); // trigger with default zero vector so cameras size is set correctly
+        // Set init camera position and rotation
+        HandleCameraAngleChange(new Vector3(0, 0, 0));
     }
 
     public void OnSaveClicked()
@@ -415,8 +415,8 @@ public class MainLogic : MonoBehaviour
 
         PrepareForNewWorld();
 
-        CameraHandler.SetCameraPositionAndOrientation(world.Width, world.Depth);
-        HandleCameraAngleChange(new Vector3(0, 0, 0)); // trigger with default zero vector so cameras size is set correctly
+        // Set init camera position and rotation
+        HandleCameraAngleChange(new Vector3(0, 0, 0));
 
         updateWindCamera();
     }

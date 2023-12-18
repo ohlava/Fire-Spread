@@ -37,7 +37,7 @@ public class Visulizer : MonoBehaviour
     [SerializeField] GameObject TilePrefab;
     [SerializeField] GameObject firePrefab;
 
-    [SerializeField] const float TileHeightMultiplier = 3.0f;
+    public float TileHeightMultiplier = 3.0f;
 
     // Add the layer mask for the tileInstances - for handling Raycasting
     [SerializeField] LayerMask tileLayer;

@@ -205,16 +205,17 @@ public class InputHandler : MonoBehaviour
 
     private void HandleActionButtons()
     {
-        if (Input.GetKey(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            CameraHandler.SetCameraPositionAndOrientation(worldWidth, worldDepth);
-            OnCameraAngleChange?.Invoke(new Vector3(0,0,0));
+            OnReset?.Invoke();
         }
             
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             TriggerRun();
+        }
 
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("MainMenu");
         }

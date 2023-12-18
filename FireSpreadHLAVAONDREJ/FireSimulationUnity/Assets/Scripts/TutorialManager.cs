@@ -25,7 +25,6 @@ public class TutorialManager : MonoBehaviour
         tutorialSections[0] =
             " - hold W-A-S-D keys for movement left, right, up, and down around the center of the world" +
             "\n - hold I-K keys for zooming in and out to get a closer or broader view" +
-            "\n - press R key for resetting the camera to its default position" +
             "\n - press ESC key to return to the main menu at any time" +
             "\n Real-World Fact: Understanding the terrain and having a clear view of the area is crucial for strategic planning and effective fire control.";
 
@@ -44,6 +43,7 @@ public class TutorialManager : MonoBehaviour
 
         tutorialSections[3] =
             " Watch how fire spreads more quickly uphill than downhill. Start the fire!" +
+            "\n Tip: press SPACE key for starting the simulation after you ignited tiles, and press R for quick reset of the world" +
             "\n Real-World Fact: Fires tend to spread faster uphill due to the preheating of uphill vegetation and the rising hot air, which aids in igniting the vegetation above.";
 
         tutorialSections[4] =
