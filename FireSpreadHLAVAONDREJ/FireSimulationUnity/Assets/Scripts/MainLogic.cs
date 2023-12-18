@@ -307,14 +307,17 @@ public class MainLogic : MonoBehaviour
 
         if (showingGraph)
         {
+            Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>{{ 0, 0 }};
+
             if (fireSpreadSimulation != null)
             {
-                Dictionary<int, int> burningTilesOverTime = fireSpreadSimulation.GetBurningTilesOverTime();
-                graphVisulizer.ClearGraph();
-                graphVisulizer.SetData(burningTilesOverTime);
-                graphVisulizer.UpdateGraph();
-                graphVisulizer.ShowGraph();
+                burningTilesOverTime = fireSpreadSimulation.GetBurningTilesOverTime();
             }
+            
+            graphVisulizer.ClearGraph();
+            graphVisulizer.SetData(burningTilesOverTime);
+            graphVisulizer.UpdateGraph();
+            graphVisulizer.ShowGraph();
         }
         else
         {
@@ -437,7 +440,7 @@ public class MainLogic : MonoBehaviour
         {
             graphVisulizer.ClearGraph();
             graphVisulizer.SetAxes("burning tiles", "time");
-            graphVisulizer.SetData(new Dictionary<int, int>());
+            graphVisulizer.SetData(new Dictionary<int, int> { { 0, 0 } });
             graphVisulizer.UpdateGraph();
             graphVisulizer.HideGraph();
         }
