@@ -7,6 +7,8 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] GameObject previousButton;
     [SerializeField] GameObject nextButton;
     [SerializeField] TextMeshProUGUI tutorialText;
+    [SerializeField] GameObject windIndicatorObj;
+    WindIndicator windIndicator;
 
     private int currentSection = 0;
     private string[] tutorialSections = new string[6];
@@ -20,6 +22,9 @@ public class TutorialManager : MonoBehaviour
 
         // Set default sizes for worldGenerator
         mainLogic.ApplyInputValues();
+
+        // Assing windIndicator for ability to enable and disable windIndicator
+        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
 
         // Initialize tutorial sections content
         tutorialSections[0] =
@@ -86,6 +91,15 @@ public class TutorialManager : MonoBehaviour
         tutorialText.text = tutorialSections[currentSection];
 
         UpdateButtons();
+
+        if (currentSection == 2)
+        {
+            windIndicator.ActivateIndicator();
+        }
+        else
+        {
+            windIndicator.DeactivateIndicator();
+        }
 
         // Import corresponding map
         mainLogic.ImportTutorialMap(currentSection);
