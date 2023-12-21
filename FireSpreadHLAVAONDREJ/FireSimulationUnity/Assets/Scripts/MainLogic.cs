@@ -7,7 +7,7 @@ public enum State { NewWorldState, RunningState, StoppedState }
 
 public class MainLogic : MonoBehaviour
 {
-    World world;
+    public World world;
 
     FireSpreadParameters fireSpreadParams;
     FireSpreadSimulation fireSpreadSimulation;
@@ -391,7 +391,7 @@ public class MainLogic : MonoBehaviour
         }
         else // use serialized World
         {
-            world = World.Load();
+            world = World.Load(World.DefaultFILENAME);
             PrepareForNewWorld();
         }
     }

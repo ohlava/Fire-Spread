@@ -109,28 +109,29 @@ public class World
         Weather.ChangeWindSpeed(Weather.WindSpeed + windStrengthChange);
     }
 
-    private static readonly string FILE_NAME = "worldSave.json";
-    private static readonly string FILE_PATH = Path.Combine(Application.persistentDataPath, FILE_NAME);
-    
+    public static readonly string DefaultFILENAME = "worldSave.json";
+    public static readonly string DefaultFILEPATH = Path.Combine(Application.streamingAssetsPath, "JsonFiles");
+
     public void Save()
+    {
+        string json = GetWorldSerialized();
+        File.WriteAllText(DefaultFILEPATH, json);
+    }
+
+    public string GetWorldSerialized()
     {
         SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(this);
         string json = JsonUtility.ToJson(serializableWorld);
-        File.WriteAllText(FILE_PATH, json);
+        return json;
     }
 
-    public static World Load(string fileName = "worldSave.json")
+    public static World Load(string fileName)
     {
-        string filePath = Path.Combine(Application.persistentDataPath, fileName);
+        string loadFilePath = Path.Combine(DefaultFILEPATH, fileName);
 
-        if (fileName == "worldSave.json")
+        if (File.Exists(loadFilePath))
         {
-            filePath = FILE_PATH;
-        }
-
-        if (File.Exists(filePath))
-        {
-            string json = File.ReadAllText(filePath);
+            string json = File.ReadAllText(loadFilePath);
             SerializableWorld serializableWorld = JsonUtility.FromJson<SerializableWorld>(json);
             if (serializableWorld is not null)
             {
@@ -139,14 +140,13 @@ public class World
             }
             else
             {
-                // Handle the error, perhaps log an error message or throw an exception.
                 Debug.LogError("Invalid JSON format.");
-                return null; // Or handle it in another appropriate way.
+                return null;
             }
         }
         else
         {
-            throw new FileNotFoundException($"Save file not found at {filePath}");
+            throw new FileNotFoundException($"Save file not found at {loadFilePath}");
         }
     }
 }

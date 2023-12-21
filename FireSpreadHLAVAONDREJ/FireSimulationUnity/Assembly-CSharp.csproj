@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/WorldClasses.cs" />
+    <Compile Include="Assets/Scripts/PythonCaller.cs" />
     <Compile Include="Assets/Scripts/InputHandler.cs" />
     <Compile Include="Assets/Scripts/WorldBuilder.cs" />
     <Compile Include="Assets/Scripts/MainMenu.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="Assets/Scripts/MainLogic.cs" />
     <Compile Include="Assets/Scripts/WindIndicator.cs" />
     <Compile Include="Assets/Scripts/WorldGenerator.cs" />
-    <Compile Include="Assets/Scripts/DataManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
