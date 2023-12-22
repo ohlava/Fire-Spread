@@ -265,6 +265,11 @@ public class MainLogic : MonoBehaviour
                 switch (nextState)
                 {
                     case State.RunningState:
+                        if (initBurningTiles.Count == 0) // if player want to start simulation withou any tiles ignited
+                        {
+                            InfoPanel.text = "Ignite some tiles first!";
+                            return; // do nothing else
+                        }
                         currentState = State.RunningState;
                         fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
                         InfoPanel.text = "Simulation running";
