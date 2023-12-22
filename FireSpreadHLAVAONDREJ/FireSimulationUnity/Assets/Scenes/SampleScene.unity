@@ -1450,6 +1450,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visulizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 846402035}
+  runButton: {fileID: 1542569482}
+  pauseButton: {fileID: 1803260399}
   windIndicatorObj: {fileID: 1212355966}
   InfoPanel: {fileID: 834873593}
 --- !u!1 &490140661
@@ -5911,7 +5913,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1803260400}
   m_OnClick:
     m_PersistentCalls:

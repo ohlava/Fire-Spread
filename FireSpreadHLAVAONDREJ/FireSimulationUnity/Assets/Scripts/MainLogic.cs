@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.IO;
+using UnityEngine.UI;
 
 public enum State { NewWorldState, RunningState, StoppedState }
 
@@ -23,6 +24,9 @@ public class MainLogic : MonoBehaviour
 
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
+
+    [SerializeField] private Button runButton;
+    [SerializeField] private Button pauseButton;
 
     WindIndicator windIndicator;
     [SerializeField] GameObject windIndicatorObj;
@@ -313,6 +317,26 @@ public class MainLogic : MonoBehaviour
         currentState = nextState;
     }
 
+    private void UpdateRunPauseButtons(State currentState)
+    {
+        if (currentState == State.NewWorldState || currentState == State.StoppedState)
+        {
+            runButton.interactable = true;
+            pauseButton.interactable = false;
+        }
+        else if (currentState == State.RunningState)
+        {
+            runButton.interactable = false;
+            pauseButton.interactable = true;
+        }
+        else
+        {
+            runButton.interactable = true;
+            pauseButton.interactable = true;
+            Debug.LogError("Missing world state");
+        }
+    }
+
     // Toggles the visibility of the graph and updates its content.
     public void OnGraphButtonClicked()
     {
@@ -358,16 +382,19 @@ public class MainLogic : MonoBehaviour
     public void OnNewWorldButtonClicked()
     {
         HandleEvent(State.NewWorldState);
+        UpdateRunPauseButtons(currentState);
     }
 
     public void OnRunButtonClicked()
     {
         HandleEvent(State.RunningState);
+        UpdateRunPauseButtons(currentState);
     }
 
     public void OnPauseButtonClicked()
     {
         HandleEvent(State.StoppedState);
+        UpdateRunPauseButtons(currentState);
     }
 
     // Handles the import button click event to load external maps or serialized worlds.
@@ -441,14 +468,12 @@ public class MainLogic : MonoBehaviour
         PrepareForNewWorld();
     }
 
-
     public void OnSaveClicked()
     {
         if (fileBrowserHandler is null) return;
 
         fileBrowserHandler.SaveFile(HandleFileSave);
     }
-
 
     private void HandleFileSave(string filePath)
     {
@@ -462,9 +487,6 @@ public class MainLogic : MonoBehaviour
             Debug.Log("File saving was canceled.");
         }
     }
-
-
-
 
     public void SetSimulationSpeed(float newSpeed)
     {
@@ -494,6 +516,7 @@ public class MainLogic : MonoBehaviour
     {
         currentState = State.NewWorldState;
         InfoPanel.text = "New world - set fire";
+        UpdateRunPauseButtons(currentState);
 
         if (world.Width * world.Depth >= 2500) // number of tiles is small enough
         {
