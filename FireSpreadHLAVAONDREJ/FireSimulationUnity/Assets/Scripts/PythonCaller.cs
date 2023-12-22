@@ -20,7 +20,7 @@ public class PythonCaller : MonoBehaviour
     {
         string scriptPath = Path.Join(Application.streamingAssetsPath, scriptName);
         string[] args = { "arg1", "arg2" };  // Example arguments for now
-        string jsonString = mainLogic.world.GetWorldSerialized();
+        string jsonString = mainLogic.worldFileManager.GetWorldSerialized(mainLogic.world);
 
         string output = await RunPythonScript(scriptPath, args, jsonString); // What python prints into StandardOutput
         UnityEngine.Debug.Log("Python script completed");

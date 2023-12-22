@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.IO;
 
 public enum State { NewWorldState, RunningState, StoppedState }
 
 public class MainLogic : MonoBehaviour
 {
     public World world;
+    private WorldGenerator worldGenerator;
+    public WorldFileManager worldFileManager;
+
+    FileBrowserHandler fileBrowserHandler;
 
     FireSpreadParameters fireSpreadParams;
     FireSpreadSimulation fireSpreadSimulation;
@@ -31,14 +36,15 @@ public class MainLogic : MonoBehaviour
     private float elapsed;
     private float speedOfUpdates;
 
-    private WorldGenerator worldGenerator;
-
     private bool showingGraph;
     private State currentState;
 
     void Awake()
     {
         worldGenerator = new WorldGenerator();
+        worldFileManager = new WorldFileManager();
+        fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
+
         fireSpreadParams = new FireSpreadParameters();
         fireSpreadSimulation = null;
         initBurningTiles = new List<Tile>();
@@ -322,13 +328,13 @@ public class MainLogic : MonoBehaviour
 
         if (showingGraph)
         {
-            Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>{{ 0, 0 }};
+            Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int> { { 0, 0 } };
 
             if (fireSpreadSimulation is not null)
             {
                 burningTilesOverTime = fireSpreadSimulation.GetBurningTilesOverTime();
             }
-            
+
             graphVisulizer.ClearGraph();
             graphVisulizer.SetData(burningTilesOverTime);
             graphVisulizer.UpdateGraph();
@@ -367,51 +373,98 @@ public class MainLogic : MonoBehaviour
     // Handles the import button click event to load external maps or serialized worlds.
     public void OnImportClicked()
     {
-        IMapImporter mapImporter = new HeightMapImporter();
-        int requiredWidth = inputHandler.WorldWidth;
-        int requiredDepth = inputHandler.WorldDepth;
+        if (fileBrowserHandler is null) return;
 
-        Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth);
+        fileBrowserHandler.ImportFile(HandleFileLoad);
+    }
 
-        Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
-        customMoistureMap.FillWithDefault(0);
-        Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
-        customVegetationMap.FillWithDefault(VegetationType.Grass);
-
-        if (customHeightMap is not null)
+    private void HandleFileLoad(string filePath)
+    {
+        if (filePath != null)
         {
-            Debug.Log("Import from PNG heighmap");
+            Debug.Log("Loading file from path: " + filePath);
 
-            world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
+            // Check the file extension
+            string fileExtension = Path.GetExtension(filePath).ToLower();
 
-            WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
-            // Apply other maps if desired / only some can be applied
+            if (fileExtension == ".png")
+            {
+                Debug.Log("Importing height map from PNG file.");
+
+                IMapImporter mapImporter = new HeightMapImporter();
+                int requiredWidth = inputHandler.WorldWidth;
+                int requiredDepth = inputHandler.WorldDepth;
+
+                Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth, filePath);
+
+                Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
+                customMoistureMap.FillWithDefault(0);
+                Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
+                customVegetationMap.FillWithDefault(VegetationType.Grass);
+
+                if (customHeightMap != null)
+                {
+                    Debug.Log("Successfully imported height map from PNG file.");
+
+                    world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
+
+                    WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
+                    // Apply other maps if desired / only some can be applied
+                    // WorldBuilder.Apply...
+                }
+            }
+            else if (fileExtension == ".json")
+            {
+                Debug.Log("Loading serialized world from JSON file.");
+                world = worldFileManager.LoadWorld(filePath);
+            }
+            else
+            {
+                Debug.LogError("Unsupported file format: " + fileExtension);
+            }
 
             PrepareForNewWorld();
         }
-        else // use serialized World
+        else
         {
-            world = World.Load(World.DefaultFILENAME);
-            PrepareForNewWorld();
+            Debug.Log("File loading was canceled.");
         }
     }
 
     // Imports a tutorial map based on a given map number.
     public void ImportTutorialMap(int mapNumber)
     {
-        string fileName = mapNumber + "TutorialMap.json";
+        string tutorialFileName = mapNumber + "TutorialMap.json";
 
-        world = World.Load(fileName);
+        world = worldFileManager.LoadWorld(Application.streamingAssetsPath + "/TutorialWorlds/" + tutorialFileName);
 
         PrepareForNewWorld();
-
-        HandleCameraAngleChange(new Vector3(0, 0, 0)); // Set init camera position and rotation
     }
+
 
     public void OnSaveClicked()
     {
-        world.Save();
+        if (fileBrowserHandler is null) return;
+
+        fileBrowserHandler.SaveFile(HandleFileSave);
     }
+
+
+    private void HandleFileSave(string filePath)
+    {
+        if (filePath != null)
+        {
+            Debug.Log("Saving file path: " + filePath);
+            worldFileManager.SaveWorld(world, filePath);
+        }
+        else
+        {
+            Debug.Log("File saving was canceled.");
+        }
+    }
+
+
+
 
     public void SetSimulationSpeed(float newSpeed)
     {
@@ -433,8 +486,6 @@ public class MainLogic : MonoBehaviour
 
         PrepareForNewWorld();
 
-        HandleCameraAngleChange(new Vector3(0, 0, 0)); // Set init camera position and rotation
-
         UpdateWindCamera();
     }
 
@@ -451,6 +502,7 @@ public class MainLogic : MonoBehaviour
 
         initBurningTiles.Clear();
         VisulizerRemakeAll();
+        HandleCameraAngleChange(new Vector3(0, 0, 0)); // Set init camera position and rotation
 
         currentlyHoveredTile = null;
 

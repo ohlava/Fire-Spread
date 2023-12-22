@@ -108,47 +108,6 @@ public class World
         Weather.ChangeWindDirection(Weather.WindDirection + windDirectionChange);
         Weather.ChangeWindSpeed(Weather.WindSpeed + windStrengthChange);
     }
-
-    public static readonly string DefaultFILENAME = "worldSave.json";
-    public static readonly string DefaultFILEPATH = Path.Combine(Application.streamingAssetsPath, "JsonFiles");
-
-    public void Save()
-    {
-        string json = GetWorldSerialized();
-        File.WriteAllText(DefaultFILEPATH, json);
-    }
-
-    public string GetWorldSerialized()
-    {
-        SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(this);
-        string json = JsonUtility.ToJson(serializableWorld);
-        return json;
-    }
-
-    public static World Load(string fileName)
-    {
-        string loadFilePath = Path.Combine(DefaultFILEPATH, fileName);
-
-        if (File.Exists(loadFilePath))
-        {
-            string json = File.ReadAllText(loadFilePath);
-            SerializableWorld serializableWorld = JsonUtility.FromJson<SerializableWorld>(json);
-            if (serializableWorld is not null)
-            {
-                // The JSON was valid and deserialized correctly.
-                return SerializableConversion.ConvertFromWorldSerializable(serializableWorld);
-            }
-            else
-            {
-                Debug.LogError("Invalid JSON format.");
-                return null;
-            }
-        }
-        else
-        {
-            throw new FileNotFoundException($"Save file not found at {loadFilePath}");
-        }
-    }
 }
 
 public enum VegetationType

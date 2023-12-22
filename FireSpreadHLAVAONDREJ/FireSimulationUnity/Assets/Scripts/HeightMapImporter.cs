@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public interface IMapImporter
 {
-    Map<float> GetMap(int width, int depth);
+    Map<float> GetMap(int width, int depth, string fullFilePath);
 }
 
 public class HeightMapImporter : IMapImporter
@@ -18,37 +18,21 @@ public class HeightMapImporter : IMapImporter
     // Adjust this to change how the height values will be scaled
     public float HeightMultiplier = 10f;
 
-    public Map<float> GetMap(int requiredWidth, int requiredDepth)
+    public Map<float> GetMap(int requiredWidth, int requiredDepth, string fullFilePath)
     {
-        if (ImportHeightMap(requiredWidth, requiredDepth) == true)
+        if (ImportHeightMap(requiredWidth, requiredDepth, fullFilePath) == true)
         {
             return heightMap;
         }
-        Debug.Log("Something went wrong with map Import, check if there is a map:");
-        Debug.Log(Application.persistentDataPath);
+        Debug.Log("Something went wrong with map Import, check the file path:");
         return null;
     }
 
-    private Map<float> GetPlainMap(int requiredWidth, int requiredDepth)
+    private bool ImportHeightMap(int requiredWidth, int requiredDepth, string fullFilePath)
     {
-        Map<float> plainMap = new Map<float>(requiredWidth, requiredDepth);
-        for (int i = 0; i < requiredWidth; i++)
+        if (File.Exists(fullFilePath))
         {
-            for (int j = 0; j < requiredDepth; j++)
-            {
-                plainMap.Data[i, j] = 1f;
-            }
-        }
-        return plainMap;
-    }
-
-    private bool ImportHeightMap(int requiredWidth, int requiredDepth)
-    {
-        string path = Path.Combine(Application.persistentDataPath, "map.png");
-
-        if (File.Exists(path))
-        {
-            var fileContent = File.ReadAllBytes(path);
+            var fileContent = File.ReadAllBytes(fullFilePath);
 
             // Create a texture and load the image file into it
             Texture2D tex = new Texture2D(2, 2);
@@ -84,7 +68,6 @@ public class HeightMapImporter : IMapImporter
                 if (i < tex.width && j < tex.height)
                 {
                     heightValue = tex.GetPixel(i * sampleRatio, j * sampleRatio).grayscale;
-                    Debug.Log(heightValue);
                 }
                 else
                 {
