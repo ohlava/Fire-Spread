@@ -16,7 +16,7 @@ public class HeightMapImporter : IMapImporter
     private Map<float> heightMap;
 
     // Adjust this to change how the height values will be scaled
-    public float HeightMultiplier = 10f;
+    public float HeightMultiplier = 5f;
 
     public Map<float> GetMap(int requiredWidth, int requiredDepth, string fullFilePath)
     {

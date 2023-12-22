@@ -8,7 +8,7 @@ public class FileBrowserHandler : MonoBehaviour
 
     public void ImportFile(FileSelectedCallback callback)
     {
-        FileBrowser.SetFilters(true, new FileBrowser.Filter("Maps", ".json", ".png"));
+        FileBrowser.SetFilters(true, new FileBrowser.Filter("Maps", ".json", ".png", ".jpg", ".jpeg"));
         FileBrowser.SetDefaultFilter(".json");
 
         StartCoroutine(ShowOpenDialogCoroutine(callback));

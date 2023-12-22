@@ -387,9 +387,9 @@ public class MainLogic : MonoBehaviour
             // Check the file extension
             string fileExtension = Path.GetExtension(filePath).ToLower();
 
-            if (fileExtension == ".png")
+            if (fileExtension == ".png" || fileExtension == ".jpg" || fileExtension == ".jpeg")
             {
-                Debug.Log("Importing height map from PNG file.");
+                Debug.Log("Importing height map from " + fileExtension + " file.");
 
                 IMapImporter mapImporter = new HeightMapImporter();
                 int requiredWidth = inputHandler.WorldWidth;
@@ -404,7 +404,7 @@ public class MainLogic : MonoBehaviour
 
                 if (customHeightMap != null)
                 {
-                    Debug.Log("Successfully imported height map from PNG file.");
+                    Debug.Log("Successfully imported height map from " + fileExtension + " file.");
 
                     world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
 
@@ -495,9 +495,9 @@ public class MainLogic : MonoBehaviour
         currentState = State.NewWorldState;
         InfoPanel.text = "New world - set fire";
 
-        if (world.Width * world.Depth >= 3000) // number of tiles is small enough
+        if (world.Width * world.Depth >= 2500) // number of tiles is small enough
         {
-            visulizer.mode = VisulizerMode.Standard;
+            visulizer.mode = VisulizerMode.Simplified;
         }
 
         initBurningTiles.Clear();
