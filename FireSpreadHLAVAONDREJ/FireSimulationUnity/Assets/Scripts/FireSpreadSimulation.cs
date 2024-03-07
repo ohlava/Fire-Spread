@@ -233,7 +233,7 @@ public class FireSpreadSimulation
 
 
 
-
+// configuration object for simulation parameters
 public class FireSpreadParameters
 {
     // Use bool to indicate whether a parameter is counted or not.

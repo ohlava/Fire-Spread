@@ -25,6 +25,8 @@ public class MainLogic : MonoBehaviour
     InputHandler inputHandler;
     [SerializeField] GameObject inputHandlerObj;
 
+    Settings settings;
+
     [SerializeField] private Button runButton;
     [SerializeField] private Button pauseButton;
 
@@ -54,6 +56,8 @@ public class MainLogic : MonoBehaviour
         initBurningTiles = new List<Tile>();
 
         currentlyHoveredTile = null;
+
+        settings = SettingsManager.LoadSettings();
 
         elapsed = 0f;
         speedOfUpdates = 1.2f; // seconds
@@ -511,10 +515,49 @@ public class MainLogic : MonoBehaviour
     {
         world = worldGenerator.Generate();
 
+        if (settings.saveTerrainAutomatically)
+        {
+            SaveWorldAutomatically();
+        }
+
         PrepareForNewWorld();
 
         UpdateWindCamera();
     }
+
+    // Saves the world to a new file with automatic numbering.
+    private void SaveWorldAutomatically()
+    {
+        string saveDirectory = Path.Combine(Application.streamingAssetsPath, "SavedWorlds");
+        if (!Directory.Exists(saveDirectory))
+        {
+            Directory.CreateDirectory(saveDirectory);
+        }
+
+        int nextWorldNumber = GetNextWorldNumber(saveDirectory);
+        string savePath = Path.Combine(saveDirectory, $"World_{nextWorldNumber}.json");
+        worldFileManager.SaveWorld(world, savePath);
+        Debug.Log($"World saved automatically to: {savePath}");
+    }
+
+    // Gets the next available world number for naming saved worlds.
+    private int GetNextWorldNumber(string directoryPath)
+    {
+        var worldFiles = Directory.GetFiles(directoryPath, "World_*.json");
+        int highestNumber = 0;
+
+        foreach (string filePath in worldFiles)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            if (int.TryParse(fileName.Split('_')[1], out int worldNumber) && worldNumber > highestNumber)
+            {
+                highestNumber = worldNumber;
+            }
+        }
+
+        return highestNumber + 1; // Return the next available number
+    }
+
 
     // Prepares the simulation and visualization for a new world.
     private void PrepareForNewWorld()
@@ -523,7 +566,7 @@ public class MainLogic : MonoBehaviour
         InfoPanel.text = "New world - set fire";
         UpdateRunPauseButtons(currentState);
 
-        if (world.Width * world.Depth >= 2500) // number of tiles is small enough
+        if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) // settings enabled or number of tiles is too high
         {
             visulizer.mode = VisulizerMode.Simplified;
         }
