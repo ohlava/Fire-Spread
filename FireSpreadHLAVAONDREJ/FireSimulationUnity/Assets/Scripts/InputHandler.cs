@@ -30,9 +30,6 @@ public class InputHandler : MonoBehaviour
     public delegate void GenerateWorldHandler();
     public event GenerateWorldHandler OnGenerateWorld;
 
-    public delegate void FieldValueChangeHandler();
-    public event FieldValueChangeHandler OnFieldValueChange;
-
     public delegate void ImportHandler();
     public event ImportHandler OnImport;
 
@@ -59,6 +56,7 @@ public class InputHandler : MonoBehaviour
     #endregion
 
     #region Private Fields
+    private bool initializing = false; // for input fields not to trigger generation of new world
     private Visulizer visulizer;
     private TMP_InputField worldWidthInputField;
     private TMP_InputField worldDepthInputField;
@@ -80,8 +78,10 @@ public class InputHandler : MonoBehaviour
 
     private void Awake()
     {
+        initializing = true; // beggining of initialization
         InitializeFields();
         InitializeDefaultValues();
+        initializing = false; // initialization is complete
     }
 
     private void InitializeFields()
@@ -283,7 +283,11 @@ public class InputHandler : MonoBehaviour
             // Update the displayed value
             worldWidthInputField.text = WorldWidth.ToString();
 
-            OnFieldValueChange?.Invoke();
+            // Only trigger world generation if initialization is complete
+            if (!initializing)
+            {
+                TriggerGenerateWorld();
+            }
         }
     }
 
@@ -300,7 +304,11 @@ public class InputHandler : MonoBehaviour
             // Update the displayed value
             worldDepthInputField.text = WorldDepth.ToString();
 
-            OnFieldValueChange?.Invoke();
+            // Only trigger world generation if initialization is complete
+            if (!initializing)
+            {
+                TriggerGenerateWorld();
+            }
         }
     }
 
@@ -317,7 +325,11 @@ public class InputHandler : MonoBehaviour
             // Update the displayed value
             riversInputField.text = Rivers.ToString();
 
-            OnFieldValueChange?.Invoke();
+            // Only trigger world generation if initialization is complete
+            if (!initializing)
+            {
+                TriggerGenerateWorld();
+            }
         }
     }
 
@@ -336,6 +348,11 @@ public class InputHandler : MonoBehaviour
         if (lakeThresholdSlider == null) return; // Early exit if the field is not present
 
         LakeThreshold = value;
-        OnFieldValueChange?.Invoke();
+
+        // Only trigger world generation if initialization is complete
+        if (!initializing)
+        {
+            TriggerGenerateWorld();
+        }
     }
 }

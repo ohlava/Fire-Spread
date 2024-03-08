@@ -80,7 +80,6 @@ public class MainLogic : MonoBehaviour
         inputHandler.OnGraph += OnGraphButtonClicked;
         inputHandler.OnReset += OnResetButtonClicked;
         inputHandler.OnGenerateWorld += GenereteNewWorld;
-        inputHandler.OnFieldValueChange += ApplyInputValues; // plus GenereteNewWorld with that - set in Unity
         inputHandler.OnImport += OnImportClicked;
         inputHandler.OnSave += OnSaveClicked;
         inputHandler.OnRun += OnRunButtonClicked;
@@ -513,6 +512,8 @@ public class MainLogic : MonoBehaviour
     // Generates a new world based on the current parameters set in the world generator.
     public void GenereteNewWorld()
     {
+        ApplyInputValues();
+
         world = worldGenerator.Generate();
 
         if (settings.saveTerrainAutomatically)
