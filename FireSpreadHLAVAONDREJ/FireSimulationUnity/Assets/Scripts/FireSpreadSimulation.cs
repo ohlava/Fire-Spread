@@ -264,7 +264,7 @@ public class FireSpreadParameters
     // Flexible constructor with optional parameters for each factor.
     // Each parameter can be either a bool (for enabled/disabled) or a float (for custom factors), defaulting to null.
     // This uses object? so it can accept either a bool or a float.
-    public FireSpreadParameters(object? vegetationSpread = null, object? moistureSpread = null, object? windSpread = null, object? slopeSpread = null)
+    public FireSpreadParameters(object vegetationSpread = null, object moistureSpread = null, object windSpread = null, object slopeSpread = null)
     {
         VegetationSpreadFactor = ParseFactor(vegetationSpread, 1.0f);
         MoistureSpreadFactor = ParseFactor(moistureSpread, 1.0f);
@@ -273,7 +273,7 @@ public class FireSpreadParameters
     }
 
     // Helper method to parse the input (bool or float) and return an appropriate float value.
-    private float ParseFactor(object? factor, float defaultValue)
+    private float ParseFactor(object factor, float defaultValue)
     {
         if (factor == null)
         {
