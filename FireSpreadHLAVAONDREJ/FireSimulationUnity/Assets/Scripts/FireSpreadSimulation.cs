@@ -14,6 +14,9 @@ public class FireSpreadSimulation
     private SimulationCalendar _calendar;
     private FireEventsLogger _eventLogger;
 
+    // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
+    float baseProbability = 0.3f;
+
     public FireSpreadSimulation(FireSpreadParameters parameters, World world, List<Tile> initBurningTiles)
     {
         _parameters = parameters;
@@ -48,7 +51,7 @@ public class FireSpreadSimulation
         foreach (Tile tile in _burningTiles)
         {
             // Iterate over each neighboring tile.
-            foreach (Tile neighborTile in _world.GetNeighborTiles(tile))
+            foreach (Tile neighborTile in _world.GetCircularEdgeNeighborTiles(tile, 1))
             {
                 // Calculate the fire spread probability.
                 float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
@@ -91,22 +94,21 @@ public class FireSpreadSimulation
 
     private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSpreadParameters parameters)
     {
-        // TODO implement more reminiscent of reality / something like cumulative probability being 0.20f-0.35f seems to be nice
-        // precalculate?
-
-        float vegetationFactor = GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor);
-        float moistureFactor = GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor);
-        float windFactor = GetWindFactor(world, source, target, parameters.WindSpreadFactor);
-        float slopeFactor = GetSlopeFactor(source, target, parameters.SlopeSpreadFactor);
+        float vegetationFactor = parameters.VegetationSpreadFactor > 0 ? GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor) : baseProbability;
+        float slopeFactor = parameters.SlopeSpreadFactor > 0 ? GetSlopeFactor(source, target, parameters.SlopeSpreadFactor) : baseProbability;
 
         // First, average the vegetation and slope factors
         float combined = (vegetationFactor + slopeFactor) / 2;
 
         // Now adjust the probability based on the moisture and wind
-        // The more moisture, the less likely the fire is to spread, hence we multiply by moistureFactor.
-        // The stronger the wind in the direction of the target, the more likely the fire is to spread, hence we multiply by windFactor.
+        float moistureFactor = parameters.MoistureSpreadFactor > 0 ? GetMoistureFactor(target.Moisture, parameters.MoistureSpreadFactor) : 1.0f;
+        float windFactor = parameters.WindSpreadFactor > 0 ? GetWindFactor(world, source, target, parameters.WindSpreadFactor) : 1.0f;
+
         // Apply the moisture and wind effects as percentage changes.
         float adjustedProbability = combined * moistureFactor * windFactor;
+        adjustedProbability = Math.Max(0.0f, Math.Min(1.0f, adjustedProbability));
+
+        if (adjustedProbability == 0.0f || adjustedProbability == 1.0f) return adjustedProbability; // No need to call GetStepFireProbability
 
         return GetStepFireProbability(adjustedProbability, source.BurnTime);
     }
@@ -137,24 +139,27 @@ public class FireSpreadSimulation
         return (lowerBound + upperBound) / 2;
     }
 
-    // Implement helper methods for calculating factors based on vegetation, moisture, wind, and slope.
+
+
     private float GetVegetationFactor(VegetationType vegetation, float spreadFactor)
     {
-        float factor = 1.0f;
+        float factor = baseProbability;
 
         switch (vegetation)
         {
             case VegetationType.Grass:
-                factor = 0.18f;
+                factor -= 0.12f;
                 break;
             case VegetationType.Forest:
-                factor = 0.4f;
+                factor += 0.1f;
                 break;
             case VegetationType.Sparse:
-                factor = 0.25f;
+                factor -= 0.05f;
                 break;
             case VegetationType.Swamp:
-                factor = 0.22f;
+                factor -= 0.08f;
+                break;
+            default:
                 break;
         }
 
@@ -163,31 +168,31 @@ public class FireSpreadSimulation
 
     private float GetMoistureFactor(float moisture, float spreadFactor)
     {
-        //(1 - moisture) * spreadFactor;
+        float factor;
 
-        /// The spread factor will be higher for drier tiles.
-        // Moisture value is between 0 (dry) and 1 (water). The factor will range from 0 (no effect) to -1 (full effect).
+        // Two linear functions for moisture factor
+        if (moisture < 50) // Moisture value is between 0 (dry) and 100 (water)
+        {
+            float x1 = 0f, y1 = 1f;
+            float x2 = 50f, y2 = 0.8f;
 
-        if (moisture > 85)
-        {
-            return 0.5f;
-        }
-        else if (moisture > 65)
-        {
-            return 0.7f;
+            factor = y1 + ((moisture - x1) * (y2 - y1) / (x2 - x1));
         }
         else
         {
-            return 0.88f;
+            float x1 = 50f, y1 = 0.8f;
+            float x2 = 100f, y2 = 0f;
+
+            factor = y1 + ((moisture - x1) * (y2 - y1) / (x2 - x1));
         }
+
+        factor = Mathf.Clamp(factor, 0, 1);
+
+        return factor * spreadFactor;
     }
 
     private float GetWindFactor(World world, Tile source, Tile target, float spreadFactor)
     {
-        // It has been measured that with a wind speed of 10 km/h, the fire spreads through the Australian bush at a speed of about 0.5 km/h.
-        // If the wind speed increases to 20 km/h, the speed of the fire will increase to 0.8 km/h. At a wind speed of 40 km/h, the speed of fire progress is already 1.8 km/h
-        // use interpolation
-
         // Determine direction from source to target
         Vector2 dirSourceToTarget = new Vector2(target.WidthPosition - source.WidthPosition, target.DepthPosition - source.DepthPosition).normalized;
         Vector2 windDirectionVector = new Vector2(Mathf.Cos(world.Weather.WindDirection * Mathf.Deg2Rad), Mathf.Sin(world.Weather.WindDirection * Mathf.Deg2Rad));
@@ -195,36 +200,42 @@ public class FireSpreadSimulation
         // Calculate the dot product between the wind direction and the direction to the target
         float dotProduct = Vector2.Dot(windDirectionVector, dirSourceToTarget);
 
-        // If dotProduct is close to 1, it means the wind is roughly in the same direction.
-        if (dotProduct > 0.7)
-        {
-            return 1.5f;  // Increase the spread factor slightly
-        }
-        else
-        {
-            return 1f;  // Default value when wind is not in the target direction
-        }
+        // Calculate wind speed factor (linearly from 0 to x% increase)
+        float windSpeed = world.Weather.WindSpeed;
+        float windSpeedFactor = Mathf.Min(windSpeed / 60.0f, 1.0f) * 0.8f; // Caps at 0.8 for 60+ wind speed
+
+        // Combine the windSpeedFactor with the adjustmentFactor
+        float factor = 1.0f + windSpeedFactor * dotProduct; // dotProduct is ranging from -1 to 0 (perpendicular) to 1
+
+        // Ensure totalFactor is within bounds
+        factor = Mathf.Clamp(factor, 0.4f, 1.8f); // Caps at 1.8 for 60+ wind speed in the same direction
+
+        return factor * spreadFactor;
     }
 
     private float GetSlopeFactor(Tile source, Tile target, float spreadFactor)
     {
         // The spread factor will be higher for uphill slopes.
-        // Experimentally, it was found that at a slope of 10°, the speed of fire progress increases twice, and at a slope of 40° even four times.
+        float factor;
 
-        float slopeDifference = target.Height - source.Height;
+        // Points for linear interpolation based on the given slope and spread factor relationship
+        float x1 = 10f, y1 = 1.5f;
+        float x2 = 40f, y2 = 3f;
 
-        if (slopeDifference >= 0)
-        {
-            return 0.35f * spreadFactor;
-        }
-        else
-        {
-            return 0.25f * spreadFactor;
-        }
+        float heightDifference = target.Height - source.Height;
+
+        // Calculate the slope in degrees
+        float slopeInDegrees = Mathf.Atan(heightDifference / 1) * (180f / Mathf.PI); // distance is considered to be 1
+
+        // Calculate factor using linear interpolation formula
+        factor = slopeInDegrees >= 0 ? y1 + ((slopeInDegrees - x1) * (y2 - y1) / (x2 - x1)) : 1f; // no change for downhill
+
+        factor = factor * baseProbability;
+        factor = Math.Min(0.8f, factor); // Maximal probability value
+
+        return factor * spreadFactor;
     }
 }
-
-
 
 
 
@@ -236,24 +247,49 @@ public class FireSpreadSimulation
 // configuration object for simulation parameters
 public class FireSpreadParameters
 {
-    // Use bool to indicate whether a parameter is counted or not.
-    public bool IncludeVegetationSpread { get; set; }
-    public bool IncludeMoistureSpread { get; set; }
-    public bool IncludeWindSpread { get; set; }
-    public bool IncludeSlopeSpread { get; set; }
+    public float VegetationSpreadFactor { get; set; }
+    public float MoistureSpreadFactor { get; set; }
+    public float WindSpreadFactor { get; set; }
+    public float SlopeSpreadFactor { get; set; }
 
-    // Instead of using float for factors, you use the boolean properties to determine whether to count the factor (1) or not (0).
-    public float VegetationSpreadFactor => IncludeVegetationSpread ? 1.0f : 0.0f;
-    public float MoistureSpreadFactor => IncludeMoistureSpread ? 1.0f : 0.0f;
-    public float WindSpreadFactor => IncludeWindSpread ? 1.0f : 0.0f;
-    public float SlopeSpreadFactor => IncludeSlopeSpread ? 1.0f : 0.0f;
-
+    // Default constructor with all factors enabled.
     public FireSpreadParameters()
     {
-        // Set default values for including spread factors.
-        IncludeVegetationSpread = true; // 1 when counted, 0 when not
-        IncludeMoistureSpread = true;   // 1 when counted, 0 when not
-        IncludeWindSpread = true;       // 1 when counted, 0 when not
-        IncludeSlopeSpread = true;      // 1 when counted, 0 when not
+        VegetationSpreadFactor = 1.0f;
+        MoistureSpreadFactor = 1.0f;
+        WindSpreadFactor = 1.0f;
+        SlopeSpreadFactor = 1.0f;
+    }
+
+    // Flexible constructor with optional parameters for each factor.
+    // Each parameter can be either a bool (for enabled/disabled) or a float (for custom factors), defaulting to null.
+    // This uses object? so it can accept either a bool or a float.
+    public FireSpreadParameters(object? vegetationSpread = null, object? moistureSpread = null, object? windSpread = null, object? slopeSpread = null)
+    {
+        VegetationSpreadFactor = ParseFactor(vegetationSpread, 1.0f);
+        MoistureSpreadFactor = ParseFactor(moistureSpread, 1.0f);
+        WindSpreadFactor = ParseFactor(windSpread, 1.0f);
+        SlopeSpreadFactor = ParseFactor(slopeSpread, 1.0f);
+    }
+
+    // Helper method to parse the input (bool or float) and return an appropriate float value.
+    private float ParseFactor(object? factor, float defaultValue)
+    {
+        if (factor == null)
+        {
+            return defaultValue; // Use default if no value is provided.
+        }
+        else if (factor is bool)
+        {
+            return (bool)factor ? 1.0f : 0.0f; // Convert bool to float (1.0 or 0.0).
+        }
+        else if (factor is float)
+        {
+            return (float)factor; // Use the float value directly.
+        }
+        else
+        {
+            throw new ArgumentException("Factor must be either a bool or a float.");
+        }
     }
 }

@@ -92,13 +92,34 @@ public class TutorialManager : MonoBehaviour
 
         UpdateButtons();
 
-        if (currentSection == 2)
+        switch (currentSection)
         {
-            windIndicator.ActivateIndicator();
-        }
-        else
-        {
-            windIndicator.DeactivateIndicator();
+            case 0:
+                windIndicator.DeactivateIndicator();
+                mainLogic.fireSpreadParams = new FireSpreadParameters(true, true, false, true);
+                break;
+            case 1:
+                mainLogic.fireSpreadParams = new FireSpreadParameters(true, true, false, true);
+                windIndicator.DeactivateIndicator();
+                break;
+            case 2:
+                mainLogic.fireSpreadParams = new FireSpreadParameters(false, false, true, false);
+                windIndicator.ActivateIndicator();
+                break;
+            case 3:
+                mainLogic.fireSpreadParams = new FireSpreadParameters(false, false, false, true);
+                windIndicator.DeactivateIndicator();
+                break;
+            case 4:
+                mainLogic.fireSpreadParams = new FireSpreadParameters(true, false, false, false);
+                windIndicator.DeactivateIndicator();
+                break;
+            case 5:
+                mainLogic.fireSpreadParams = new FireSpreadParameters(true, true, true, true);
+                windIndicator.ActivateIndicator();
+                break;
+            default:
+                break;
         }
 
         // Import corresponding map

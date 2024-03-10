@@ -15,7 +15,7 @@ public class MainLogic : MonoBehaviour
 
     FileBrowserHandler fileBrowserHandler;
 
-    FireSpreadParameters fireSpreadParams;
+    public FireSpreadParameters fireSpreadParams;
     FireSpreadSimulation fireSpreadSimulation;
     List<Tile> initBurningTiles;
 

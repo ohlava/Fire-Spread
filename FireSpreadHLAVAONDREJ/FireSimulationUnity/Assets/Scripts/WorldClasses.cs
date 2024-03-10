@@ -7,12 +7,19 @@ using UnityEngine;
 
 public class World
 {
+    #region Properties
+    public int Width { get; }
+    public int Depth { get; }
+    public Tile[,] Grid;
+    public Weather Weather;
+    #endregion
+
     public World(int width, int depth)
     {
         Width = Math.Max(0, width);
         Depth = Math.Max(0, depth);
         Grid = new Tile[Width, Depth];
-        Weather = new Weather(0, 0);
+        Weather = new Weather(0, 15);
     }
 
     // Reset the weather and reset all non static atributes for all the tiles. 
@@ -27,11 +34,6 @@ public class World
             tile.Reset();
         }
     }
-
-    public int Width { get; }
-    public int Depth { get; }
-
-    public Tile[,] Grid;
 
     // Return how many tiles you have to move from one tile to get to the second tile for x, y position.
     public (int xDiff, int yDiff) GetTilesDistanceXY(Tile tile1, Tile tile2)
@@ -95,15 +97,42 @@ public class World
             yield return GetTileAt(x, y - 1);
     }
 
-    public Weather Weather;
+    public IEnumerable<Tile> GetCircularEdgeNeighborTiles(Tile tile, int radius)
+    {
+        int xCenter = tile.WidthPosition;
+        int yCenter = tile.DepthPosition;
+
+        // A threshold to determine if a tile is close enough to the edge of the circle.
+        // This accounts for the discrete nature of the grid.
+        double edgeThreshold = 0.5;
+
+        // Loop through a square grid that approximately covers the area of the circle
+        for (int x = xCenter - radius; x <= xCenter + radius; x++)
+        {
+            for (int y = yCenter - radius; y <= yCenter + radius; y++)
+            {
+                double distanceFromCenter = Math.Sqrt((x - xCenter) * (x - xCenter) + (y - yCenter) * (y - yCenter));
+
+                // Check if the tile is close to the edge of the circle
+                if (Math.Abs(distanceFromCenter - radius) <= edgeThreshold)
+                {
+                    // Check if the coordinates are valid (within the grid bounds)
+                    if (x >= 0 && x < Grid.GetLength(0) && y >= 0 && y < Grid.GetLength(1))
+                    {
+                        yield return GetTileAt(x, y);
+                    }
+                }
+            }
+        }
+    }
 
     public void UpdateWeather()
     {
-        // Randomly change the wind direction by +/- 10 degrees
+        // Randomly change the wind direction by +/- 15 degrees
         int windDirectionChange = UnityEngine.Random.Range(-15, 15);
 
-        // Randomly change the wind strength by +/- 5 km/h
-        float windStrengthChange = UnityEngine.Random.Range(-4f, 4f);
+        // Randomly change the wind strength by +/- 3 km/h
+        float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
 
         Weather.ChangeWindDirection(Weather.WindDirection + windDirectionChange);
         Weather.ChangeWindSpeed(Weather.WindSpeed + windStrengthChange);
@@ -279,7 +308,7 @@ public class Weather
     public float WindSpeed
     {
         get { return windSpeed; }
-        set { windSpeed = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
+        set { windSpeed = Math.Max(0, Math.Min(60, value)); } // ensures it is set to 0-60
     }
 
     private WeatherChangeLogger logger;
@@ -301,7 +330,7 @@ public class Weather
         float oldSpeed = WindSpeed;
 
         // Ensure the wind strength is not negative
-        WindSpeed = Mathf.Max(0f, newSpeed);
+        WindSpeed = newSpeed;
 
         logger.LogChange("WindSpeed", oldSpeed, WindSpeed);
     }
