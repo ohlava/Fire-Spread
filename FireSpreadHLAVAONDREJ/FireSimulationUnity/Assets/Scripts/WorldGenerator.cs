@@ -545,10 +545,6 @@ public class WorldGenerator
                 int moisture = moistureMap.Data[x, y];
                 VegetationType vegetation = vegetationMap.Data[x, y];
 
-                if (moisture == 100)
-                {
-                    height = 0.01f;
-                }
                 // Assign the height, moisture and vegetation values to the tile
                 Tile currTile = new Tile(height, moisture, vegetation, x, y);
 

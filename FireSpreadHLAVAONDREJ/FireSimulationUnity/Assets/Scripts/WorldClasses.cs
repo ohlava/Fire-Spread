@@ -3,7 +3,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class World
 {
@@ -11,131 +13,35 @@ public class World
     public int Width { get; }
     public int Depth { get; }
     public Tile[,] Grid;
+
     public Weather Weather;
     #endregion
 
     public World(int width, int depth)
     {
-        Width = Math.Max(0, width);
-        Depth = Math.Max(0, depth);
+        if (width < 0 || depth < 0)
+        {
+            throw new ArgumentOutOfRangeException(width < 0 ? nameof(width) : nameof(depth),
+                $"{(width < 0 ? "Width" : "Depth")} cannot be less than 0.");
+        }
+        Width = width;
+        Depth = depth;
+
         Grid = new Tile[Width, Depth];
         Weather = new Weather(0, 15);
+
+        InitializeTiles();
     }
 
-    // Reset the weather and reset all non static atributes for all the tiles. 
-    public void Reset()
+    private void InitializeTiles()
     {
-        // Reset weather to init state
-        Weather.Reset();
-
-        // Reset every Tile to init state
-        foreach (Tile tile in Grid)
+        for (int x = 0; x < Width; x++)
         {
-            tile.Reset();
-        }
-    }
-
-    // Return how many tiles you have to move from one tile to get to the second tile for x, y position.
-    public (int xDiff, int yDiff) GetTilesDistanceXY(Tile tile1, Tile tile2)
-    {
-        int xDiff = tile1.WidthPosition - tile2.WidthPosition;
-        int yDiff = tile1.DepthPosition - tile2.DepthPosition;
-
-        return (xDiff, yDiff);
-    }
-
-    // Return the tile at the specified position in the grid.
-    public Tile GetTileAt(int x, int y)
-    {
-        if (x < 0 || x >= Grid.GetLength(0) || y < 0 || y >= Grid.GetLength(1))
-        {
-            throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of the grid bounds.");
-        }
-        return Grid[x, y];
-    }
-
-    // Returns a list of all neighboring tiles given some tile.
-    public IEnumerable<Tile> GetNeighborTiles(Tile tile, int distance = 1)
-    {
-        int x = tile.WidthPosition;
-        int y = tile.DepthPosition;
-
-        for (int i = -distance; i <= distance; i++)
-        {
-            for (int j = -distance; j <= distance; j++)
+            for (int y = 0; y < Depth; y++)
             {
-                int nx = x + i;
-                int ny = y + j;
-
-                if (nx != x || ny != y) // not the same position
-                {
-                    if (nx >= 0 && nx < Grid.GetLength(0) && ny >= 0 && ny < Grid.GetLength(1))
-                    {
-                        yield return GetTileAt(nx, ny);
-                    }
-                }
+                Grid[x, y] = new Tile(0, 0, VegetationType.Grass, x, y);
             }
         }
-    }
-
-    // Returns a list of neighboring tiles given some tile but only ones that are neighbouring with some edge.
-    public IEnumerable<Tile> GetEdgeNeighborTiles(Tile tile)
-    {
-        int x = tile.WidthPosition;
-        int y = tile.DepthPosition;
-
-        if (x + 1 < Grid.GetLength(0)) // check right boundary
-            yield return GetTileAt(x + 1, y);
-
-        if (x - 1 >= 0) // check left boundary
-            yield return GetTileAt(x - 1, y);
-
-        if (y + 1 < Grid.GetLength(1)) // check lower boundary
-            yield return GetTileAt(x, y + 1);
-
-        if (y - 1 >= 0) // check upper boundary
-            yield return GetTileAt(x, y - 1);
-    }
-
-    public IEnumerable<Tile> GetCircularEdgeNeighborTiles(Tile tile, int radius)
-    {
-        int xCenter = tile.WidthPosition;
-        int yCenter = tile.DepthPosition;
-
-        // A threshold to determine if a tile is close enough to the edge of the circle.
-        // This accounts for the discrete nature of the grid.
-        double edgeThreshold = 0.5;
-
-        // Loop through a square grid that approximately covers the area of the circle
-        for (int x = xCenter - radius; x <= xCenter + radius; x++)
-        {
-            for (int y = yCenter - radius; y <= yCenter + radius; y++)
-            {
-                double distanceFromCenter = Math.Sqrt((x - xCenter) * (x - xCenter) + (y - yCenter) * (y - yCenter));
-
-                // Check if the tile is close to the edge of the circle
-                if (Math.Abs(distanceFromCenter - radius) <= edgeThreshold)
-                {
-                    // Check if the coordinates are valid (within the grid bounds)
-                    if (x >= 0 && x < Grid.GetLength(0) && y >= 0 && y < Grid.GetLength(1))
-                    {
-                        yield return GetTileAt(x, y);
-                    }
-                }
-            }
-        }
-    }
-
-    public void UpdateWeather()
-    {
-        // Randomly change the wind direction by +/- 15 degrees
-        int windDirectionChange = UnityEngine.Random.Range(-15, 15);
-
-        // Randomly change the wind strength by +/- 3 km/h
-        float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
-
-        Weather.ChangeWindDirection(Weather.WindDirection + windDirectionChange);
-        Weather.ChangeWindSpeed(Weather.WindSpeed + windStrengthChange);
     }
 }
 
@@ -149,125 +55,40 @@ public enum VegetationType
 
 public class Tile
 {
+    #region Properties
+    public int WidthPosition { get; private set; } // x position in the world
+    public int DepthPosition { get; private set; } // y position in the world
+
+    public float Height { get; set; }
+    public int Moisture { get; set; } // number of percent 0-100, 100 is water
+    public bool IsWater { get; private set; }
+    public VegetationType Vegetation { get; set; }
+
+    public bool IsBurning { get; set; }
+    public bool IsBurned { get; set; }
+    public int BurnTime { get; set; } // number of episodes required to burn this tile
+    public int BurningFor { get; set; } // number of burning episodes - Non static during simulation
+    #endregion
+
     public Tile(float height, int moisture, VegetationType vegetation, int positionX, int positionY)
     {
+        WidthPosition = Math.Max(0, positionX);
+        DepthPosition = Math.Max(0, positionY);
+
         Height = height;
-        Moisture = moisture;
         Vegetation = vegetation;
-
-        isBurning = false;
-        BurningFor = 0;
-
-        // TODO adjust rules for BurnTime / these rules should be outside interpreted by a firesimulation based on 
-        switch (vegetation)
+        Moisture = moisture;
+        if (moisture == 100)
         {
-            case VegetationType.Grass:
-                BurnTime = 1;
-                break;
-            case VegetationType.Sparse:
-                BurnTime = 2;
-                break;
-            case VegetationType.Swamp:
-                BurnTime = 3;
-                break;
-            case VegetationType.Forest:
-                BurnTime = 4;
-                break;
-            default:
-                Debug.Log("Some vegetation type is not handled.");
-                break;
-        }
-        if (moisture >= 50)
-        {
-            BurnTime++;
+            IsWater = true;
         }
 
-        widthPosition = positionX;
-        depthPosition = positionY;
-    }
-
-    // Resets non static variables
-    public void Reset()
-    {
-        IsBurning = false;
-        HasBurned = false;
-        BurningFor = 0;
-    }
-
-    private int widthPosition; // x position in the world
-    private int depthPosition; // y position in the world
-    private float height;
-
-    private int moisture; // in percents, 100 is water
-    public VegetationType Vegetation { get; set; }
-    public bool HasBurned { get; set; }
-
-    private int burnTime; // number of episodes required to burn this tile
-    private int burningFor; // number of burning episodes - Non static during simulation
-    private bool isBurning;
-
-    public int WidthPosition
-    {
-        get { return widthPosition; }
-        set { widthPosition = Math.Max(0, value); }
-    }
-
-    public int DepthPosition
-    {
-        get { return depthPosition; }
-        set { depthPosition = Math.Max(0, value); }
-    }
-
-    public float Height
-    {
-        get { return height; }
-        set { height = Math.Max(0, value); }
-    }
-
-    public int Moisture
-    {
-        get { return moisture; }
-        set { moisture = Math.Max(0, Math.Min(100, value)); } // ensures it is set to 0-100
-    }
-
-    public int BurnTime
-    {
-        get { return burnTime; }
-        set { burnTime = Math.Max(0, value); }
-    }
-
-    public int BurningFor
-    {
-        get { return burningFor; }
-        set { burningFor = Math.Max(0, value); }
-    }
-
-    public bool IsBurning
-    {
-        get { return isBurning; }
-        set { isBurning = value && !HasBurned; } // Ensure it won't be set if HasBurned is true.
-    }
-
-    // Start burning this tile just if it's not already burning or burned.
-    public bool Ignite()
-    {
-        if (IsBurning == true || HasBurned == true || Moisture == 100)
+        if (moisture == 100) // TODO allow not to have to be / lakes same height - 0 and rivers can flow down the hill
         {
-            return false;
+            Height = 0.01f;
         }
-        IsBurning = true;
-        return true;
-    }
-
-    // Extinguish the fire on this tile and set its state to burned.
-    public void Extinguish()
-    {
-        IsBurning = false;
-        HasBurned = true;
-        BurningFor = 0;
     }
 }
-
 
 
 public class Weather
@@ -289,14 +110,11 @@ public class Weather
     private int windDirection; // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
     private float windSpeed; // in km/h
 
-    //private float temperature { get; set; } // in degrees Celsius
-    //private float humidity; // in percentage, 0-100
-    //private float precipitation; // in mm
-
     public int WindDirection
     {
         get { return windDirection; }
-        set {
+        set
+        {
             windDirection = value % 360;
             if (windDirection < 0)
             {
@@ -335,6 +153,165 @@ public class Weather
         logger.LogChange("WindSpeed", oldSpeed, WindSpeed);
     }
 }
+
+
+
+
+
+
+public static class TileUtilities
+{
+    // TODO is specific to some simulation
+
+    // Resets non static variables
+    public static void Reset(this Tile tile)
+    {
+        tile.IsBurning = false;
+        tile.IsBurned = false;
+        tile.BurningFor = 0;
+    }
+
+    // Extinguish the fire on this tile and set its state to burned.
+    public static void Extinguish(this Tile tile)
+    {
+        tile.IsBurning = false;
+        tile.IsBurned = true;
+        tile.BurningFor = 0;
+    }
+
+    // Start burning this tile just if it's not already burning or burned.
+    public static bool Ignite(this Tile tile)
+    {
+        if (tile.IsBurning == true || tile.IsBurned == true || tile.Moisture == 100 || tile.IsWater)
+        {
+            return false;
+        }
+        tile.IsBurning = true;
+        return true;
+    }
+}
+
+public static class WorldUtilities
+{
+    // Return how many tiles you have to move from one tile to get to the second tile for x, y position.
+    public static (int xDiff, int yDiff) GetTilesDistanceXY(Tile tile1, Tile tile2)
+    {
+        int xDiff = tile1.WidthPosition - tile2.WidthPosition;
+        int yDiff = tile1.DepthPosition - tile2.DepthPosition;
+        return (xDiff, yDiff);
+    }
+
+    // Return the tile at the specified position in the grid.
+    public static Tile GetTileAt(this World world, int x, int y)
+    {
+        if (x < 0 || x >= world.Width || y < 0 || y >= world.Depth)
+        {
+            throw new ArgumentOutOfRangeException($"Coordinates ({x}, {y}) are out of the grid bounds.");
+        }
+        return world.Grid[x, y];
+    }
+
+    // Returns a list of all neighboring tiles given some tile.
+    public static IEnumerable<Tile> GetNeighborTiles(this World world, Tile tile, int distance = 1)
+    {
+        int x = tile.WidthPosition;
+        int y = tile.DepthPosition;
+
+        for (int i = -distance; i <= distance; i++)
+        {
+            for (int j = -distance; j <= distance; j++)
+            {
+                int nx = x + i;
+                int ny = y + j;
+
+                if (nx != x || ny != y) // not the same position
+                {
+                    if (nx >= 0 && nx < world.Width && ny >= 0 && ny < world.Depth)
+                    {
+                        yield return GetTileAt(world, nx, ny);
+                    }
+                }
+            }
+        }
+    }
+
+    // Returns a list of neighboring tiles given some tile but only ones that are neighbouring with some edge.
+    public static IEnumerable<Tile> GetEdgeNeighborTiles(this World world, Tile tile)
+    {
+        int x = tile.WidthPosition;
+        int y = tile.DepthPosition;
+
+        if (x + 1 < world.Width) // check right boundary
+            yield return GetTileAt(world, x + 1, y);
+
+        if (x - 1 >= 0) // check left boundary
+            yield return GetTileAt(world, x - 1, y);
+
+        if (y + 1 < world.Depth) // check lower boundary
+            yield return GetTileAt(world, x, y + 1);
+
+        if (y - 1 >= 0) // check upper boundary
+            yield return GetTileAt(world, x, y - 1);
+    }
+
+    public static IEnumerable<Tile> GetCircularEdgeNeighborTiles(this World world, Tile tile, int radius)
+    {
+        int xCenter = tile.WidthPosition;
+        int yCenter = tile.DepthPosition;
+
+        // A threshold to determine if a tile is close enough to the edge of the circle.
+        // This accounts for the discrete nature of the grid.
+        double edgeThreshold = 0.5;
+
+        // Loop through a square grid that approximately covers the area of the circle
+        for (int x = xCenter - radius; x <= xCenter + radius; x++)
+        {
+            for (int y = yCenter - radius; y <= yCenter + radius; y++)
+            {
+                double distanceFromCenter = Math.Sqrt((x - xCenter) * (x - xCenter) + (y - yCenter) * (y - yCenter));
+
+                // Check if the tile is close to the edge of the circle
+                if (Math.Abs(distanceFromCenter - radius) <= edgeThreshold)
+                {
+                    // Check if the coordinates are valid (within the grid bounds)
+                    if (x >= 0 && x < world.Width && y >= 0 && y < world.Depth)
+                    {
+                        yield return GetTileAt(world, x, y);
+                    }
+                }
+            }
+        }
+    }
+
+
+    // TODO manage by or through weather simulation
+
+    // Reset the weather and reset all non static atributes for all the tiles. 
+    public static void Reset(this World world)
+    {
+        // Reset weather to init state
+        world.Weather.Reset();
+
+        // Reset every Tile to init state
+        foreach (Tile tile in world.Grid)
+        {
+            tile.Reset();
+        }
+    }
+
+    public static void UpdateWeather(this World world)
+    {
+        // Randomly change the wind direction by +/- 15 degrees
+        int windDirectionChange = UnityEngine.Random.Range(-15, 15);
+
+        // Randomly change the wind strength by +/- 3 km/h
+        float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
+
+        world.Weather.ChangeWindDirection(world.Weather.WindDirection + windDirectionChange);
+        world.Weather.ChangeWindSpeed(world.Weather.WindSpeed + windStrengthChange);
+    }
+}
+
 
 
 

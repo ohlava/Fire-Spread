@@ -190,10 +190,10 @@ public class Visulizer : MonoBehaviour
                         {
                             // Check if the current face is facing the neighbor directly
                             // This means the face is internal and should be skipped
-                            if (faceNormal == Vector3.left && world.GetTilesDistanceXY(tile, neighbor) == (1, 0) ||
-                                faceNormal == Vector3.right && world.GetTilesDistanceXY(tile, neighbor) == (-1, 0) ||
-                                faceNormal == Vector3.forward && world.GetTilesDistanceXY(tile, neighbor) == (0, 1) ||
-                                faceNormal == Vector3.back && world.GetTilesDistanceXY(tile, neighbor) == (0, -1))
+                            if (faceNormal == Vector3.left && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (1, 0) ||
+                                faceNormal == Vector3.right && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (-1, 0) ||
+                                faceNormal == Vector3.forward && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (0, 1) ||
+                                faceNormal == Vector3.back && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (0, -1))
                             {
                                 skipFace = true;
                                 break;

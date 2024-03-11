@@ -29,7 +29,47 @@ public class FireSpreadSimulation
         {
             _eventLogger.LogTileStartedBurning(_calendar.CurrentTime, tile);
         }
+
+        setWorldProperties();
     }
+
+    private void setWorldProperties()
+    {
+        foreach (Tile tile in _world.Grid)
+        {
+            tile.IsBurning = false;
+            tile.BurningFor = 0;
+            tile.IsBurned = false;
+
+            switch (tile.Vegetation)
+            {
+                case VegetationType.Grass:
+                    tile.BurnTime = 1;
+                    break;
+                case VegetationType.Sparse:
+                    tile.BurnTime = 2;
+                    break;
+                case VegetationType.Swamp:
+                    tile.BurnTime = 3;
+                    break;
+                case VegetationType.Forest:
+                    tile.BurnTime = 4;
+                    break;
+                default:
+                    Debug.Log("Some vegetation type is not handled.");
+                    break;
+            }
+            if (tile.Moisture >= 60)
+            {
+                tile.BurnTime += 2;
+            }
+            else if (tile.Moisture >= 40 )
+            {
+                tile.BurnTime += 1;
+            }
+        }
+    }
+
     public bool Finished()
     {
         if (_burningTiles.Count == 0)
@@ -81,6 +121,8 @@ public class FireSpreadSimulation
         // This allows us to iterate through the list of currently burning tiles without modification, while preparing the list of tiles that will be burning in the next update.
         _burningTiles = nextBurningTiles;
     }
+
+
 
     public List<FireEvent> GetLastUpdateEvents()
     {
