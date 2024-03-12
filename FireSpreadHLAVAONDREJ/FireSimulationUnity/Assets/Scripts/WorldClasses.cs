@@ -97,14 +97,14 @@ public class Weather
     {
         WindDirection = windDirection;
         WindSpeed = windStrength;
-        logger = new WeatherChangeLogger();
+        logger = new WeatherLogger();
     }
 
     public void Reset()
     {
         WindDirection = UnityEngine.Random.Range(0, 360);
         WindSpeed = UnityEngine.Random.Range(0f, 15f);
-        logger = new WeatherChangeLogger();
+        logger = new WeatherLogger();
     }
 
     private int windDirection; // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
@@ -129,7 +129,7 @@ public class Weather
         set { windSpeed = Math.Max(0, Math.Min(60, value)); } // ensures it is set to 0-60
     }
 
-    private WeatherChangeLogger logger;
+    private WeatherLogger logger;
 
     public void ChangeWindDirection(int newDirection)
     {
@@ -140,7 +140,7 @@ public class Weather
         if (WindDirection < 0) newDirection += 360;
         if (WindDirection >= 360) newDirection -= 360;
 
-        logger.LogChange("WindDirection", oldDirection, WindDirection);
+        // logger.LogChange("WindDirection", oldDirection, WindDirection);
     }
 
     public void ChangeWindSpeed(float newSpeed)
@@ -150,7 +150,7 @@ public class Weather
         // Ensure the wind strength is not negative
         WindSpeed = newSpeed;
 
-        logger.LogChange("WindSpeed", oldSpeed, WindSpeed);
+        // logger.LogChange("WindSpeed", oldSpeed, WindSpeed);
     }
 }
 
@@ -283,9 +283,6 @@ public static class WorldUtilities
         }
     }
 
-
-    // TODO manage by or through weather simulation
-
     // Reset the weather and reset all non static atributes for all the tiles. 
     public static void Reset(this World world)
     {
@@ -299,6 +296,7 @@ public static class WorldUtilities
         }
     }
 
+    // TODO manage by or through weather simulation
     public static void UpdateWeather(this World world)
     {
         // Randomly change the wind direction by +/- 15 degrees

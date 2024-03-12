@@ -12,7 +12,7 @@ public class FireSpreadSimulation
     private World _world;
     private List<Tile> _burningTiles;
     private SimulationCalendar _calendar;
-    private FireEventsLogger _eventLogger;
+    private FireLogger _fireLogger;
 
     // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
     float baseProbability = 0.3f;
@@ -21,13 +21,13 @@ public class FireSpreadSimulation
     {
         _parameters = parameters;
         _world = world;
-        _eventLogger = new FireEventsLogger();
+        _fireLogger = new FireLogger();
         _calendar = new SimulationCalendar();
 
         _burningTiles = initBurningTiles; // When creating the simulation we have to tell what we set on fire.
         foreach (Tile tile in initBurningTiles)
         {
-            _eventLogger.LogTileStartedBurning(_calendar.CurrentTime, tile);
+            _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, tile);
         }
 
         setWorldProperties();
@@ -103,7 +103,7 @@ public class FireSpreadSimulation
                     if (ignited && !nextBurningTiles.Contains(neighborTile))
                     {
                         nextBurningTiles.Add(neighborTile);
-                        _eventLogger.LogTileStartedBurning(_calendar.CurrentTime, neighborTile);
+                        _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, neighborTile);
                     }
                 }
             }
@@ -114,7 +114,7 @@ public class FireSpreadSimulation
             {
                 tile.Extinguish();
                 nextBurningTiles.Remove(tile);
-                _eventLogger.LogTileStoppedBurning(_calendar.CurrentTime, tile);
+                _fireLogger.LogTileStoppedBurning(_calendar.CurrentTime, tile);
             }
         }
 
@@ -126,12 +126,12 @@ public class FireSpreadSimulation
 
     public List<FireEvent> GetLastUpdateEvents()
     {
-        return _eventLogger.GetLastUpdateEvents(_calendar.CurrentTime);
+        return _fireLogger.GetLastUpdateEvents(_calendar.CurrentTime);
     }
 
     public Dictionary<int, int> GetBurningTilesOverTime()
     {
-        return _eventLogger.GetBurningTilesOverTime();
+        return _fireLogger.GetBurningTilesOverTime();
     }
 
     private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSpreadParameters parameters)

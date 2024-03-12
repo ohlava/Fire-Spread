@@ -69,6 +69,7 @@
     <Compile Include="Assets/Scripts/WorldFileManager.cs" />
     <Compile Include="Assets/Scripts/MainMenu.cs" />
     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
+    <Compile Include="Assets/Scripts/WindSimulation.cs" />
     <Compile Include="Assets/Scripts/Visulizer.cs" />
     <Compile Include="Assets/Scripts/GraphVisulizer.cs" />
     <Compile Include="Assets/Scripts/TutorialManager.cs" />
