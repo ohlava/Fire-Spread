@@ -19,6 +19,8 @@ public class MainLogic : MonoBehaviour
     FireSpreadSimulation fireSpreadSimulation;
     List<Tile> initBurningTiles;
 
+    WindSimulation windSimulation;
+
     Visulizer visulizer;
     [SerializeField] GameObject visulizerObj;
 
@@ -54,6 +56,8 @@ public class MainLogic : MonoBehaviour
         fireSpreadParams = new FireSpreadParameters();
         fireSpreadSimulation = null;
         initBurningTiles = new List<Tile>();
+
+        windSimulation = null;
 
         currentlyHoveredTile = null;
 
@@ -113,20 +117,10 @@ public class MainLogic : MonoBehaviour
     void PerformUpdate()
     {
         elapsed = elapsed % speedOfUpdates;
-        UpdateWorld();
-        world.UpdateWeather();
-        UpdateWindIndicator();
+
+        updateFireSimulation();
+        updateWindSimulation();
         UpdateGraph();
-    }
-
-    // Updates the display of the wind indicator based on current weather conditions.
-    private void UpdateWindIndicator()
-    {
-        if (windIndicator is null) return;
-
-        windIndicator.UpdateIndicator(world.Weather);
-
-        return;
     }
 
     // Updates the camera position for the wind indicator.
@@ -139,8 +133,22 @@ public class MainLogic : MonoBehaviour
         return;
     }
 
+    private void updateWindSimulation()
+    {
+        if (windSimulation is null) return;
+
+        windSimulation.Update();
+
+        // Updates the display of the wind indicator based on current weather conditions.
+        if (windIndicator is null) return;
+
+        windIndicator.UpdateIndicator(world.Weather);
+
+        return;
+    }
+
     // Updates the simulation state of the world and handles fire spread events.
-    private void UpdateWorld()
+    private void updateFireSimulation()
     {
         if (fireSpreadSimulation is null) return;
 
@@ -275,6 +283,7 @@ public class MainLogic : MonoBehaviour
                         }
                         currentState = State.RunningState;
                         fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
+                        windSimulation = new WindSimulation(world);
                         InfoPanel.text = "Simulation running";
                         break;
                     case State.NewWorldState:

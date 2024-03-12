@@ -14,7 +14,7 @@ public class World
     public int Depth { get; }
     public Tile[,] Grid;
 
-    public Weather Weather;
+    public Wind Weather;
     #endregion
 
     public World(int width, int depth)
@@ -28,7 +28,7 @@ public class World
         Depth = depth;
 
         Grid = new Tile[Width, Depth];
-        Weather = new Weather(0, 15);
+        Weather = new Wind(0, 15);
 
         InitializeTiles();
     }
@@ -91,66 +91,33 @@ public class Tile
 }
 
 
-public class Weather
+public class Wind
 {
-    public Weather(int windDirection, float windStrength)
+    private int _windDirection; // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
+    private float _windSpeed; // in km/h
+
+    public int WindDirection
+    {
+        get => _windDirection;
+        set => _windDirection = ((value % 360) + 360) % 360; // Normalize to 0-359
+    }
+
+    public float WindSpeed
+    {
+        get => _windSpeed;
+        set => _windSpeed = Math.Clamp(value, 0f, 60f); // Clamp to 0-60
+    }
+
+    public Wind(int windDirection, float windStrength)
     {
         WindDirection = windDirection;
         WindSpeed = windStrength;
-        logger = new WeatherLogger();
     }
 
     public void Reset()
     {
         WindDirection = UnityEngine.Random.Range(0, 360);
         WindSpeed = UnityEngine.Random.Range(0f, 15f);
-        logger = new WeatherLogger();
-    }
-
-    private int windDirection; // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
-    private float windSpeed; // in km/h
-
-    public int WindDirection
-    {
-        get { return windDirection; }
-        set
-        {
-            windDirection = value % 360;
-            if (windDirection < 0)
-            {
-                windDirection += 360;
-            }
-        }
-    }
-
-    public float WindSpeed
-    {
-        get { return windSpeed; }
-        set { windSpeed = Math.Max(0, Math.Min(60, value)); } // ensures it is set to 0-60
-    }
-
-    private WeatherLogger logger;
-
-    public void ChangeWindDirection(int newDirection)
-    {
-        int oldDirection = WindDirection;
-        WindDirection = newDirection;
-
-        // Ensure the wind direction stays within 0-359 degrees
-        if (WindDirection < 0) newDirection += 360;
-        if (WindDirection >= 360) newDirection -= 360;
-
-        // logger.LogChange("WindDirection", oldDirection, WindDirection);
-    }
-
-    public void ChangeWindSpeed(float newSpeed)
-    {
-        float oldSpeed = WindSpeed;
-
-        // Ensure the wind strength is not negative
-        WindSpeed = newSpeed;
-
-        // logger.LogChange("WindSpeed", oldSpeed, WindSpeed);
     }
 }
 
@@ -161,8 +128,6 @@ public class Weather
 
 public static class TileUtilities
 {
-    // TODO is specific to some simulation
-
     // Resets non static variables
     public static void Reset(this Tile tile)
     {
@@ -283,7 +248,7 @@ public static class WorldUtilities
         }
     }
 
-    // Reset the weather and reset all non static atributes for all the tiles. 
+    // Reset the dynamic properties of simulations - world weather and non static atributes for all the tiles. 
     public static void Reset(this World world)
     {
         // Reset weather to init state
@@ -294,19 +259,6 @@ public static class WorldUtilities
         {
             tile.Reset();
         }
-    }
-
-    // TODO manage by or through weather simulation
-    public static void UpdateWeather(this World world)
-    {
-        // Randomly change the wind direction by +/- 15 degrees
-        int windDirectionChange = UnityEngine.Random.Range(-15, 15);
-
-        // Randomly change the wind strength by +/- 3 km/h
-        float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
-
-        world.Weather.ChangeWindDirection(world.Weather.WindDirection + windDirectionChange);
-        world.Weather.ChangeWindSpeed(world.Weather.WindSpeed + windStrengthChange);
     }
 }
 

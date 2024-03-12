@@ -39,5 +39,4 @@ public class WindSimulation
     {
         return _weatherLogger.GetLastUpdateEvents(_calendar.CurrentTime);
     }
-
 }

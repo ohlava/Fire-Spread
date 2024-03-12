@@ -12,7 +12,7 @@ public class WindIndicator : MonoBehaviour
     [SerializeField] GameObject windArrow; // for wind indicator
 
     // Update the wind indicator to show the current wind direction and speed
-    public void UpdateIndicator(Weather weather)
+    public void UpdateIndicator(Wind weather)
     {
         // Update the arrow's rotation to match the wind direction
         windArrow.transform.eulerAngles = new Vector3(0, -weather.WindDirection + 90, 90);
