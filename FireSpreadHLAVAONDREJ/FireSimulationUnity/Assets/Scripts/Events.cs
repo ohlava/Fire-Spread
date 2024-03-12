@@ -49,7 +49,7 @@
     }
 
     // Event class specific for weather-related changes in the simulation.
-    public class WeatherEvent : Event
+    public class WindEvent : Event
     {
         public int OldWindDirection { get; private set; }
         public int NewWindDirection { get; private set; }
@@ -57,7 +57,7 @@
         public float NewWindSpeed { get; private set; }
 
         // Constructor for wind direction changes
-        public WeatherEvent(int time, EventType type, int oldWindDirection, int newWindDirection)
+        public WindEvent(int time, EventType type, int oldWindDirection, int newWindDirection)
         {
             Time = time;
             Type = type;
@@ -66,7 +66,7 @@
         }
 
         // Constructor for wind speed changes
-        public WeatherEvent(int time, EventType type, float oldWindSpeed, float newWindSpeed)
+        public WindEvent(int time, EventType type, float oldWindSpeed, float newWindSpeed)
         {
             Time = time;
             Type = type;
@@ -117,18 +117,18 @@
     }
 
     // Logger class for weather change events.
-    public class WeatherLogger : EventLogger<WeatherEvent>
+    public class WindLogger : EventLogger<WindEvent>
     {
         // Logs a wind direction change
         public void LogWindDirectionChange(int time, int oldDirection, int newDirection)
         {
-            LogEvent(new WeatherEvent(time, EventType.WindDirectionChange, oldDirection, newDirection));
+            LogEvent(new WindEvent(time, EventType.WindDirectionChange, oldDirection, newDirection));
         }
 
         // Logs a wind speed change
         public void LogWindSpeedChange(int time, float oldSpeed, float newSpeed)
         {
-            LogEvent(new WeatherEvent(time, EventType.WindSpeedChange, oldSpeed, newSpeed));
+            LogEvent(new WindEvent(time, EventType.WindSpeedChange, oldSpeed, newSpeed));
         }
 
         // Prints a summary of all logged weather change events.

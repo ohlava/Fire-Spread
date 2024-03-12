@@ -14,7 +14,7 @@ public class World
     public int Depth { get; }
     public Tile[,] Grid;
 
-    public Wind Weather;
+    public Wind Wind;
     #endregion
 
     public World(int width, int depth)
@@ -28,7 +28,7 @@ public class World
         Depth = depth;
 
         Grid = new Tile[Width, Depth];
-        Weather = new Wind(0, 15);
+        Wind = new Wind(0, 15);
 
         InitializeTiles();
     }
@@ -252,7 +252,7 @@ public static class WorldUtilities
     public static void Reset(this World world)
     {
         // Reset weather to init state
-        world.Weather.Reset();
+        world.Wind.Reset();
 
         // Reset every Tile to init state
         foreach (Tile tile in world.Grid)

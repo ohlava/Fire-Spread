@@ -15,8 +15,8 @@ public class MainLogic : MonoBehaviour
 
     FileBrowserHandler fileBrowserHandler;
 
-    public FireSpreadParameters fireSpreadParams;
-    FireSpreadSimulation fireSpreadSimulation;
+    public FireSimParameters fireSimParams;
+    FireSimulation fireSimulation;
     List<Tile> initBurningTiles;
 
     WindSimulation windSimulation;
@@ -53,8 +53,8 @@ public class MainLogic : MonoBehaviour
         worldFileManager = new WorldFileManager();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
 
-        fireSpreadParams = new FireSpreadParameters();
-        fireSpreadSimulation = null;
+        fireSimParams = new FireSimParameters();
+        fireSimulation = null;
         initBurningTiles = new List<Tile>();
 
         windSimulation = null;
@@ -108,18 +108,18 @@ public class MainLogic : MonoBehaviour
     }
 
     // Determines whether an update should be performed based on elapsed time and current state.
-    bool ShouldPerformUpdate()
+    private bool ShouldPerformUpdate()
     {
         return elapsed >= speedOfUpdates && currentState == State.RunningState;
     }
 
     // Carries out simulation updates and visual refreshes.
-    void PerformUpdate()
+    private void PerformUpdate()
     {
         elapsed = elapsed % speedOfUpdates;
 
-        updateFireSimulation();
-        updateWindSimulation();
+        UpdateFireSimulation();
+        UpdateWindSimulation();
         UpdateGraph();
     }
 
@@ -133,7 +133,7 @@ public class MainLogic : MonoBehaviour
         return;
     }
 
-    private void updateWindSimulation()
+    private void UpdateWindSimulation()
     {
         if (windSimulation is null) return;
 
@@ -142,23 +142,23 @@ public class MainLogic : MonoBehaviour
         // Updates the display of the wind indicator based on current weather conditions.
         if (windIndicator is null) return;
 
-        windIndicator.UpdateIndicator(world.Weather);
+        windIndicator.UpdateIndicator(world.Wind);
 
         return;
     }
 
     // Updates the simulation state of the world and handles fire spread events.
-    private void updateFireSimulation()
+    private void UpdateFireSimulation()
     {
-        if (fireSpreadSimulation is null) return;
+        if (fireSimulation is null) return;
 
         // Run and then automatically stop running after simulation finishes
-        if (!fireSpreadSimulation.Finished())
+        if (!fireSimulation.Finished())
         {
-            fireSpreadSimulation.Update();
+            fireSimulation.Update();
 
             // Get the events from the last update
-            List<FireEvent> events = fireSpreadSimulation.GetLastUpdateEvents();
+            List<FireEvent> events = fireSimulation.GetLastUpdateEvents();
 
             // Handle these events, for example by visualizing them
             foreach (FireEvent evt in events)
@@ -282,7 +282,7 @@ public class MainLogic : MonoBehaviour
                             return; // do nothing else
                         }
                         currentState = State.RunningState;
-                        fireSpreadSimulation = new FireSpreadSimulation(fireSpreadParams, world, initBurningTiles);
+                        fireSimulation = new FireSimulation(fireSimParams, world, initBurningTiles);
                         windSimulation = new WindSimulation(world);
                         InfoPanel.text = "Simulation running";
                         break;
@@ -371,9 +371,9 @@ public class MainLogic : MonoBehaviour
         {
             Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int> { { 0, 0 } };
 
-            if (fireSpreadSimulation is not null)
+            if (fireSimulation is not null)
             {
-                burningTilesOverTime = fireSpreadSimulation.GetBurningTilesOverTime();
+                burningTilesOverTime = fireSimulation.GetBurningTilesOverTime();
             }
 
             graphVisulizer.ClearGraph();

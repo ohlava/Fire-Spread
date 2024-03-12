@@ -5,13 +5,13 @@ using UnityEngine;
 public class WindSimulation
 {
     private World _world;
-    private WeatherLogger _weatherLogger;
+    private WindLogger _windLogger;
     private SimulationCalendar _calendar;
 
     public WindSimulation(World world)
     {
         _world = world;
-        _weatherLogger = new WeatherLogger();
+        _windLogger = new WindLogger();
         _calendar = new SimulationCalendar();
     }
 
@@ -21,22 +21,22 @@ public class WindSimulation
         int windDirectionChange = UnityEngine.Random.Range(-15, 15);
         float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
 
-        var oldDirection = _world.Weather.WindDirection;
-        var oldSpeed = _world.Weather.WindSpeed;
+        var oldDirection = _world.Wind.WindDirection;
+        var oldSpeed = _world.Wind.WindSpeed;
 
-        _world.Weather.WindDirection += windDirectionChange;
-        _world.Weather.WindSpeed += windStrengthChange;
+        _world.Wind.WindDirection += windDirectionChange;
+        _world.Wind.WindSpeed += windStrengthChange;
 
         // Log changes
-        _weatherLogger.LogWindDirectionChange(_calendar.CurrentTime, oldDirection, _world.Weather.WindDirection);
-        _weatherLogger.LogWindSpeedChange(_calendar.CurrentTime, oldSpeed, _world.Weather.WindSpeed);
+        _windLogger.LogWindDirectionChange(_calendar.CurrentTime, oldDirection, _world.Wind.WindDirection);
+        _windLogger.LogWindSpeedChange(_calendar.CurrentTime, oldSpeed, _world.Wind.WindSpeed);
 
         // Advance simulation time
         _calendar.AdvanceTime();
     }
 
-    public List<WeatherEvent> GetLastUpdateEvents()
+    public List<WindEvent> GetLastUpdateEvents()
     {
-        return _weatherLogger.GetLastUpdateEvents(_calendar.CurrentTime);
+        return _windLogger.GetLastUpdateEvents(_calendar.CurrentTime);
     }
 }

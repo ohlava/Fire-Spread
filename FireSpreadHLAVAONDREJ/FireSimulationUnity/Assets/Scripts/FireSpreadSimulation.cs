@@ -6,9 +6,9 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class FireSpreadSimulation
+public class FireSimulation
 {
-    private FireSpreadParameters _parameters;
+    private FireSimParameters _parameters;
     private World _world;
     private List<Tile> _burningTiles;
     private SimulationCalendar _calendar;
@@ -17,7 +17,7 @@ public class FireSpreadSimulation
     // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
     float baseProbability = 0.3f;
 
-    public FireSpreadSimulation(FireSpreadParameters parameters, World world, List<Tile> initBurningTiles)
+    public FireSimulation(FireSimParameters parameters, World world, List<Tile> initBurningTiles)
     {
         _parameters = parameters;
         _world = world;
@@ -30,10 +30,10 @@ public class FireSpreadSimulation
             _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, tile);
         }
 
-        setWorldProperties();
+        SetWorldProperties();
     }
 
-    private void setWorldProperties()
+    private void SetWorldProperties()
     {
         foreach (Tile tile in _world.Grid)
         {
@@ -134,7 +134,7 @@ public class FireSpreadSimulation
         return _fireLogger.GetBurningTilesOverTime();
     }
 
-    private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSpreadParameters parameters)
+    private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSimParameters parameters)
     {
         float vegetationFactor = parameters.VegetationSpreadFactor > 0 ? GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor) : baseProbability;
         float slopeFactor = parameters.SlopeSpreadFactor > 0 ? GetSlopeFactor(source, target, parameters.SlopeSpreadFactor) : baseProbability;
@@ -237,13 +237,13 @@ public class FireSpreadSimulation
     {
         // Determine direction from source to target
         Vector2 dirSourceToTarget = new Vector2(target.WidthPosition - source.WidthPosition, target.DepthPosition - source.DepthPosition).normalized;
-        Vector2 windDirectionVector = new Vector2(Mathf.Cos(world.Weather.WindDirection * Mathf.Deg2Rad), Mathf.Sin(world.Weather.WindDirection * Mathf.Deg2Rad));
+        Vector2 windDirectionVector = new Vector2(Mathf.Cos(world.Wind.WindDirection * Mathf.Deg2Rad), Mathf.Sin(world.Wind.WindDirection * Mathf.Deg2Rad));
 
         // Calculate the dot product between the wind direction and the direction to the target
         float dotProduct = Vector2.Dot(windDirectionVector, dirSourceToTarget);
 
         // Calculate wind speed factor (linearly from 0 to x% increase)
-        float windSpeed = world.Weather.WindSpeed;
+        float windSpeed = world.Wind.WindSpeed;
         float windSpeedFactor = Mathf.Min(windSpeed / 60.0f, 1.0f) * 0.8f; // Caps at 0.8 for 60+ wind speed
 
         // Combine the windSpeedFactor with the adjustmentFactor
@@ -287,7 +287,7 @@ public class FireSpreadSimulation
 
 
 // configuration object for simulation parameters
-public class FireSpreadParameters
+public class FireSimParameters
 {
     public float VegetationSpreadFactor { get; set; }
     public float MoistureSpreadFactor { get; set; }
@@ -295,7 +295,7 @@ public class FireSpreadParameters
     public float SlopeSpreadFactor { get; set; }
 
     // Default constructor with all factors enabled.
-    public FireSpreadParameters()
+    public FireSimParameters()
     {
         VegetationSpreadFactor = 1.0f;
         MoistureSpreadFactor = 1.0f;
@@ -306,7 +306,7 @@ public class FireSpreadParameters
     // Flexible constructor with optional parameters for each factor.
     // Each parameter can be either a bool (for enabled/disabled) or a float (for custom factors), defaulting to null.
     // This uses object? so it can accept either a bool or a float.
-    public FireSpreadParameters(object vegetationSpread = null, object moistureSpread = null, object windSpread = null, object slopeSpread = null)
+    public FireSimParameters(object vegetationSpread = null, object moistureSpread = null, object windSpread = null, object slopeSpread = null)
     {
         VegetationSpreadFactor = ParseFactor(vegetationSpread, 1.0f);
         MoistureSpreadFactor = ParseFactor(moistureSpread, 1.0f);
