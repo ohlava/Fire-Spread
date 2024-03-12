@@ -139,10 +139,35 @@ public class MainLogic : MonoBehaviour
 
         windSimulation.Update();
 
-        // Updates the display of the wind indicator based on current weather conditions.
-        if (windIndicator is null) return;
+        List<WindEvent> events = windSimulation.GetLastUpdateEvents();
 
-        windIndicator.UpdateIndicator(world.Wind);
+        // Updates the display of the wind indicator based on current weather conditions.
+        if (events.Count == 0 || windIndicator is null) return;
+
+        // Variables to hold the latest wind direction and speed.
+        // Initialize them with default values.
+        int windDirection = 0;
+        float windSpeed = 0.0f;
+
+        // Process each wind event.
+        foreach (var windEvent in events)
+        {
+            // Depending on the event type, update the wind direction or wind speed.
+            switch (windEvent.Type)
+            {
+                case EventType.WindDirectionChange:
+                    windDirection = windEvent.NewWindDirection;
+                    break;
+                case EventType.WindSpeedChange:
+                    windSpeed = windEvent.NewWindSpeed;
+                    break;
+                default:
+                    Debug.Log("There seems to be a problem with wind events");
+                    break;
+            }
+        }
+
+        windIndicator.UpdateIndicator(windDirection, windSpeed);
 
         return;
     }

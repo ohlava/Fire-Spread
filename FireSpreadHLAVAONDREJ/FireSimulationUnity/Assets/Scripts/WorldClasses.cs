@@ -33,6 +33,25 @@ public class World
         InitializeTiles();
     }
 
+    // Deep copy constructor
+    public World(World other)
+    {
+        Width = other.Width;
+        Depth = other.Depth;
+        Wind = new Wind(other.Wind.WindDirection, other.Wind.WindSpeed);
+        Grid = new Tile[Width, Depth];
+
+        for (int x = 0; x < Width; x++)
+        {
+            for (int y = 0; y < Depth; y++)
+            {
+                // Assuming Tile class has a copy constructor
+                Tile prevTile = other.Grid[x, y];
+                Grid[x, y] = new Tile(prevTile.Height, prevTile.Moisture, prevTile.Vegetation, x, y);
+            }
+        }
+    }
+
     private void InitializeTiles()
     {
         for (int x = 0; x < Width; x++)

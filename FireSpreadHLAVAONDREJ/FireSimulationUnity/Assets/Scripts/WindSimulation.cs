@@ -17,6 +17,9 @@ public class WindSimulation : SimulationBase
 
     public override void Update()
     {
+        // Advance simulation time
+        _calendar.AdvanceTime();
+
         // Example logic to update weather, this needs to be fleshed out based on specific needs
         int windDirectionChange = UnityEngine.Random.Range(-15, 15);
         float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
@@ -30,9 +33,6 @@ public class WindSimulation : SimulationBase
         // Log changes
         _windLogger.LogWindDirectionChange(_calendar.CurrentTime, oldDirection, _world.Wind.WindDirection);
         _windLogger.LogWindSpeedChange(_calendar.CurrentTime, oldSpeed, _world.Wind.WindSpeed);
-
-        // Advance simulation time
-        _calendar.AdvanceTime();
     }
 
     protected override void SetWorldProperties()

@@ -12,13 +12,13 @@ public class WindIndicator : MonoBehaviour
     [SerializeField] GameObject windArrow; // for wind indicator
 
     // Update the wind indicator to show the current wind direction and speed
-    public void UpdateIndicator(Wind weather)
+    public void UpdateIndicator(int windDirection, float windSpeed)
     {
         // Update the arrow's rotation to match the wind direction
-        windArrow.transform.eulerAngles = new Vector3(0, -weather.WindDirection + 90, 90);
+        windArrow.transform.eulerAngles = new Vector3(0, -windDirection + 90, 90);
 
         // Update the wind speed text
-        windSpeedText.text = $"Wind: \n {weather.WindSpeed.ToString("F1")} km/h";
+        windSpeedText.text = $"Wind: \n {windSpeed.ToString("F1")} km/h";
     }
 
     public void UpdateCamera()

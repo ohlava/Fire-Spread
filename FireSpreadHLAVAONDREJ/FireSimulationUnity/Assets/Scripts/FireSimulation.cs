@@ -6,22 +6,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class SimulationBase
-{
-    protected World _world;
-    protected SimulationCalendar _calendar;
-
-    public SimulationBase(World world)
-    {
-        _world = world;
-        _calendar = new SimulationCalendar();
-    }
-
-    public abstract void Update();
-    protected abstract void SetWorldProperties();
-    public abstract bool Finished();
-}
-
 public class FireSimulation : SimulationBase
 {
     private FireSimParameters _parameters;
