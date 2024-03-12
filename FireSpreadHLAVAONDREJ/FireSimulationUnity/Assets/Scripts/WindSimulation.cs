@@ -2,20 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WindSimulation
+public class WindSimulation : SimulationBase
 {
-    private World _world;
     private WindLogger _windLogger;
-    private SimulationCalendar _calendar;
 
-    public WindSimulation(World world)
+    public WindSimulation(World world) : base(world)
     {
         _world = world;
         _windLogger = new WindLogger();
         _calendar = new SimulationCalendar();
+
+        SetWorldProperties();
     }
 
-    public void Update()
+    public override void Update()
     {
         // Example logic to update weather, this needs to be fleshed out based on specific needs
         int windDirectionChange = UnityEngine.Random.Range(-15, 15);
@@ -33,6 +33,16 @@ public class WindSimulation
 
         // Advance simulation time
         _calendar.AdvanceTime();
+    }
+
+    protected override void SetWorldProperties()
+    {
+        _world.Wind = new Wind(0, 15);
+    }
+
+    public override bool Finished()
+    {
+        return false;
     }
 
     public List<WindEvent> GetLastUpdateEvents()

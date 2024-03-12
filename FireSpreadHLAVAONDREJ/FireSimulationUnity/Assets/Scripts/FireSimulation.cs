@@ -6,21 +6,34 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class FireSimulation
+public abstract class SimulationBase
+{
+    protected World _world;
+    protected SimulationCalendar _calendar;
+
+    public SimulationBase(World world)
+    {
+        _world = world;
+        _calendar = new SimulationCalendar();
+    }
+
+    public abstract void Update();
+    protected abstract void SetWorldProperties();
+    public abstract bool Finished();
+}
+
+public class FireSimulation : SimulationBase
 {
     private FireSimParameters _parameters;
-    private World _world;
     private List<Tile> _burningTiles;
-    private SimulationCalendar _calendar;
     private FireLogger _fireLogger;
 
     // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
     float baseProbability = 0.3f;
 
-    public FireSimulation(FireSimParameters parameters, World world, List<Tile> initBurningTiles)
+    public FireSimulation(FireSimParameters parameters, World world, List<Tile> initBurningTiles) : base(world)
     {
         _parameters = parameters;
-        _world = world;
         _fireLogger = new FireLogger();
         _calendar = new SimulationCalendar();
 
@@ -33,7 +46,7 @@ public class FireSimulation
         SetWorldProperties();
     }
 
-    private void SetWorldProperties()
+    protected override void SetWorldProperties()
     {
         foreach (Tile tile in _world.Grid)
         {
@@ -70,7 +83,7 @@ public class FireSimulation
         }
     }
 
-    public bool Finished()
+    public override bool Finished()
     {
         if (_burningTiles.Count == 0)
         {
@@ -79,7 +92,7 @@ public class FireSimulation
         return false;
     }
 
-    public void Update()
+    public override void Update()
     {
         // Advance the simulation calendar.
         _calendar.AdvanceTime();
