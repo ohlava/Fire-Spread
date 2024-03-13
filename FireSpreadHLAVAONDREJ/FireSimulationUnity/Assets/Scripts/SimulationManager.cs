@@ -38,13 +38,27 @@ public class SimulationManager
         _simulations = new List<ISimulation>();
     }
 
-    // Adds a new simulation to the manager.
-    public void AddSimulation(ISimulation simulation)
+    // Adds a new simulation to the manager, returns self for ability to chain this function
+    public SimulationManager AddSimulation(ISimulation simulation)
     {
         _simulations.Add(simulation);
         if (simulation is FireSimulation)
         {
             _mainFireSimulation = simulation as FireSimulation;
+        }
+
+        return this;
+    }
+
+    // Updates all the simulations once in order of how they were added.
+    public void UpdateAllSimulations()
+    {
+        foreach (var simulation in _simulations)
+        {
+            if (simulation is not null)
+            {
+                simulation.Update();
+            }
         }
     }
 
@@ -55,10 +69,7 @@ public class SimulationManager
 
         while (!_mainFireSimulation.Finished())
         {
-            foreach (var simulation in _simulations)
-            {
-                simulation.Update();
-            }
+            UpdateAllSimulations();
         }
     }
 

@@ -15,8 +15,10 @@ public class MainLogic : MonoBehaviour
 
     FileBrowserHandler fileBrowserHandler;
 
-    public FireSimParameters fireSimParams;
+    public SimulationManager simulationManager;
+
     FireSimulation fireSimulation;
+    public FireSimParameters fireSimParams;
     List<Tile> initBurningTiles;
 
     WindSimulation windSimulation;
@@ -53,8 +55,10 @@ public class MainLogic : MonoBehaviour
         worldFileManager = new WorldFileManager();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
 
-        fireSimParams = new FireSimParameters();
+        simulationManager = null;
+
         fireSimulation = null;
+        fireSimParams = new FireSimParameters();
         initBurningTiles = new List<Tile>();
 
         windSimulation = null;
@@ -118,9 +122,21 @@ public class MainLogic : MonoBehaviour
     {
         elapsed = elapsed % speedOfUpdates;
 
-        UpdateFireSimulation();
-        UpdateWindSimulation();
-        UpdateGraph();
+        // Run and then automatically stop running after simulation finishes
+        if (!fireSimulation.Finished()) 
+        {
+            simulationManager.UpdateAllSimulations();
+
+            UpdateFire();
+            UpdateWind();
+        }
+        else
+        {
+            currentState = State.StoppedState;
+            InfoPanel.text = "Simulation paused";
+        }
+
+        UpdateGraph(); // Updates the graph if it is needed
     }
 
     // Updates the camera position for the wind indicator.
@@ -133,12 +149,12 @@ public class MainLogic : MonoBehaviour
         return;
     }
 
-    private void UpdateWindSimulation()
+    // Visually updates the simulation state of the world and handles wind events. For wind this means updating the wind indicator.
+    private void UpdateWind()
     {
         if (windSimulation is null) return;
 
-        windSimulation.Update();
-
+        // Get the events from the last update
         List<WindEvent> events = windSimulation.GetLastUpdateEvents();
 
         // Updates the display of the wind indicator based on current weather conditions.
@@ -162,48 +178,38 @@ public class MainLogic : MonoBehaviour
                     windSpeed = windEvent.NewWindSpeed;
                     break;
                 default:
-                    Debug.Log("There seems to be a problem with wind events");
+                    Debug.Log("There seems to be a problem with wind events, Unknown event");
                     break;
             }
         }
 
+        // Visualize the update changes.
         windIndicator.UpdateIndicator(windDirection, windSpeed);
 
         return;
     }
 
-    // Updates the simulation state of the world and handles fire spread events.
-    private void UpdateFireSimulation()
+    // Visually updates the simulation state of the world and handles fire spread events.
+    private void UpdateFire()
     {
         if (fireSimulation is null) return;
 
-        // Run and then automatically stop running after simulation finishes
-        if (!fireSimulation.Finished())
+        // Get the events from the last update
+        List<FireEvent> events = fireSimulation.GetLastUpdateEvents();
+
+        // Handle these events by visualizing them
+        foreach (FireEvent evt in events)
         {
-            fireSimulation.Update();
-
-            // Get the events from the last update
-            List<FireEvent> events = fireSimulation.GetLastUpdateEvents();
-
-            // Handle these events, for example by visualizing them
-            foreach (FireEvent evt in events)
+            if (evt.Type == EventType.TileStartedBurning)
             {
-                if (evt.Type == EventType.TileStartedBurning)
-                {
-                    visulizer.CreateFireOnTile(evt.Tile);
-                }
-                else if (evt.Type == EventType.TileStoppedBurning)
-                {
-                    visulizer.DestroyFireOnTile(evt.Tile);
-                    visulizer.DestroyVegetationOnTile(evt.Tile);
-                    visulizer.MakeTileBurned(evt.Tile);
-                }
+                visulizer.CreateFireOnTile(evt.Tile);
             }
-        }
-        else
-        {
-            currentState = State.StoppedState;
-            InfoPanel.text = "Simulation paused";
+            else if (evt.Type == EventType.TileStoppedBurning)
+            {
+                visulizer.DestroyFireOnTile(evt.Tile);
+                visulizer.DestroyVegetationOnTile(evt.Tile);
+                visulizer.MakeTileBurned(evt.Tile);
+            }
         }
     }
 
@@ -309,6 +315,10 @@ public class MainLogic : MonoBehaviour
                         currentState = State.RunningState;
                         fireSimulation = new FireSimulation(fireSimParams, world, initBurningTiles);
                         windSimulation = new WindSimulation(world);
+
+                        simulationManager = new SimulationManager(world);
+                        simulationManager.AddSimulation(fireSimulation).AddSimulation(windSimulation);
+
                         InfoPanel.text = "Simulation running";
                         break;
                     case State.NewWorldState:
