@@ -1,19 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 using System.IO;
-using UnityEngine.UI;
-using Palmmedia.ReportGenerator.Core;
 
 public enum State { NewWorldState, RunningState, StoppedState }
 
 public class MainLogic : MonoBehaviour
 {
     #region Serialized Fields
-    [SerializeField] private GameObject visulizerObj, inputHandlerObj, windIndicatorObj;
-    [SerializeField] private Button runButton, pauseButton;
-    [SerializeField] private TextMeshProUGUI InfoPanel;
+    [SerializeField] private GameObject uiManagerObj, visulizerObj, inputHandlerObj, windIndicatorObj;
     #endregion
 
     #region Private Fields
@@ -23,6 +17,7 @@ public class MainLogic : MonoBehaviour
     private FireSimulation fireSimulation;
     private List<Tile> initBurningTiles = new List<Tile>();
     private WindSimulation windSimulation;
+    private UIManager uiManager;
     private Visulizer visulizer;
     private InputHandler inputHandler;
     private WindIndicator windIndicator;
@@ -69,6 +64,7 @@ public class MainLogic : MonoBehaviour
         worldGenerator = new WorldGenerator();
         worldFileManager = new WorldFileManager();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
+        uiManager = uiManagerObj.GetComponent<UIManager>();
         visulizer = visulizerObj.GetComponent<Visulizer>();
         windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
         graphVisulizer = FindObjectOfType<GraphVisulizer>(); // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
@@ -114,7 +110,7 @@ public class MainLogic : MonoBehaviour
         else
         {
             currentState = State.StoppedState;
-            InfoPanel.text = "Simulation paused";
+            uiManager.UpdateInfoPanel("Simulation paused");
         }
 
         UpdateGraph(); // Updates the graph if it is needed
@@ -290,17 +286,18 @@ public class MainLogic : MonoBehaviour
                     case State.RunningState:
                         if (initBurningTiles.Count == 0) // if player want to start simulation withou any tiles ignited
                         {
-                            InfoPanel.text = "Ignite some tiles first!";
+                            uiManager.UpdateInfoPanel("Ignite some tiles first!");
                             return; // do nothing else
                         }
                         currentState = State.RunningState;
                         SetNewSimulation();
-                        InfoPanel.text = "Simulation running";
+
+                        uiManager.UpdateInfoPanel("Simulation running");
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        InfoPanel.text = "New world - set fire";
+                        uiManager.UpdateInfoPanel("New world - set fire");
                         break;
                     default:
                         return;
@@ -312,12 +309,12 @@ public class MainLogic : MonoBehaviour
                 {
                     case State.StoppedState:
                         currentState = State.StoppedState;
-                        InfoPanel.text = "Simulation paused";
+                        uiManager.UpdateInfoPanel("Simulation paused");
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        InfoPanel.text = "New world - set fire";
+                        uiManager.UpdateInfoPanel("New world - set fire");
                         break;
                     default:
                         return;
@@ -329,12 +326,12 @@ public class MainLogic : MonoBehaviour
                 {
                     case State.RunningState:
                         currentState = State.RunningState;
-                        InfoPanel.text = "Simulation running";
+                        uiManager.UpdateInfoPanel("Simulation running");
                         break;
                     case State.NewWorldState:
                         currentState = State.NewWorldState;
                         GenereteNewWorld();
-                        InfoPanel.text = "New world - set fire";
+                        uiManager.UpdateInfoPanel("New world - set fire");
                         break;
                     default:
                         return;
@@ -352,26 +349,6 @@ public class MainLogic : MonoBehaviour
 
         simulationManager = new SimulationManager(world);
         simulationManager.AddSimulation(fireSimulation).AddSimulation(windSimulation);
-    }
-
-    private void UpdateRunPauseButtons(State currentState)
-    {
-        if (currentState == State.NewWorldState || currentState == State.StoppedState)
-        {
-            runButton.interactable = true;
-            pauseButton.interactable = false;
-        }
-        else if (currentState == State.RunningState)
-        {
-            runButton.interactable = false;
-            pauseButton.interactable = true;
-        }
-        else
-        {
-            runButton.interactable = true;
-            pauseButton.interactable = true;
-            Debug.LogError("Missing world state");
-        }
     }
 
     // Toggles the visibility of the graph and updates its content.
@@ -419,19 +396,19 @@ public class MainLogic : MonoBehaviour
     public void OnNewWorldButtonClicked()
     {
         HandleEvent(State.NewWorldState);
-        UpdateRunPauseButtons(currentState);
+        uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
     }
 
     public void OnRunButtonClicked()
     {
         HandleEvent(State.RunningState);
-        UpdateRunPauseButtons(currentState);
+        uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
     }
 
     public void OnPauseButtonClicked()
     {
         HandleEvent(State.StoppedState);
-        UpdateRunPauseButtons(currentState);
+        uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
     }
 
     // Handles the import button click event to load external maps or serialized worlds.
@@ -593,8 +570,8 @@ public class MainLogic : MonoBehaviour
     private void PrepareForNewWorld()
     {
         currentState = State.NewWorldState;
-        InfoPanel.text = "New world - set fire";
-        UpdateRunPauseButtons(currentState);
+        uiManager.UpdateInfoPanel("New world - set fire");
+        uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
 
         if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) // settings enabled or number of tiles is too high
         {

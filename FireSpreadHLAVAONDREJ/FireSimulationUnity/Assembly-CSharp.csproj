@@ -78,6 +78,7 @@
     <Compile Include="Assets/Scripts/FireSimulation.cs" />
     <Compile Include="Assets/Scripts/WindIndicator.cs" />
     <Compile Include="Assets/Scripts/WorldGenerator.cs" />
+    <Compile Include="Assets/Scripts/UIManager.cs" />
     <Compile Include="Assets/Scripts/SimulationManager.cs" />
     <Compile Include="Assets/Scripts/FirePredictor.cs" />
   </ItemGroup>
