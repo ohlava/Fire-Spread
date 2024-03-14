@@ -10,90 +10,41 @@ public enum State { NewWorldState, RunningState, StoppedState }
 
 public class MainLogic : MonoBehaviour
 {
-    public World world;
+    #region Serialized Fields
+    [SerializeField] private GameObject visulizerObj, inputHandlerObj, windIndicatorObj;
+    [SerializeField] private Button runButton, pauseButton;
+    [SerializeField] private TextMeshProUGUI InfoPanel;
+    #endregion
+
+    #region Private Fields
     private WorldGenerator worldGenerator;
-    public WorldFileManager worldFileManager;
-
-    FileBrowserHandler fileBrowserHandler;
-
-    public SimulationManager simulationManager;
-
-    FireSimulation fireSimulation;
-    public FireSimParameters fireSimParams;
-    List<Tile> initBurningTiles;
-
-    WindSimulation windSimulation;
-
-    Visulizer visulizer;
-    [SerializeField] GameObject visulizerObj;
-
-    InputHandler inputHandler;
-    [SerializeField] GameObject inputHandlerObj;
-
-    Settings settings;
-
-    [SerializeField] private Button runButton;
-    [SerializeField] private Button pauseButton;
-
-    WindIndicator windIndicator;
-    [SerializeField] GameObject windIndicatorObj;
-
-    GraphVisulizer graphVisulizer;
-
-    [SerializeField] TextMeshProUGUI InfoPanel;
-
+    private FileBrowserHandler fileBrowserHandler;
+    private SimulationManager simulationManager;
+    private FireSimulation fireSimulation;
+    private List<Tile> initBurningTiles = new List<Tile>();
+    private WindSimulation windSimulation;
+    private Visulizer visulizer;
+    private InputHandler inputHandler;
+    private WindIndicator windIndicator;
+    private GraphVisulizer graphVisulizer;
     private Tile currentlyHoveredTile;
+    private float elapsed = 0f;
+    private float speedOfUpdates = 1.2f; // seconds
+    private bool showingGraph = false;
+    private State currentState = State.NewWorldState;
+    #endregion
 
-    private float elapsed;
-    private float speedOfUpdates;
-
-    private bool showingGraph;
-    private State currentState;
+    #region public Fields
+    public World world;
+    public Settings settings;
+    public WorldFileManager worldFileManager;
+    public FireSimParameters fireSimParams = new FireSimParameters();
+    #endregion
 
     void Awake()
     {
-        worldGenerator = new WorldGenerator();
-        worldFileManager = new WorldFileManager();
-        fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
-
-        simulationManager = null;
-
-        fireSimulation = null;
-        fireSimParams = new FireSimParameters();
-        initBurningTiles = new List<Tile>();
-
-        windSimulation = null;
-
-        currentlyHoveredTile = null;
-
-        settings = SettingsManager.LoadSettings();
-
-        elapsed = 0f;
-        speedOfUpdates = 1.2f; // seconds
-
-        showingGraph = false;
-        currentState = State.NewWorldState;
-
-        visulizer = visulizerObj.GetComponent<Visulizer>();
-
-        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
-
-        // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
-        graphVisulizer = FindObjectOfType<GraphVisulizer>();
-
-        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
-        inputHandler.OnTileClicked += HandleTileClick;
-        inputHandler.OnTileHovered += HandleTileHover;
-        inputHandler.OnCameraMove += HandleCameraMove;
-        inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
-        inputHandler.OnGraph += OnGraphButtonClicked;
-        inputHandler.OnReset += OnResetButtonClicked;
-        inputHandler.OnGenerateWorld += GenereteNewWorld;
-        inputHandler.OnImport += OnImportClicked;
-        inputHandler.OnSave += OnSaveClicked;
-        inputHandler.OnRun += OnRunButtonClicked;
-        inputHandler.OnPause += OnPauseButtonClicked;
-        inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
+        InitializeComponents();
+        SubscribeToInputEvents();
     }
 
     // Start is called before the first frame update
@@ -111,6 +62,35 @@ public class MainLogic : MonoBehaviour
             PerformUpdate();
         }
     }
+
+    private void InitializeComponents()
+    {
+        settings = SettingsManager.LoadSettings();
+        worldGenerator = new WorldGenerator();
+        worldFileManager = new WorldFileManager();
+        fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
+        visulizer = visulizerObj.GetComponent<Visulizer>();
+        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
+        graphVisulizer = FindObjectOfType<GraphVisulizer>(); // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
+        inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+    }
+
+    private void SubscribeToInputEvents()
+    {
+        inputHandler.OnTileClicked += HandleTileClick;
+        inputHandler.OnTileHovered += HandleTileHover;
+        inputHandler.OnCameraMove += HandleCameraMove;
+        inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
+        inputHandler.OnGraph += OnGraphButtonClicked;
+        inputHandler.OnReset += OnResetButtonClicked;
+        inputHandler.OnGenerateWorld += GenereteNewWorld;
+        inputHandler.OnImport += OnImportClicked;
+        inputHandler.OnSave += OnSaveClicked;
+        inputHandler.OnRun += OnRunButtonClicked;
+        inputHandler.OnPause += OnPauseButtonClicked;
+        inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
+    }
+
 
     // Determines whether an update should be performed based on elapsed time and current state.
     private bool ShouldPerformUpdate()
@@ -314,12 +294,7 @@ public class MainLogic : MonoBehaviour
                             return; // do nothing else
                         }
                         currentState = State.RunningState;
-                        fireSimulation = new FireSimulation(fireSimParams, world, initBurningTiles);
-                        windSimulation = new WindSimulation(world);
-
-                        simulationManager = new SimulationManager(world);
-                        simulationManager.AddSimulation(fireSimulation).AddSimulation(windSimulation);
-
+                        SetNewSimulation();
                         InfoPanel.text = "Simulation running";
                         break;
                     case State.NewWorldState:
@@ -368,6 +343,15 @@ public class MainLogic : MonoBehaviour
         }
 
         currentState = nextState;
+    }
+
+    private void SetNewSimulation()
+    {
+        fireSimulation = new FireSimulation(fireSimParams, world, initBurningTiles);
+        windSimulation = new WindSimulation(world);
+
+        simulationManager = new SimulationManager(world);
+        simulationManager.AddSimulation(fireSimulation).AddSimulation(windSimulation);
     }
 
     private void UpdateRunPauseButtons(State currentState)
