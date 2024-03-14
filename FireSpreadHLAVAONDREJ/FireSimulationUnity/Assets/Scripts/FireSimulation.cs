@@ -94,7 +94,7 @@ public class FireSimulation : SimulationBase
                 foreach (Tile neighborTile in _world.GetCircularEdgeNeighborTiles(tile, distance))
                 {
                     // Adjust the spread probability based on the distance
-                    float distanceModifier = distance == 1 ? 1f : 0.2f;
+                    float distanceModifier = distance == 1 ? 1f : 0.01f;
 
                     // Calculate the fire spread probability.
                     float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
