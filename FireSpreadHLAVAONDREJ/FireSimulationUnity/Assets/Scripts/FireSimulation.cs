@@ -87,20 +87,28 @@ public class FireSimulation : SimulationBase
         // If this tile is burning, it may spread to neighbors.
         foreach (Tile tile in _burningTiles)
         {
-            // Iterate over each neighboring tile.
-            foreach (Tile neighborTile in _world.GetCircularEdgeNeighborTiles(tile, 1))
+            // Process neighbors at distance 1 and 2 - tiles further away can also catch on fire, but with much smaller probability
+            for (int distance = 1; distance <= 2; distance++)
             {
-                // Calculate the fire spread probability.
-                float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
-
-                // Check if fire spread.
-                if (UnityEngine.Random.value < spreadProbability)
+                // Iterate over each neighboring tile.
+                foreach (Tile neighborTile in _world.GetCircularEdgeNeighborTiles(tile, distance))
                 {
-                    bool ignited = neighborTile.Ignite();
-                    if (ignited && !nextBurningTiles.Contains(neighborTile))
+                    // Adjust the spread probability based on the distance
+                    float distanceModifier = distance == 1 ? 1f : 0.2f;
+
+                    // Calculate the fire spread probability.
+                    float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
+                    spreadProbability *= distanceModifier;
+
+                    // Check if fire spread.
+                    if (UnityEngine.Random.value < spreadProbability)
                     {
-                        nextBurningTiles.Add(neighborTile);
-                        _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, neighborTile);
+                        bool ignited = neighborTile.Ignite();
+                        if (ignited && !nextBurningTiles.Contains(neighborTile))
+                        {
+                            nextBurningTiles.Add(neighborTile);
+                            _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, neighborTile);
+                        }
                     }
                 }
             }
