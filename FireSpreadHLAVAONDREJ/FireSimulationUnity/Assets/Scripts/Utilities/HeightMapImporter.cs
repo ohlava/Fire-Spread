@@ -1,9 +1,5 @@
-using System;
 using UnityEngine;
-using System.Linq;
-using UnityEditor;
 using System.IO;
-using UnityEngine.UI;
 
 
 public interface IMapImporter

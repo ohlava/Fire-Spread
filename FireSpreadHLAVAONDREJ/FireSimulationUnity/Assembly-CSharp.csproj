@@ -60,27 +60,27 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/2022.3.15f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Scripts/FileBrowserHandler.cs" />
-    <Compile Include="Assets/Scripts/WorldClasses.cs" />
-    <Compile Include="Assets/Scripts/PythonCaller.cs" />
-    <Compile Include="Assets/Scripts/InputHandler.cs" />
-    <Compile Include="Assets/Scripts/WorldBuilder.cs" />
-    <Compile Include="Assets/Scripts/Settings.cs" />
-    <Compile Include="Assets/Scripts/WorldFileManager.cs" />
-    <Compile Include="Assets/Scripts/MainMenu.cs" />
-    <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
-    <Compile Include="Assets/Scripts/WindSimulation.cs" />
-    <Compile Include="Assets/Scripts/Visualizer.cs" />
-    <Compile Include="Assets/Scripts/TutorialManager.cs" />
-    <Compile Include="Assets/Scripts/Events.cs" />
-    <Compile Include="Assets/Scripts/MainLogic.cs" />
-    <Compile Include="Assets/Scripts/FireSimulation.cs" />
-    <Compile Include="Assets/Scripts/WindIndicator.cs" />
-    <Compile Include="Assets/Scripts/GraphVisualizer.cs" />
-    <Compile Include="Assets/Scripts/WorldGenerator.cs" />
-    <Compile Include="Assets/Scripts/UIManager.cs" />
-    <Compile Include="Assets/Scripts/SimulationManager.cs" />
-    <Compile Include="Assets/Scripts/FirePredictor.cs" />
+    <Compile Include="Assets/Scripts/WorldManagement/WorldGenerator.cs" />
+    <Compile Include="Assets/Scripts/WorldManagement/WorldBuilder.cs" />
+    <Compile Include="Assets/Scripts/Utilities/FirePredictor.cs" />
+    <Compile Include="Assets/Scripts/Simulation/SimulationManager.cs" />
+    <Compile Include="Assets/Scripts/Simulation/Events.cs" />
+    <Compile Include="Assets/Scripts/WorldManagement/WorldClasses.cs" />
+    <Compile Include="Assets/Scripts/Simulation/WindSimulation.cs" />
+    <Compile Include="Assets/Scripts/EngineCore/MainLogic.cs" />
+    <Compile Include="Assets/Scripts/Visualization/WindIndicator.cs" />
+    <Compile Include="Assets/Scripts/Utilities/Settings.cs" />
+    <Compile Include="Assets/Scripts/Visualization/Visualizer.cs" />
+    <Compile Include="Assets/Scripts/Visualization/UIManager.cs" />
+    <Compile Include="Assets/Scripts/EngineCore/TutorialManager.cs" />
+    <Compile Include="Assets/Scripts/Utilities/HeightMapImporter.cs" />
+    <Compile Include="Assets/Scripts/Visualization/GraphVisualizer.cs" />
+    <Compile Include="Assets/Scripts/EngineCore/InputHandler.cs" />
+    <Compile Include="Assets/Scripts/Utilities/FileBrowserHandler.cs" />
+    <Compile Include="Assets/Scripts/WorldManagement/WorldFileManager.cs" />
+    <Compile Include="Assets/Scripts/Visualization/MainMenu.cs" />
+    <Compile Include="Assets/Scripts/Utilities/PythonCaller.cs" />
+    <Compile Include="Assets/Scripts/Simulation/FireSimulation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
+﻿using UnityEngine;
 using TMPro;
-using UnityEditor;
 
 public class WindIndicator : MonoBehaviour
 {

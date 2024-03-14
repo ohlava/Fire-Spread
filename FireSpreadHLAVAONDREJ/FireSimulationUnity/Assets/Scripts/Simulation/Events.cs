@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using System.IO;
 
 // Represents a calendar for managing time within the simulation.
 public class SimulationCalendar
