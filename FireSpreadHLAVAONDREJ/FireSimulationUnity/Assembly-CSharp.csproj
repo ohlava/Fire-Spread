@@ -70,13 +70,13 @@
     <Compile Include="Assets/Scripts/MainMenu.cs" />
     <Compile Include="Assets/Scripts/HeightMapImporter.cs" />
     <Compile Include="Assets/Scripts/WindSimulation.cs" />
-    <Compile Include="Assets/Scripts/Visulizer.cs" />
-    <Compile Include="Assets/Scripts/GraphVisulizer.cs" />
+    <Compile Include="Assets/Scripts/Visualizer.cs" />
     <Compile Include="Assets/Scripts/TutorialManager.cs" />
     <Compile Include="Assets/Scripts/Events.cs" />
     <Compile Include="Assets/Scripts/MainLogic.cs" />
     <Compile Include="Assets/Scripts/FireSimulation.cs" />
     <Compile Include="Assets/Scripts/WindIndicator.cs" />
+    <Compile Include="Assets/Scripts/GraphVisualizer.cs" />
     <Compile Include="Assets/Scripts/WorldGenerator.cs" />
     <Compile Include="Assets/Scripts/UIManager.cs" />
     <Compile Include="Assets/Scripts/SimulationManager.cs" />

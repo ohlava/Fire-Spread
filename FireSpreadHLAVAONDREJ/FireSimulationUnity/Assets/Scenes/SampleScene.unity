@@ -1437,7 +1437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiManagerObj: {fileID: 630093510}
-  visulizerObj: {fileID: 804466386}
+  visualizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 846402035}
   windIndicatorObj: {fileID: 1212355966}
   settings:
@@ -2627,7 +2627,7 @@ GameObject:
   - component: {fileID: 804466388}
   - component: {fileID: 804466387}
   m_Layer: 0
-  m_Name: Visulizer
+  m_Name: Visualizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5440,7 +5440,7 @@ GameObject:
   - component: {fileID: 1594310932}
   - component: {fileID: 1594310931}
   m_Layer: 0
-  m_Name: fileBrowserHandler
+  m_Name: FileBrowserHandler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6886,7 +6886,6 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 705507995}
   - {fileID: 1712206359}
-  - {fileID: 456678355}
   - {fileID: 1804570620}
   - {fileID: 630093512}
   - {fileID: 804466388}
@@ -6894,3 +6893,4 @@ SceneRoots:
   - {fileID: 1526058720}
   - {fileID: 1363063733}
   - {fileID: 1594310932}
+  - {fileID: 456678355}

@@ -7,7 +7,7 @@ public enum State { NewWorldState, RunningState, StoppedState }
 public class MainLogic : MonoBehaviour
 {
     #region Serialized Fields
-    [SerializeField] private GameObject uiManagerObj, visulizerObj, inputHandlerObj, windIndicatorObj;
+    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, windIndicatorObj;
     #endregion
 
     #region Private Fields
@@ -18,10 +18,10 @@ public class MainLogic : MonoBehaviour
     private List<Tile> initBurningTiles = new List<Tile>();
     private WindSimulation windSimulation;
     private UIManager uiManager;
-    private Visulizer visulizer;
+    private Visualizer visualizer;
     private InputHandler inputHandler;
     private WindIndicator windIndicator;
-    private GraphVisulizer graphVisulizer;
+    private GraphVisualizer graphVisualizer;
     private Tile currentlyHoveredTile;
     private float elapsed = 0f;
     private float speedOfUpdates = 1.2f; // seconds
@@ -65,9 +65,9 @@ public class MainLogic : MonoBehaviour
         worldFileManager = new WorldFileManager();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
-        visulizer = visulizerObj.GetComponent<Visulizer>();
+        visualizer = visualizerObj.GetComponent<Visualizer>();
         windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
-        graphVisulizer = FindObjectOfType<GraphVisulizer>(); // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
+        graphVisualizer = FindObjectOfType<GraphVisualizer>(); // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
     }
 
@@ -179,13 +179,13 @@ public class MainLogic : MonoBehaviour
         {
             if (evt.Type == EventType.TileStartedBurning)
             {
-                visulizer.CreateFireOnTile(evt.Tile);
+                visualizer.CreateFireOnTile(evt.Tile);
             }
             else if (evt.Type == EventType.TileStoppedBurning)
             {
-                visulizer.DestroyFireOnTile(evt.Tile);
-                visulizer.DestroyVegetationOnTile(evt.Tile);
-                visulizer.MakeTileBurned(evt.Tile);
+                visualizer.DestroyFireOnTile(evt.Tile);
+                visualizer.DestroyVegetationOnTile(evt.Tile);
+                visualizer.MakeTileBurned(evt.Tile);
             }
         }
     }
@@ -203,7 +203,7 @@ public class MainLogic : MonoBehaviour
     // Adjusts the camera's rotation based on user input.
     private void HandleCameraAngleChange(Vector3 rotationChange)
     {
-        Vector3 worldCenter = new Vector3(world.Width / 2f, 2f * visulizer.TileHeightMultiplier, world.Depth / 2f);
+        Vector3 worldCenter = new Vector3(world.Width / 2f, 2f * visualizer.TileHeightMultiplier, world.Depth / 2f);
         float upDownSpeed = 50f;
         float speed = 50f;
         float cameraDistance = 100f;
@@ -234,7 +234,7 @@ public class MainLogic : MonoBehaviour
             if (clickedTile.Ignite()) // it is ignitable
             {
                 initBurningTiles.Add(clickedTile);
-                visulizer.CreateFireOnTile(clickedTile);
+                visualizer.CreateFireOnTile(clickedTile);
             }
         }
     }
@@ -248,7 +248,7 @@ public class MainLogic : MonoBehaviour
         if (hovered == true && currentState == State.NewWorldState && currentlyHoveredTile != hoveredOverTile)
         {
             currentlyHoveredTile = hoveredOverTile;
-            GameObject tileInstance = visulizer.GetTileInstance(hoveredOverTile);
+            GameObject tileInstance = visualizer.GetTileInstance(hoveredOverTile);
             if (tileInstance is not null)
             {
                 Renderer renderer = tileInstance.GetComponent<Renderer>();
@@ -265,11 +265,11 @@ public class MainLogic : MonoBehaviour
     {
         if (currentlyHoveredTile is not null)
         {
-            GameObject tileInstance = visulizer.GetTileInstance(currentlyHoveredTile);
+            GameObject tileInstance = visualizer.GetTileInstance(currentlyHoveredTile);
             if (tileInstance != null)
             {
                 // set color back to its original color
-                visulizer.SetAppropriateMaterial(currentlyHoveredTile);
+                visualizer.SetAppropriateMaterial(currentlyHoveredTile);
             }
             currentlyHoveredTile = null;
         }
@@ -362,7 +362,7 @@ public class MainLogic : MonoBehaviour
     // Updates the graph visualization with the latest simulation data.
     private void UpdateGraph()
     {
-        if (graphVisulizer is null) return;
+        if (graphVisualizer is null) return;
 
         if (showingGraph)
         {
@@ -373,14 +373,14 @@ public class MainLogic : MonoBehaviour
                 burningTilesOverTime = fireSimulation.GetBurningTilesOverTime();
             }
 
-            graphVisulizer.ClearGraph();
-            graphVisulizer.SetData(burningTilesOverTime);
-            graphVisulizer.UpdateGraph();
-            graphVisulizer.ShowGraph();
+            graphVisualizer.ClearGraph();
+            graphVisualizer.SetData(burningTilesOverTime);
+            graphVisualizer.UpdateGraph();
+            graphVisualizer.ShowGraph();
         }
         else
         {
-            graphVisulizer.HideGraph();
+            graphVisualizer.HideGraph();
         }
     }
 
@@ -388,7 +388,6 @@ public class MainLogic : MonoBehaviour
     public void OnResetButtonClicked()
     {
         world.Reset();
-
         PrepareForNewWorld();
     }
 
@@ -565,7 +564,6 @@ public class MainLogic : MonoBehaviour
         return highestNumber + 1; // Return the next available number
     }
 
-
     // Prepares the simulation and visualization for a new world.
     private void PrepareForNewWorld()
     {
@@ -575,7 +573,7 @@ public class MainLogic : MonoBehaviour
 
         if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) // settings enabled or number of tiles is too high
         {
-            visulizer.mode = VisulizerMode.Simplified;
+            visualizer.mode = VisualizerMode.Simplified;
         }
 
         initBurningTiles.Clear();
@@ -584,24 +582,24 @@ public class MainLogic : MonoBehaviour
 
         currentlyHoveredTile = null;
 
-        if (graphVisulizer is not null)
+        if (graphVisualizer is not null)
         {
-            graphVisulizer.ClearGraph();
-            graphVisulizer.SetAxes("burning tiles", "time");
-            graphVisulizer.SetData(new Dictionary<int, int> { { 0, 0 } });
-            graphVisulizer.UpdateGraph();
-            graphVisulizer.HideGraph();
+            graphVisualizer.ClearGraph();
+            graphVisualizer.SetAxes("burning tiles", "time");
+            graphVisualizer.SetData(new Dictionary<int, int> { { 0, 0 } });
+            graphVisualizer.UpdateGraph();
+            graphVisualizer.HideGraph();
         }
     }
 
     // Reconstructs the entire visual representation of the world.
     private void VisulizerRemakeAll()
     {
-        visulizer.DestroyAllTile();
-        visulizer.DestroyAllVegetation();
-        visulizer.DestroyAllFire();
+        visualizer.DestroyAllTile();
+        visualizer.DestroyAllVegetation();
+        visualizer.DestroyAllFire();
 
-        visulizer.CreateWorldTiles(world);
-        visulizer.CreateAllVegetation(world);
+        visualizer.CreateWorldTiles(world);
+        visualizer.CreateAllVegetation(world);
     }
 }

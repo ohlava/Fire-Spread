@@ -1082,7 +1082,7 @@ GameObject:
   - component: {fileID: 804466388}
   - component: {fileID: 804466387}
   m_Layer: 0
-  m_Name: Visulizer
+  m_Name: Visualizer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1160,7 +1160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiManagerObj: {fileID: 1435652521}
-  visulizerObj: {fileID: 804466386}
+  visualizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 1803386491}
   windIndicatorObj: {fileID: 764228423}
   settings:

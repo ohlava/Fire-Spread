@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using System.Linq;
 using TMPro;
 
-public class GraphVisulizer : MonoBehaviour
+public class GraphVisualizer : MonoBehaviour
 {
     [SerializeField] RectTransform panel;
     [SerializeField] GameObject pointPrefab;

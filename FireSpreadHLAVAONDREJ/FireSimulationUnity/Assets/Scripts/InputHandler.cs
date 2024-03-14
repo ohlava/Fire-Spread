@@ -57,7 +57,7 @@ public class InputHandler : MonoBehaviour
 
     #region Private Fields
     private bool initializing = false; // for input fields not to trigger generation of new world
-    private Visulizer visulizer;
+    private Visualizer visualizer;
     private TMP_InputField worldWidthInputField;
     private TMP_InputField worldDepthInputField;
     private TMP_InputField riversInputField;
@@ -86,7 +86,7 @@ public class InputHandler : MonoBehaviour
 
     private void InitializeFields()
     {
-        visulizer = visulizerObj?.GetComponent<Visulizer>();
+        visualizer = visulizerObj?.GetComponent<Visualizer>();
 
         if (worldWidthInputFieldObj != null)
             worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
@@ -146,7 +146,7 @@ public class InputHandler : MonoBehaviour
 
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~ignoreLayer))
         {
-            Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
+            Tile worldTile = visualizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
             if (worldTile != null)
             {
                 // Trigger the over Tile Hovered event
@@ -173,7 +173,7 @@ public class InputHandler : MonoBehaviour
             if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~ignoreLayer)) // The tilde (~) is used to invert the mask, so the raycast will ignore the layers specified in the ignoreLayer
             {
                 // Get the corresponding world tile
-                Tile worldTile = visulizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
+                Tile worldTile = visualizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
                 if (worldTile != null)
                 {
                     // Trigger the Tile Clicked event

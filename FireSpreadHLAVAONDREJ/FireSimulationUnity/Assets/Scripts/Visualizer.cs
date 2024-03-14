@@ -5,11 +5,11 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public enum VisulizerMode { Standard, Simplified }
+public enum VisualizerMode { Standard, Simplified }
 
-public class Visulizer : MonoBehaviour
+public class Visualizer : MonoBehaviour
 {
-    public VisulizerMode mode;
+    public VisualizerMode mode;
 
     #region Tile Management Fields
     // To keep track of actuall tile instance GameObject created for each Tile
@@ -48,7 +48,7 @@ public class Visulizer : MonoBehaviour
 
     private void InitializeDefaultValues()
     {
-        mode = VisulizerMode.Standard;
+        mode = VisualizerMode.Standard;
         TileHeightMultiplier = 3.0f;
     }
 
@@ -292,7 +292,7 @@ public class Visulizer : MonoBehaviour
     // Generate all vegetationInstances - for the standard mode
     public void CreateAllVegetation(World world)
     {
-        if (mode == VisulizerMode.Standard)
+        if (mode == VisualizerMode.Standard)
         {
             foreach (var tile in world.Grid)
             {
@@ -351,7 +351,7 @@ public class Visulizer : MonoBehaviour
     // Method to destroy a vegetation instance on a specific tile
     public void DestroyVegetationOnTile(Tile tile)
     {
-        if (mode == VisulizerMode.Standard)
+        if (mode == VisualizerMode.Standard)
         {
             // Check that there is something to destroy
             if (tileToVegetationInstanceDict.TryGetValue(tile, out GameObject instance))
@@ -374,7 +374,7 @@ public class Visulizer : MonoBehaviour
         tileInstance.SetMaterialTo(fireMaterial);
 
         // In addition if operating in standard settings add nicer fire animation on top of this tile
-        if (mode == VisulizerMode.Standard)
+        if (mode == VisualizerMode.Standard)
         {
             // Get the position and height of the tile instance
             Vector3 tilePosition = tileInstance.GetPosition();
@@ -391,7 +391,7 @@ public class Visulizer : MonoBehaviour
     // Method to destroy a fire instance on a specific tile
     public void DestroyFireOnTile(Tile tile)
     {
-        if (mode == VisulizerMode.Standard)
+        if (mode == VisualizerMode.Standard)
         {
             // Check that there is something to destroy
             if (tileToFireInstanceDict.TryGetValue(tile, out GameObject instance))
