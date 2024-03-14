@@ -8,9 +8,6 @@ public class FireSimulation : SimulationBase
     private List<Tile> _burningTiles;
     private FireLogger _fireLogger;
 
-    // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
-    float baseProbability = 0.3f;
-
     public FireSimulation(FireSimParameters parameters, World world, List<Tile> initBurningTiles) : base(world)
     {
         _parameters = parameters;
@@ -90,7 +87,7 @@ public class FireSimulation : SimulationBase
                 foreach (Tile neighborTile in _world.GetCircularEdgeNeighborTiles(tile, distance))
                 {
                     // Adjust the spread probability based on the distance
-                    float distanceModifier = distance == 1 ? 1f : 0.01f;
+                    float distanceModifier = distance == 1 ? 1f : 0.1f;
 
                     // Calculate the fire spread probability.
                     float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
@@ -137,8 +134,8 @@ public class FireSimulation : SimulationBase
 
     private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSimParameters parameters)
     {
-        float vegetationFactor = parameters.VegetationSpreadFactor > 0 ? GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor) : baseProbability;
-        float slopeFactor = parameters.SlopeSpreadFactor > 0 ? GetSlopeFactor(source, target, parameters.SlopeSpreadFactor) : baseProbability;
+        float vegetationFactor = parameters.VegetationSpreadFactor > 0 ? GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor) : _parameters.BaseSpreadProbability;
+        float slopeFactor = parameters.SlopeSpreadFactor > 0 ? GetSlopeFactor(source, target, parameters.SlopeSpreadFactor) : _parameters.BaseSpreadProbability;
 
         // First, average the vegetation and slope factors
         float combined = (vegetationFactor + slopeFactor) / 2;
@@ -186,7 +183,7 @@ public class FireSimulation : SimulationBase
 
     private float GetVegetationFactor(VegetationType vegetation, float spreadFactor)
     {
-        float factor = baseProbability;
+        float factor = _parameters.BaseSpreadProbability;
 
         switch (vegetation)
         {
@@ -273,7 +270,7 @@ public class FireSimulation : SimulationBase
         // Calculate factor using linear interpolation formula
         factor = slopeInDegrees >= 0 ? y1 + ((slopeInDegrees - x1) * (y2 - y1) / (x2 - x1)) : 1f; // no change for downhill
 
-        factor = factor * baseProbability;
+        factor = factor * _parameters.BaseSpreadProbability;
         factor = Math.Min(0.8f, factor); // Maximal probability value
 
         return factor * spreadFactor;
@@ -290,6 +287,7 @@ public class FireSimulation : SimulationBase
 // configuration object for simulation parameters
 public class FireSimParameters
 {
+    public float BaseSpreadProbability { get; set; }
     public float VegetationSpreadFactor { get; set; }
     public float MoistureSpreadFactor { get; set; }
     public float WindSpreadFactor { get; set; }
@@ -298,6 +296,7 @@ public class FireSimParameters
     // Default constructor with all factors enabled.
     public FireSimParameters()
     {
+        BaseSpreadProbability = 0.3f; // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
         VegetationSpreadFactor = 1.0f;
         MoistureSpreadFactor = 1.0f;
         WindSpreadFactor = 1.0f;
@@ -307,8 +306,9 @@ public class FireSimParameters
     // Flexible constructor with optional parameters for each factor.
     // Each parameter can be either a bool (for enabled/disabled) or a float (for custom factors), defaulting to null.
     // This uses object? so it can accept either a bool or a float.
-    public FireSimParameters(object vegetationSpread = null, object moistureSpread = null, object windSpread = null, object slopeSpread = null)
+    public FireSimParameters(object vegetationSpread = null, object moistureSpread = null, object windSpread = null, object slopeSpread = null, object baseSpreadProbability = null)
     {
+        BaseSpreadProbability = ParseFactor(baseSpreadProbability, 0.3f);
         VegetationSpreadFactor = ParseFactor(vegetationSpread, 1.0f);
         MoistureSpreadFactor = ParseFactor(moistureSpread, 1.0f);
         WindSpreadFactor = ParseFactor(windSpread, 1.0f);

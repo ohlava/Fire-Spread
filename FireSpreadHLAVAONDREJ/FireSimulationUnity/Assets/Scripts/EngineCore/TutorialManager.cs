@@ -102,7 +102,7 @@ public class TutorialManager : MonoBehaviour
                 windIndicator.DeactivateIndicator();
                 break;
             case 2:
-                mainLogic.fireSimParams = new FireSimParameters(false, false, true, false);
+                mainLogic.fireSimParams = new FireSimParameters(0.7f, false, true, false);
                 windIndicator.ActivateIndicator();
                 break;
             case 3:
