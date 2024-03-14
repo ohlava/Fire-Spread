@@ -74,6 +74,7 @@
     <Compile Include="Assets/Scripts/Simulation/Events/EventLoggers.cs" />
     <Compile Include="Assets/Scripts/Utilities/Settings.cs" />
     <Compile Include="Assets/Scripts/Visualization/Visualizer.cs" />
+    <Compile Include="Assets/Scripts/WorldManagement/Maps/Maps.cs" />
     <Compile Include="Assets/Scripts/Visualization/UIManager.cs" />
     <Compile Include="Assets/Scripts/EngineCore/TutorialManager.cs" />
     <Compile Include="Assets/Scripts/Utilities/HeightMapImporter.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Assets/Scripts/Utilities/PythonCaller.cs" />
     <Compile Include="Assets/Scripts/WorldManagement/WorldSerialization.cs" />
     <Compile Include="Assets/Scripts/Simulation/FireSimulation.cs" />
+    <Compile Include="Assets/Scripts/WorldManagement/Maps/MapExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" />
