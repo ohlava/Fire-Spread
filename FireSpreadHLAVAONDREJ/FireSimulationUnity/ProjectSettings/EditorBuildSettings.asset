@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 4a77f504652f9479cb37cfac8d396943
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/SandBox.unity
     guid: f5698bb06096d4e28b8c6f2a8c47d89a
   - enabled: 1
     path: Assets/Scenes/Tutorial.unity

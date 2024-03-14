@@ -72,7 +72,7 @@ public class MainMenu : MonoBehaviour
 
     public void LoadSandBox()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("SandBox");
         return;
     }
 }
