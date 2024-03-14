@@ -64,12 +64,13 @@
     <Compile Include="Assets/Scripts/WorldManagement/WorldBuilder.cs" />
     <Compile Include="Assets/Scripts/Utilities/FirePredictor.cs" />
     <Compile Include="Assets/Scripts/Simulation/SimulationManager.cs" />
-    <Compile Include="Assets/Scripts/Simulation/Events.cs" />
+    <Compile Include="Assets/Scripts/Simulation/Events/Events.cs" />
     <Compile Include="Assets/Scripts/WorldManagement/WorldClasses.cs" />
     <Compile Include="Assets/Scripts/Simulation/WindSimulation.cs" />
     <Compile Include="Assets/Scripts/Simulation/SimulationBase.cs" />
     <Compile Include="Assets/Scripts/EngineCore/MainLogic.cs" />
     <Compile Include="Assets/Scripts/Visualization/WindIndicator.cs" />
+    <Compile Include="Assets/Scripts/Simulation/Events/EventLoggers.cs" />
     <Compile Include="Assets/Scripts/Utilities/Settings.cs" />
     <Compile Include="Assets/Scripts/Visualization/Visualizer.cs" />
     <Compile Include="Assets/Scripts/Visualization/UIManager.cs" />
