@@ -1,27 +1,5 @@
 using System.Collections.Generic;
 
-// Defines a common interface for all simulations.
-public interface ISimulation
-{
-    void Update();
-}
-
-public abstract class SimulationBase : ISimulation
-{
-    protected World _world;
-    protected SimulationCalendar _calendar;
-
-    public SimulationBase(World world)
-    {
-        _world = world;
-        _calendar = new SimulationCalendar();
-    }
-
-    public abstract void Update();
-    protected abstract void SetWorldProperties();
-    public abstract bool Finished();
-}
-
 // Manages the execution and coordination of different simulations.
 public class SimulationManager
 {

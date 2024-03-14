@@ -2,22 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-// Represents a calendar for managing time within the simulation.
-public class SimulationCalendar
-{
-    public int CurrentTime { get; private set; }
-
-    public SimulationCalendar()
-    {
-        CurrentTime = 0;
-    }
-
-    public void AdvanceTime()
-    {
-        CurrentTime++;
-    }
-}
-
 public enum EventType
 {
     TileStartedBurning,
