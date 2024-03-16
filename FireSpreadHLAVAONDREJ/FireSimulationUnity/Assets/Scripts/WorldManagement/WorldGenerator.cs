@@ -19,7 +19,6 @@ public class BaseTerrainGenerator : IMapGenerator<float>
 
     public Map<float> Generate()
     {
-        // Code for generating base terrain here...
         Map<float> map = new Map<float>(width, depth);
 
         int octaves = 5;
@@ -44,7 +43,7 @@ public class BaseTerrainGenerator : IMapGenerator<float>
                     noiseHeight += perlinValue * amplitude;
 
                     amplitude *= persistence; // decrease the amplitude
-                    frequency *= 2; // double the frequency
+                    frequency *= 2;
                 }
 
                 map.Data[x, y] = noiseHeight;
@@ -54,7 +53,7 @@ public class BaseTerrainGenerator : IMapGenerator<float>
     }
 }
 
-// TODO We'll identify valleys below the threshold, then group them into clusters, and from those clusters, decide which ones to fill based on the lakeAmountParameter.
+// Identify valleys below the threshold, then group them into clusters, and from those clusters, decide which ones to fill based on the lakeAmountParameter.
 public class LakeMapGenerator : IMapGenerator<int>
 {
     private Map<float> heightMap;

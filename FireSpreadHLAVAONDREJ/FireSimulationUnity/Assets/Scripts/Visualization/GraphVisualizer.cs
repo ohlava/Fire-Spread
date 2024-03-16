@@ -12,7 +12,7 @@ public class GraphVisualizer : MonoBehaviour
     [SerializeField] TextMeshProUGUI yAxisLabel;
     [SerializeField] TextMeshProUGUI lastMaxLabel;
 
-    private List<GameObject> points = new List<GameObject>(); // List to keep track of point instances
+    private List<GameObject> points = new List<GameObject>();
     private Dictionary<int, int> currentData;
 
     private float width;
@@ -30,7 +30,6 @@ public class GraphVisualizer : MonoBehaviour
         width = panel.rect.width * 0.85f;
         height = panel.rect.height * 0.85f;
 
-        // Hide the graph initially
         HideGraph();
     }
 
@@ -47,7 +46,6 @@ public class GraphVisualizer : MonoBehaviour
 
     public void UpdateGraph()
     {
-        // Clear previously created Graph (points)
         ClearGraph();
 
         if (currentData.Count == 0) // otherwise data.Values.Max() has a problem
@@ -58,8 +56,8 @@ public class GraphVisualizer : MonoBehaviour
         lastMaxLabel.text = currentData.Last().Value + " current" + " / " + currentData.Values.Max() + " max";
 
         // Calculate the intervals for the x and y axes
-        float xInterval = xInterval = width / (currentData.Count + 1);
-        float yInterval = yInterval = height / currentData.Values.Max(); ; //  Max cant handle empty data, careful for zero division!
+        float xInterval = width / (currentData.Count + 1);
+        float yInterval = height / currentData.Values.Max(); ; //  Max cant handle empty data, careful for zero division!
 
         // Calculate the size of the points based of their counts
         Vector2 pointSize = AdjustPointSize(currentData.Count);
@@ -116,15 +114,16 @@ public class GraphVisualizer : MonoBehaviour
 
     public void HideGraph()
     {
+        // Hide the panel and labels
         xAxisLabel.gameObject.SetActive(false);
         yAxisLabel.gameObject.SetActive(false);
         lastMaxLabel.gameObject.SetActive(false);
         panel.gameObject.SetActive(false);
     }
 
+    // Remove previous points
     public void ClearGraph()
     {
-        // Remove previous points
         foreach (GameObject point in points)
         {
             Destroy(point);
@@ -140,7 +139,6 @@ public class GraphVisualizer : MonoBehaviour
 
 }
 
-// Helper class for serialization
 [System.Serializable]
 public class Serialization<T1, T2>
 {

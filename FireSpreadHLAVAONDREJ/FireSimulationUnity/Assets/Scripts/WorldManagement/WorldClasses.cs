@@ -79,7 +79,7 @@ public class Tile
     public int DepthPosition { get; private set; } // y position in the world
 
     public float Height { get; set; }
-    public int Moisture { get; set; } // number of percent 0-100, 100 is water
+    public int Moisture { get; set; } // number of percent 0-100, 0 (dry) and 100 (water)
     public bool IsWater { get; private set; }
     public VegetationType Vegetation { get; set; }
 

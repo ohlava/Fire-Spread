@@ -20,7 +20,6 @@ public class Visualizer : MonoBehaviour
     private List<GameObject> waterChunks;
     #endregion
 
-    // Corresponds to VegetationTypes
     #region Prefabs and Materials
     [SerializeField] GameObject grassPrefab, forestPrefab, sparsePrefab, swampPrefab;
     [SerializeField] Material grassMaterial, waterMaterial, burnedMaterial, fireMaterial;
@@ -30,6 +29,7 @@ public class Visualizer : MonoBehaviour
     [SerializeField] LayerMask tileLayer; // Add the layer mask for the tileInstances - for handling Raycasting
     public float TileHeightMultiplier;
 
+    // Awake is called when the script instance is being loaded.
     private void Awake()
     {
         InitializeDictionaries();
@@ -88,7 +88,6 @@ public class Visualizer : MonoBehaviour
     /// <summary>
     /// Finds and groups contiguous water tiles in the world.
     /// </summary>
-    /// <param name="world">The world containing the tiles.</param>
     /// <returns>A list of tile groups, where each group contains GameObjects of contiguous water tiles.</returns>
     private List<List<GameObject>> FindContiguousWaterTileGroups(World world)
     {
@@ -145,8 +144,6 @@ public class Visualizer : MonoBehaviour
     /// thus creating a simplified mesh representation. The top and bottom faces of each tile are always retained, 
     /// while the side faces are excluded if they're facing another tile in the group. 
     /// </summary>
-    /// <param name="tiles">A list of water tile GameObjects to be combined.</param>
-    /// <param name="world">The world instance containing information about the tile grid.</param>
     /// <returns>A new GameObject with a combined mesh representing the group of water tiles.</returns>
     private GameObject CombineWaterTilesOfGroup(List<GameObject> tiles, World world)
     {
@@ -154,7 +151,6 @@ public class Visualizer : MonoBehaviour
         List<Vector3> combinedVertices = new List<Vector3>();
         List<int> combinedTriangles = new List<int>();
 
-        // Iterate over each water tile GameObject in the list
         foreach (GameObject tileGO in tiles)
         {
             Mesh tileMesh = tileGO.GetComponent<MeshFilter>().mesh;
@@ -186,8 +182,7 @@ public class Visualizer : MonoBehaviour
                     {
                         if (tiles.Contains(tileToInstanceDict[neighbor])) // check if it is also water tile instance
                         {
-                            // Check if the current face is facing the neighbor directly
-                            // This means the face is internal and should be skipped
+                            // Check if the current face is facing the neighbor directly, that means the face is internal and should be skipped
                             if (faceNormal == Vector3.left && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (1, 0) ||
                                 faceNormal == Vector3.right && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (-1, 0) ||
                                 faceNormal == Vector3.forward && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (0, 1) ||
@@ -307,7 +302,6 @@ public class Visualizer : MonoBehaviour
     {
         GameObject tileInstance = tileToInstanceDict[tile];
 
-        // Get the position and height of the tile instance
         Vector3 tilePosition = tileInstance.GetPosition();
         float tileHeight = tileInstance.GetHeight();
 
@@ -328,7 +322,6 @@ public class Visualizer : MonoBehaviour
                 chosenPrefab = swampPrefab;
                 break;
             default:
-                // Code to handle unknown vegetation type
                 Debug.LogError("Unkwown vegetationType, add corresponding prefab.");
                 break;
         }
@@ -341,7 +334,6 @@ public class Visualizer : MonoBehaviour
             // Make a random rotation
             vegetationInstance.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
 
-            // Add the created GameObject to the Dictionary
             tileToVegetationInstanceDict[tile] = vegetationInstance;
         }
     }
@@ -355,7 +347,7 @@ public class Visualizer : MonoBehaviour
             if (tileToVegetationInstanceDict.TryGetValue(tile, out GameObject instance))
             {
                 Destroy(instance);
-                tileToVegetationInstanceDict.Remove(tile); // Remove the entry from the dictionary
+                tileToVegetationInstanceDict.Remove(tile);
             }
             else
             {
@@ -374,14 +366,12 @@ public class Visualizer : MonoBehaviour
         // In addition if operating in standard settings add nicer fire animation on top of this tile
         if (mode == VisualizerMode.Standard)
         {
-            // Get the position and height of the tile instance
             Vector3 tilePosition = tileInstance.GetPosition();
             float tileHeight = tileInstance.GetHeight();
 
             // Create a new fire at the top of the tile
             GameObject fireInstance = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.Euler(-90, 0, 0));
 
-            // Add the created GameObject to the Dictionary
             tileToFireInstanceDict[tile] = fireInstance;
         }
     }
@@ -395,7 +385,7 @@ public class Visualizer : MonoBehaviour
             if (tileToFireInstanceDict.TryGetValue(tile, out GameObject instance))
             {
                 Destroy(instance);
-                tileToFireInstanceDict.Remove(tile); // Remove the entry from the dictionary
+                tileToFireInstanceDict.Remove(tile);
             }
             else
             {
@@ -456,7 +446,6 @@ public class Visualizer : MonoBehaviour
                 return tile;
             }
         }
-        // should never happen - every tile has its own representation
         Debug.LogError("No Tile found for the given instance.");
         return ft;
     }

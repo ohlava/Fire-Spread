@@ -11,17 +11,14 @@ public class EventLogger<T> where T : Event
     // Logs an event, storing it in the dictionary under the time it occurred.
     public void LogEvent(T evt)
     {
-        // Extract the time from the event
         int time = evt.Time;
 
         if (_events.ContainsKey(time))
         {
-            // If there are, add the new event to the existing list
             _events[time].Add(evt);
         }
         else
         {
-            // If there are no events at this time, create a new list and add the event
             _events[time] = new List<T>() { evt };
         }
     }
@@ -31,16 +28,14 @@ public class EventLogger<T> where T : Event
     {
         if (!_events.ContainsKey(time))
         {
-            // If there are no events, return an empty list
             return new List<T>();
         }
 
-        // If there are events, return the list of events
         return _events[time];
     }
 }
 
-// Logger class for weather change events.
+// Logger class for wind change events.
 public class WindLogger : EventLogger<WindEvent>
 {
     // Logs a wind direction change
@@ -63,14 +58,11 @@ public class WindLogger : EventLogger<WindEvent>
 
         Console.WriteLine($"Total Wind Events: {totalWindEvents}");
 
-        // Iterate through each time slot that contains events
         foreach (var kvp in _events)
         {
             int time = kvp.Key;
-            // Iterate through each event in the current time slot
-            foreach (var evt in kvp.Value)
+            foreach (var evt in kvp.Value) // Iterate through each event in the current time slot
             {
-                // Determine the type of event and print details accordingly
                 switch (evt.Type)
                 {
                     case EventType.WindDirectionChange:
@@ -80,7 +72,6 @@ public class WindLogger : EventLogger<WindEvent>
                         Console.WriteLine($"Time: {time}, Event: Wind Speed Change, Old Speed: {evt.OldWindSpeed}km/h, New Speed: {evt.NewWindSpeed}km/h");
                         break;
                     default:
-                        // Handle unexpected event types
                         Console.WriteLine($"Time: {time}, Event: Unhandled Event Type");
                         break;
                 }
@@ -106,7 +97,6 @@ public class FireLogger : EventLogger<FireEvent>
     public Dictionary<int, int> GetBurningTilesOverTime()
     {
         Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>();
-        // Track current count of burning tiles
         int currentBurningCount = 0;
 
         // Iterate over events in chronological order

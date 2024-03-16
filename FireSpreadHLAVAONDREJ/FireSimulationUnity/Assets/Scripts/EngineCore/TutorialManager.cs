@@ -14,18 +14,15 @@ public class TutorialManager : MonoBehaviour
 
     MainLogic mainLogic;
 
+    // Start is called before the first frame update
     void Start()
     {
-        // Just one mainLogic should exist
         mainLogic = FindObjectOfType<MainLogic>();
+    
+        mainLogic.ApplyInputValues(); // Set default sizes for worldGenerator
 
-        // Set default sizes for worldGenerator
-        mainLogic.ApplyInputValues();
-
-        // Assing windIndicator for ability to enable and disable windIndicator
         windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
 
-        // Initialize tutorial sections content
         tutorialSections[0] =
             " - hold W-A-S-D keys for movement left, right, up, and down around the center of the world" +
             "\n - hold I-K keys for zooming in and out to get a closer or broader view" +
@@ -84,7 +81,7 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
-    // Based on currentSection number we modify the scene
+    // Based on current tutorial section we modify the scene
     private void UpdateTutorialSection()
     {
         tutorialText.text = tutorialSections[currentSection];
@@ -121,7 +118,6 @@ public class TutorialManager : MonoBehaviour
                 break;
         }
 
-        // Import corresponding map
         mainLogic.ImportTutorialMap(currentSection);
     }
 

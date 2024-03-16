@@ -24,7 +24,7 @@ public class MainLogic : MonoBehaviour
     private GraphVisualizer graphVisualizer;
     private Tile currentlyHoveredTile;
     private float elapsed = 0f;
-    private float speedOfUpdates = 1.2f; // seconds
+    private float speedOfUpdates = 1.2f; // in seconds
     private bool showingGraph = false;
     private State currentState = State.NewWorldState;
     #endregion
@@ -36,6 +36,7 @@ public class MainLogic : MonoBehaviour
     public FireSimParameters fireSimParams = new FireSimParameters();
     #endregion
 
+    // Awake is called when the script instance is being loaded.
     void Awake()
     {
         InitializeComponents();
@@ -88,7 +89,7 @@ public class MainLogic : MonoBehaviour
     }
 
 
-    // Determines whether an update should be performed based on elapsed time and current state.
+    // Determines whether an update of the world and simulation should be performed.
     private bool ShouldPerformUpdate()
     {
         return elapsed >= speedOfUpdates && currentState == State.RunningState;
@@ -113,7 +114,7 @@ public class MainLogic : MonoBehaviour
             uiManager.UpdateInfoPanel("Simulation paused");
         }
 
-        UpdateGraph(); // Updates the graph if it is needed
+        UpdateGraph();
     }
 
     // Updates the camera position for the wind indicator.
@@ -126,26 +127,20 @@ public class MainLogic : MonoBehaviour
         return;
     }
 
-    // Visually updates the simulation state of the world and handles wind events. For wind this means updating the wind indicator.
+    // Visually updates the wind indicator of the simulation.
     private void UpdateWind()
     {
         if (windSimulation is null) return;
 
-        // Get the events from the last update
         List<WindEvent> events = windSimulation.GetLastUpdateEvents();
 
-        // Updates the display of the wind indicator based on current weather conditions.
         if (events.Count == 0 || windIndicator is null) return;
 
-        // Variables to hold the latest wind direction and speed.
-        // Initialize them with default values.
         int windDirection = 0;
         float windSpeed = 0.0f;
 
-        // Process each wind event.
-        foreach (var windEvent in events)
+        foreach (WindEvent windEvent in events)
         {
-            // Depending on the event type, update the wind direction or wind speed.
             switch (windEvent.Type)
             {
                 case EventType.WindDirectionChange:
@@ -160,7 +155,7 @@ public class MainLogic : MonoBehaviour
             }
         }
 
-        // Visualize the update changes.
+        // Actually visualize the last update changes.
         windIndicator.UpdateIndicator(windDirection, windSpeed);
 
         return;
@@ -171,21 +166,19 @@ public class MainLogic : MonoBehaviour
     {
         if (fireSimulation is null) return;
 
-        // Get the events from the last update
         List<FireEvent> events = fireSimulation.GetLastUpdateEvents();
 
-        // Handle these events by visualizing them
-        foreach (FireEvent evt in events)
+        foreach (FireEvent fireEvent in events)
         {
-            if (evt.Type == EventType.TileStartedBurning)
+            if (fireEvent.Type == EventType.TileStartedBurning)
             {
-                visualizer.CreateFireOnTile(evt.Tile);
+                visualizer.CreateFireOnTile(fireEvent.Tile);
             }
-            else if (evt.Type == EventType.TileStoppedBurning)
+            else if (fireEvent.Type == EventType.TileStoppedBurning)
             {
-                visualizer.DestroyFireOnTile(evt.Tile);
-                visualizer.DestroyVegetationOnTile(evt.Tile);
-                visualizer.MakeTileBurned(evt.Tile);
+                visualizer.DestroyFireOnTile(fireEvent.Tile);
+                visualizer.DestroyVegetationOnTile(fireEvent.Tile);
+                visualizer.MakeTileBurned(fireEvent.Tile);
             }
         }
     }
@@ -218,10 +211,8 @@ public class MainLogic : MonoBehaviour
         // Move camera to new position
         Camera.main.transform.position = worldCenter - (Camera.main.transform.forward * cameraDistance);
 
-        // Always look at the world center
         Camera.main.transform.LookAt(worldCenter);
 
-        // Update Wind Indicator camera
         UpdateWindCamera();
     }
 
@@ -231,7 +222,7 @@ public class MainLogic : MonoBehaviour
         // We can click on tiles only when simulation is not running
         if (currentState == State.NewWorldState)
         {
-            if (clickedTile.Ignite()) // it is ignitable
+            if (clickedTile.Ignite())
             {
                 initBurningTiles.Add(clickedTile);
                 visualizer.CreateFireOnTile(clickedTile);
@@ -244,7 +235,6 @@ public class MainLogic : MonoBehaviour
     {
         ResetHoveredTileColor(); // Reset the old tile's color
 
-        // NewWorld state and also check if we're hovering a new tile
         if (hovered == true && currentState == State.NewWorldState && currentlyHoveredTile != hoveredOverTile)
         {
             currentlyHoveredTile = hoveredOverTile;
@@ -284,7 +274,7 @@ public class MainLogic : MonoBehaviour
                 switch (nextState)
                 {
                     case State.RunningState:
-                        if (initBurningTiles.Count == 0) // if player want to start simulation withou any tiles ignited
+                        if (initBurningTiles.Count == 0)
                         {
                             uiManager.UpdateInfoPanel("Ignite some tiles first!");
                             return; // do nothing else
@@ -342,6 +332,7 @@ public class MainLogic : MonoBehaviour
         currentState = nextState;
     }
 
+    // Prepares simulationManager with simulations so that we can run them easily.
     private void SetNewSimulation()
     {
         fireSimulation = new FireSimulation(fireSimParams, world, initBurningTiles);
@@ -424,7 +415,6 @@ public class MainLogic : MonoBehaviour
         {
             Debug.Log("Loading file from path: " + filePath);
 
-            // Check the file extension
             string fileExtension = Path.GetExtension(filePath).ToLower();
 
             if (fileExtension == ".png" || fileExtension == ".jpg" || fileExtension == ".jpeg")
@@ -546,7 +536,7 @@ public class MainLogic : MonoBehaviour
         Debug.Log($"World saved automatically to: {savePath}");
     }
 
-    // Gets the next available world number for naming saved worlds.
+    // Gets the next available world number for naming saved worlds. Lowest number of the current repository files.
     private int GetNextWorldNumber(string directoryPath)
     {
         var worldFiles = Directory.GetFiles(directoryPath, "World_*.json");
@@ -561,7 +551,7 @@ public class MainLogic : MonoBehaviour
             }
         }
 
-        return highestNumber + 1; // Return the next available number
+        return highestNumber + 1;
     }
 
     // Prepares the simulation and visualization for a new world.
@@ -571,7 +561,8 @@ public class MainLogic : MonoBehaviour
         uiManager.UpdateInfoPanel("New world - set fire");
         uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
 
-        if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) // settings enabled or number of tiles is too high
+        // Settings enabled or number of tiles is too high!
+        if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) 
         {
             visualizer.mode = VisualizerMode.Simplified;
         }

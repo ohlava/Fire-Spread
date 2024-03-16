@@ -35,7 +35,7 @@ public class SettingsManager
         else
         {
             Debug.LogWarning("Settings file not found, creating a new one with default values.");
-            Settings defaultSettings = new Settings(false, false); // Default settings
+            Settings defaultSettings = new Settings(false, false);
             SaveSettings(defaultSettings);
             return defaultSettings;
         }

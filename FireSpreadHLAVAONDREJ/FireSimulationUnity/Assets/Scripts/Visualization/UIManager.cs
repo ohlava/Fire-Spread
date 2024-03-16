@@ -19,6 +19,4 @@ public class UIManager : MonoBehaviour
         runButton.interactable = !isRunning;
         pauseButton.interactable = isRunning;
     }
-
-    // Additional methods to control other UI elements...
 }

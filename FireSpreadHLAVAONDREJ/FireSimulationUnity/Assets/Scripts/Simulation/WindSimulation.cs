@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 
 public class WindSimulation : SimulationBase
 {
@@ -13,12 +14,11 @@ public class WindSimulation : SimulationBase
         SetWorldProperties();
     }
 
+    // Advances simulation time, also randomly adjusting wind direction and speed within defined limits, logs these changes.
     public override void Update()
     {
-        // Advance simulation time
         _calendar.AdvanceTime();
 
-        // Example logic to update weather, this needs to be fleshed out based on specific needs
         int windDirectionChange = UnityEngine.Random.Range(-15, 15);
         float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
 
@@ -28,21 +28,23 @@ public class WindSimulation : SimulationBase
         _world.Wind.WindDirection += windDirectionChange;
         _world.Wind.WindSpeed += windStrengthChange;
 
-        // Log changes
         _windLogger.LogWindDirectionChange(_calendar.CurrentTime, oldDirection, _world.Wind.WindDirection);
         _windLogger.LogWindSpeedChange(_calendar.CurrentTime, oldSpeed, _world.Wind.WindSpeed);
     }
 
+    // Initializes the simulation's world with a starting wind state.
     protected override void SetWorldProperties()
     {
         _world.Wind = new Wind(0, 15);
     }
 
+    // Designed to run indefinitely.
     public override bool Finished()
     {
         return false;
     }
 
+    // Retrieves logged wind events (direction and speed changes) for the most recent simulation update.
     public List<WindEvent> GetLastUpdateEvents()
     {
         return _windLogger.GetLastUpdateEvents(_calendar.CurrentTime);

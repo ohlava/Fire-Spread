@@ -20,6 +20,8 @@ public class SimulationCalendar
     }
 }
 
+// Serves as the foundational class for simulations, integrating a world model and a time management system via SimulationCalendar.
+// It requires derived classes to implement specific update behaviors, world and tiles state settings, and a termination condition.
 public abstract class SimulationBase : ISimulation
 {
     protected World _world;

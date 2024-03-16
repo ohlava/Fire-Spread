@@ -7,15 +7,16 @@ public class MainMenu : MonoBehaviour
     public Toggle useSimplifiedWorldVisualizationToggle;
     public Toggle saveTerrainAutomaticallyToggle;
 
+    // Start is called before the first frame update
     void Start()
     {
         LoadSettings();
 
-        // Add listeners for toggle changes
         useSimplifiedWorldVisualizationToggle.onValueChanged.AddListener(OnUseSimplifiedWorldVisualizationChanged);
         saveTerrainAutomaticallyToggle.onValueChanged.AddListener(OnSaveTerrainAutomaticallyChanged);
     }
 
+    // Update is called once per frame
     void Update()
     {
         HandleEscPressed();

@@ -1,6 +1,6 @@
 using System;
 
-// configuration object for simulation parameters
+// Configuration object for fire simulation, simulation parameters
 public class FireSimParameters
 {
     public float BaseSpreadProbability { get; set; }
@@ -9,7 +9,6 @@ public class FireSimParameters
     public float WindSpreadFactor { get; set; }
     public float SlopeSpreadFactor { get; set; }
 
-    // Default constructor with all factors enabled.
     public FireSimParameters()
     {
         BaseSpreadProbability = 0.3f; // Cumulative probability of catching on fire being between 0.20f-0.35f seems to be nice
@@ -20,8 +19,7 @@ public class FireSimParameters
     }
 
     // Flexible constructor with optional parameters for each factor.
-    // Each parameter can be either a bool (for enabled/disabled) or a float (for custom factors), defaulting to null.
-    // This uses object? so it can accept either a bool or a float.
+    // Each parameter can be either a bool (for enabled/disabled) or a float (for custom factors)
     public FireSimParameters(object vegetationSpread = null, object moistureSpread = null, object windSpread = null, object slopeSpread = null, object baseSpreadProbability = null)
     {
         BaseSpreadProbability = ParseFactor(baseSpreadProbability, 0.3f);
@@ -36,15 +34,15 @@ public class FireSimParameters
     {
         if (factor == null)
         {
-            return defaultValue; // Use default if no value is provided.
+            return defaultValue;
         }
         else if (factor is bool)
         {
-            return (bool)factor ? 1.0f : 0.0f; // Convert bool to float (1.0 or 0.0).
+            return (bool)factor ? 1.0f : 0.0f;
         }
         else if (factor is float)
         {
-            return (float)factor; // Use the float value directly.
+            return (float)factor;
         }
         else
         {

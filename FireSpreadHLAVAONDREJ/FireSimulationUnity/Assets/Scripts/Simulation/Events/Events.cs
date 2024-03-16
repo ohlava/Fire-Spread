@@ -17,7 +17,7 @@ public class Event
     public EventType Type { get; protected set; }
 }
 
-// Event class specific to fire-related events.
+// Event class specific to fire-related events in the simulation.
 public class FireEvent : Event
 {
     public Tile Tile { get; private set; }
@@ -30,7 +30,7 @@ public class FireEvent : Event
     }
 }
 
-// Event class specific for weather-related changes in the simulation.
+// Event class specific for wind-related events in the simulation.
 public class WindEvent : Event
 {
     public int OldWindDirection { get; private set; }

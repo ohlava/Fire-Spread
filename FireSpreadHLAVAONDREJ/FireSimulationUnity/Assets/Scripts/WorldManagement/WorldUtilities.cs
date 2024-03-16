@@ -64,7 +64,7 @@ public static class WorldUtilities
                 int nx = x + i;
                 int ny = y + j;
 
-                if (nx != x || ny != y) // not the same position
+                if (nx != x || ny != y)
                 {
                     if (nx >= 0 && nx < world.Width && ny >= 0 && ny < world.Depth)
                     {
@@ -126,10 +126,8 @@ public static class WorldUtilities
     // Reset the dynamic properties of simulations - world weather and non static atributes for all the tiles. 
     public static void Reset(this World world)
     {
-        // Reset weather to init state
         world.Wind.Reset();
 
-        // Reset every Tile to init state
         foreach (Tile tile in world.Grid)
         {
             tile.Reset();

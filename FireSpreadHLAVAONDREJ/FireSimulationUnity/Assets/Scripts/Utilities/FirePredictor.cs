@@ -11,7 +11,7 @@ public class FirePredictor
         _fireParams = fireParams;
     }
 
-    // Generates a heat map representing the intensity of fires across a given world running multiple simulations.
+    // Generates a heat map representing the intensity of fires across a given world running multiple simulations and collecting the final state of the world for each run.
     public Map<float> GenerateHeatMap(int iterations, World world, List<Tile> initBurningTiles)
     {
         _world = world;
@@ -19,7 +19,6 @@ public class FirePredictor
 
         Map<float> heatMap = new Map<float>(world.Width, world.Depth);
 
-        // Run the simulation for the specified number of iterations and collect the final state of the world for each run.
         List<World> runnedWorlds = GetSimulationRunnedWorlds(iterations);
 
         // Aggregate burn data from all simulation runs to calculate heat intensity.
@@ -31,7 +30,6 @@ public class FirePredictor
                 {
                     if (runnedWorld.Grid[i, j].IsBurned)
                     {
-                        // Increment heat map value for burned tiles in each run.
                         heatMap.Data[i, j] += 1.0f;
                     }
                 }
@@ -84,7 +82,6 @@ public class FirePredictor
             specificBurningTiles.Add(tile);
         }
 
-        // Initialize the fire and wind simulations with specific parameters and conditions.
         FireSimulation fireSim = new FireSimulation(_fireParams, world, specificBurningTiles);
         WindSimulation windSim = new WindSimulation(world);
         manager.AddSimulation(fireSim).AddSimulation(windSim);

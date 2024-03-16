@@ -32,7 +32,6 @@ public class WindIndicator : MonoBehaviour
 
         if (mainCameraDirection == Vector3.down) // main camera is looking straight down
         {
-            // Copy the rotation of the main camera to the windArrowCamera
             windArrowCamera.transform.rotation = Camera.main.transform.rotation;
         }
         else

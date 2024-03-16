@@ -54,7 +54,7 @@ public class InputHandler : MonoBehaviour
     #endregion
 
     #region Private Fields
-    private bool initializing = false; // for input fields not to trigger generation of new world
+    private bool initializing = false; // for input fields to not trigger generation of new world when being initialized to default value
     private Visualizer visualizer;
     private TMP_InputField worldWidthInputField;
     private TMP_InputField worldDepthInputField;
@@ -74,12 +74,13 @@ public class InputHandler : MonoBehaviour
     public int MaxRivers { get; private set; }
     #endregion
 
+    // Awake is called when the script instance is being loaded.
     private void Awake()
     {
-        initializing = true; // beggining of initialization
+        initializing = true; 
         InitializeFields();
         InitializeDefaultValues();
-        initializing = false; // initialization is complete
+        initializing = false;
     }
 
     private void InitializeFields()
@@ -124,59 +125,63 @@ public class InputHandler : MonoBehaviour
             lakeThresholdSlider.value = LakeThreshold;
     }
 
+    // Update is called once per frame
     void Update()
     {
-        HandleTileClick();
-        HandleTileHover();
+        if (!EventSystem.current.IsPointerOverGameObject()) // If cursor is NOT over UI object
+        {
+            HandleTileClick();
+            HandleTileHover();
+        }
+        else
+        {
+            OnTileHovered?.Invoke(false, null);
+        }
+
         HandleCameraMove();
         HandleCameraAngleChange();
         HandleActionButtons();
     }
 
+
+
+    // Method that handles the common raycasting functionality
+    private Tile RaycastForTile()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition); // Casts a ray from camera to the clicked point
+        RaycastHit hitInfo;
+
+        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~ignoreLayer)) // The tilde (~) is used to invert the mask, so the raycast will ignore the layers specified in the ignoreLayer
+        {
+            return visualizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
+        }
+
+        return null;
+    }
+
     // Detects if the mouse pointer is hovering over a game tile.
     private void HandleTileHover()
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return; // ignore if over UI object
-
-        // Cast a ray from camera to click point
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-
-        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~ignoreLayer))
+        Tile worldTile = RaycastForTile();
+        if (worldTile != null)
         {
-            Tile worldTile = visualizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
-            if (worldTile != null)
-            {
-                // Trigger the over Tile Hovered event
-                OnTileHovered?.Invoke(true, worldTile);
-            }
+            OnTileHovered?.Invoke(true, worldTile);
         }
         else
         {
-            OnTileHovered?.Invoke(false,null);
+            OnTileHovered?.Invoke(false, null);
         }
     }
 
     // Detects mouse clicks on some world tile.
     private void HandleTileClick()
     {
-        // Checks if the left mouse button is pressed and ensures that the pointer is not over a UI object 
-        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) // Input.GetMouseButton(0) - (user can hold) / Input.GetMouseButtonDown(0) (only clicking)
+        if (Input.GetMouseButton(0)) // Input.GetMouseButton(0) - (user can click and hold) / Input.GetMouseButtonDown(0) (only clicking)
         {
-            // Cast a ray from camera to click point
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-
-            // If ray hits a tile
-            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, ~ignoreLayer)) // The tilde (~) is used to invert the mask, so the raycast will ignore the layers specified in the ignoreLayer
+            Tile worldTile = RaycastForTile();
+            if (worldTile != null)
             {
-                // Get the corresponding world tile
-                Tile worldTile = visualizer.GetWorldTileFromInstance(hitInfo.transform.gameObject);
-                if (worldTile != null)
-                {
-                    // Trigger the Tile Clicked event
-                    OnTileClicked?.Invoke(worldTile);
-                }
+                OnTileClicked?.Invoke(worldTile);
             }
         }
     }
@@ -268,9 +273,10 @@ public class InputHandler : MonoBehaviour
         OnPause?.Invoke();
     }
 
+    // Sets the world width based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetWorldWidth(string widthString)
     {
-        if (worldWidthInputField == null) return; // Early exit if the field is not present
+        if (worldWidthInputField == null) return;
 
         int parsedValue;
         if (int.TryParse(widthString, out parsedValue))
@@ -278,10 +284,8 @@ public class InputHandler : MonoBehaviour
             WorldWidth = Mathf.Min(parsedValue, MaxWorldWidth);
             WorldWidth = Mathf.Max(WorldWidth, 1);
 
-            // Update the displayed value
             worldWidthInputField.text = WorldWidth.ToString();
 
-            // Only trigger world generation if initialization is complete
             if (!initializing)
             {
                 TriggerGenerateWorld();
@@ -289,9 +293,10 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    // Sets the world depth based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetWorldDepth(string depthString)
     {
-        if (worldDepthInputField == null) return; // Early exit if the field is not present
+        if (worldDepthInputField == null) return;
 
         int parsedValue;
         if (int.TryParse(depthString, out parsedValue))
@@ -299,10 +304,8 @@ public class InputHandler : MonoBehaviour
             WorldDepth = Mathf.Min(parsedValue, MaxWorldDepth);
             WorldDepth = Mathf.Max(WorldDepth, 1);
 
-            // Update the displayed value
             worldDepthInputField.text = WorldDepth.ToString();
 
-            // Only trigger world generation if initialization is complete
             if (!initializing)
             {
                 TriggerGenerateWorld();
@@ -310,9 +313,10 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    // Sets the number of world rivers based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetRivers(string riversString)
     {
-        if (riversInputField == null) return; // Early exit if the field is not present
+        if (riversInputField == null) return;
 
         int parsedValue;
         if (int.TryParse(riversString, out parsedValue))
@@ -320,10 +324,8 @@ public class InputHandler : MonoBehaviour
             Rivers = Mathf.Min(parsedValue, MaxRivers);
             Rivers = Mathf.Max(Rivers, 0);
 
-            // Update the displayed value
             riversInputField.text = Rivers.ToString();
 
-            // Only trigger world generation if initialization is complete
             if (!initializing)
             {
                 TriggerGenerateWorld();
@@ -331,9 +333,10 @@ public class InputHandler : MonoBehaviour
         }
     }
 
+    // Sets the simulation speed based on the user's input through a connected UI slider "onValueChanged" event in Unity editor.
     public void SetSimulationSpeed(float value)
     {
-        if (simulationSpeedSlider == null) return; // Early exit if the field is not present
+        if (simulationSpeedSlider == null) return;
 
         SimulationSpeed = simulationSpeedSlider.maxValue - value;
         SimulationSpeed = Mathf.Max(SimulationSpeed, 0.1f);
@@ -341,13 +344,13 @@ public class InputHandler : MonoBehaviour
         onSimulationSpeedChange?.Invoke(SimulationSpeed);
     }
 
+    // Sets the lake threshold (amount of water tiles) based on the user's input through a connected UI slider "onValueChanged" event in Unity editor.
     public void SetLakeThreshold(float value)
     {
-        if (lakeThresholdSlider == null) return; // Early exit if the field is not present
+        if (lakeThresholdSlider == null) return;
 
         LakeThreshold = value;
 
-        // Only trigger world generation if initialization is complete
         if (!initializing)
         {
             TriggerGenerateWorld();

@@ -47,7 +47,7 @@ public static class MapExtensions
             {
                 if (waterMap.Data[x, y] == 1)
                 {
-                    // TODO experiment with -2/2 -3/3, random etc. 
+                    // Experiment with -2/2 -3/3, random etc. 
                     for (int dx = -3; dx <= 3; dx++)
                     {
                         for (int dy = -3; dy <= 3; dy++)
@@ -159,7 +159,7 @@ public static class MapExtensions
             }
         }
 
-        return blurredData;  // due to the implicit conversion we defined earlier
+        return blurredData;  // Converted automatically due to the implicit conversion we defined earlier
     }
 }
 
