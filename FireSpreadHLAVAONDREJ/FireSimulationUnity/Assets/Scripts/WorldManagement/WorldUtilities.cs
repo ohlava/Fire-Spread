@@ -133,4 +133,25 @@ public static class WorldUtilities
             tile.Reset();
         }
     }
+
+    // Rotates world tiles by 90 degrees
+    public static World RotateWorld(World originalWorld)
+    {
+        int newWidth = originalWorld.Depth;
+        int newDepth = originalWorld.Width;
+        World rotatedWorld = new World(newWidth, newDepth);
+
+        for (int x = 0; x < originalWorld.Width; x++)
+        {
+            for (int y = 0; y < originalWorld.Depth; y++)
+            {
+                // Transpose and reverse the row to rotate by 90 degrees
+                Tile originalTile = originalWorld.Grid[x, y];
+                Tile rotatedTile = new Tile(originalTile.Height, originalTile.Moisture, originalTile.Vegetation, y, newDepth - x - 1);
+                rotatedWorld.Grid[y, newDepth - x - 1] = rotatedTile;
+            }
+        }
+
+        return rotatedWorld;
+    }
 }
