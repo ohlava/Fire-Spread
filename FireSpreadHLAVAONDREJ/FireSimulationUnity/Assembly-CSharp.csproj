@@ -63,6 +63,7 @@
     <Compile Include="Assets/Scripts/WorldManagement/WorldGenerator.cs" />
     <Compile Include="Assets/Scripts/WorldManagement/WorldBuilder.cs" />
     <Compile Include="Assets/Scripts/Utilities/FirePredictor.cs" />
+    <Compile Include="Assets/Scripts/Visualization/CameraHandler.cs" />
     <Compile Include="Assets/Scripts/Simulation/SimulationManager.cs" />
     <Compile Include="Assets/Scripts/Simulation/Events/Events.cs" />
     <Compile Include="Assets/Scripts/WorldManagement/WorldClasses.cs" />

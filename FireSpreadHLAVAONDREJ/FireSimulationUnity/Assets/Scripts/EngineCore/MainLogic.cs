@@ -7,10 +7,11 @@ public enum State { NewWorldState, RunningState, StoppedState }
 public class MainLogic : MonoBehaviour
 {
     #region Serialized Fields
-    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, windIndicatorObj;
+    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, windIndicatorObj, cameraHandlerObj;
     #endregion
 
     #region Private Fields
+    private CameraHandler cameraHandler;
     private WorldGenerator worldGenerator;
     private FileBrowserHandler fileBrowserHandler;
     private SimulationManager simulationManager;
@@ -67,6 +68,7 @@ public class MainLogic : MonoBehaviour
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
         visualizer = visualizerObj.GetComponent<Visualizer>();
+        cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
         windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
         graphVisualizer = FindObjectOfType<GraphVisualizer>(); // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
@@ -76,8 +78,6 @@ public class MainLogic : MonoBehaviour
     {
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnTileHovered += HandleTileHover;
-        inputHandler.OnCameraMove += HandleCameraMove;
-        inputHandler.OnCameraAngleChange += HandleCameraAngleChange;
         inputHandler.OnGraph += OnGraphButtonClicked;
         inputHandler.OnReset += OnResetButtonClicked;
         inputHandler.OnGenerateWorld += GenereteNewWorld;
@@ -115,16 +115,6 @@ public class MainLogic : MonoBehaviour
         }
 
         UpdateGraph();
-    }
-
-    // Updates the camera position for the wind indicator.
-    private void UpdateWindCamera()
-    {
-        if (windIndicator is null) return;
-
-        windIndicator.UpdateCamera();
-
-        return;
     }
 
     // Visually updates the wind indicator of the simulation.
@@ -181,39 +171,6 @@ public class MainLogic : MonoBehaviour
                 visualizer.MakeTileBurned(fireEvent.Tile);
             }
         }
-    }
-
-    // Handles changes in camera zoom level.
-    private void HandleCameraMove(float zoomChange)
-    {
-        float minZoom = 5f;
-        float maxZoom = 50f;
-        float zoomChangeSpeed = 0.05f;
-
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize + zoomChange * zoomChangeSpeed, minZoom, maxZoom);
-    }
-
-    // Adjusts the camera's rotation based on user input.
-    private void HandleCameraAngleChange(Vector3 rotationChange)
-    {
-        Vector3 worldCenter = new Vector3(world.Width / 2f, 2f * visualizer.TileHeightMultiplier, world.Depth / 2f);
-        float upDownSpeed = 50f;
-        float speed = 50f;
-        float cameraDistance = 100f;
-
-        // Calculate new rotation angles
-        Vector3 angles = Camera.main.transform.eulerAngles + new Vector3(-1 * rotationChange.x * upDownSpeed * Time.deltaTime, -1 * rotationChange.y * speed * Time.deltaTime, 0);
-
-        angles.x = Mathf.Clamp(angles.x, 10f, 89f); // Min/max angle range
-
-        Camera.main.transform.eulerAngles = angles;
-
-        // Move camera to new position
-        Camera.main.transform.position = worldCenter - (Camera.main.transform.forward * cameraDistance);
-
-        Camera.main.transform.LookAt(worldCenter);
-
-        UpdateWindCamera();
     }
 
     // Responds to clicks on tiles, igniting them if the simulation is in the appropriate state.
@@ -517,8 +474,6 @@ public class MainLogic : MonoBehaviour
         }
 
         PrepareForNewWorld();
-
-        UpdateWindCamera();
     }
 
     // Saves the world to a new file with automatic numbering.
@@ -560,7 +515,7 @@ public class MainLogic : MonoBehaviour
         currentState = State.NewWorldState;
         uiManager.UpdateInfoPanel("New world - set fire");
         uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
-
+        
         // Settings enabled or number of tiles is too high!
         if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) 
         {
@@ -569,7 +524,9 @@ public class MainLogic : MonoBehaviour
 
         initBurningTiles.Clear();
         VisulizerRemakeAll();
-        HandleCameraAngleChange(new Vector3(0, 0, 0)); // Set init camera position and rotation
+        cameraHandler.SetWorldCenter(new Vector3(world.Width / 2f, 2f * visualizer.TileHeightMultiplier, world.Depth / 2f));
+        cameraHandler.RotateCamera(); // Set to default position
+        windIndicator.UpdateCamera();
 
         currentlyHoveredTile = null;
 

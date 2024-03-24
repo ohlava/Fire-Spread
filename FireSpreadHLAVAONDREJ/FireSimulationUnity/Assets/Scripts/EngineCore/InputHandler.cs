@@ -13,12 +13,6 @@ public class InputHandler : MonoBehaviour
     public delegate void TileClickHandler(Tile clickedTile);
     public event TileClickHandler OnTileClicked;
 
-    public delegate void CameraMoveHandler(float zoomChange);
-    public event CameraMoveHandler OnCameraMove;
-
-    public delegate void CameraAngleChangeHandler(Vector3 rotation);
-    public event CameraAngleChangeHandler OnCameraAngleChange;
-
     public delegate void GraphHandler();
     public event GraphHandler OnGraph;
 
@@ -45,17 +39,16 @@ public class InputHandler : MonoBehaviour
     #endregion
 
     #region Serialized Fields
-    [SerializeField] private GameObject visulizerObj;
+    [SerializeField] private GameObject visulizerObj, cameraHandlerObj, windIndicatorObj, worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
     [SerializeField] private Slider simulationSpeedSlider;
-    [SerializeField] private GameObject worldWidthInputFieldObj;
-    [SerializeField] private GameObject worldDepthInputFieldObj;
-    [SerializeField] private GameObject riversInputFieldObj;
     [SerializeField] private Slider lakeThresholdSlider;
     #endregion
 
     #region Private Fields
     private bool initializing = false; // for input fields to not trigger generation of new world when being initialized to default value
+    private WindIndicator windIndicator;
     private Visualizer visualizer;
+    private CameraHandler cameraHandler;
     private TMP_InputField worldWidthInputField;
     private TMP_InputField worldDepthInputField;
     private TMP_InputField riversInputField;
@@ -86,6 +79,8 @@ public class InputHandler : MonoBehaviour
     private void InitializeFields()
     {
         visualizer = visulizerObj?.GetComponent<Visualizer>();
+        cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
+        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
 
         if (worldWidthInputFieldObj != null)
             worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();
@@ -197,8 +192,10 @@ public class InputHandler : MonoBehaviour
         if (Input.GetKey(KeyCode.K))
             zoomChange += 1;
 
-        if (zoomChange != 0)
-            OnCameraMove?.Invoke(zoomChange);
+        if (zoomChange != 0 && cameraHandler != null)
+        {
+            cameraHandler.ZoomCamera(zoomChange);
+        }
     }
 
     // Responds to key inputs to change the camera's viewing angle vertically and horizontally.
@@ -221,8 +218,11 @@ public class InputHandler : MonoBehaviour
             rotationChange += Vector3.up;
 
 
-        if (rotationChange != Vector3.zero)
-            OnCameraAngleChange?.Invoke(rotationChange);
+        if (rotationChange != Vector3.zero && cameraHandler != null)
+        {
+            cameraHandler.RotateCamera(rotationChange);
+            windIndicator.UpdateCamera();
+        }
     }
 
     // Responds to key inputs for some extra key quick access features.
