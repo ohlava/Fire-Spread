@@ -526,7 +526,8 @@ public class MainLogic : MonoBehaviour
         VisulizerRemakeAll();
         cameraHandler.SetWorldCenter(new Vector3(world.Width / 2f, 2f * visualizer.TileHeightMultiplier, world.Depth / 2f));
         cameraHandler.RotateCamera(); // Set to default position
-        windIndicator.UpdateCamera();
+        windIndicator.SetIndicatorToDefault();
+        windIndicator.UpdateIndicatorCameraAngle();
 
         currentlyHoveredTile = null;
 
