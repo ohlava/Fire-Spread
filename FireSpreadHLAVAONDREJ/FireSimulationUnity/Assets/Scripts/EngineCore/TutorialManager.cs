@@ -6,7 +6,7 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] GameObject previousButton;
     [SerializeField] GameObject nextButton;
     [SerializeField] TextMeshProUGUI tutorialText;
-    [SerializeField] GameObject windIndicatorObj;
+    [SerializeField] GameObject uiManagerObj;
     WindIndicator windIndicator;
 
     private int currentSection = 0;
@@ -21,7 +21,7 @@ public class TutorialManager : MonoBehaviour
     
         mainLogic.ApplyInputValues(); // Set default sizes for worldGenerator
 
-        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
+        windIndicator = uiManagerObj.GetComponent<WindIndicator>();
 
         tutorialSections[0] =
             " - hold W-A-S-D keys for movement left, right, up, and down around the center of the world" +

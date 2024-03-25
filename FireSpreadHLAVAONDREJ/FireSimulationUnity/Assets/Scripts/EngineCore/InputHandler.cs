@@ -39,7 +39,7 @@ public class InputHandler : MonoBehaviour
     #endregion
 
     #region Serialized Fields
-    [SerializeField] private GameObject visulizerObj, cameraHandlerObj, windIndicatorObj, worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
+    [SerializeField] private GameObject visulizerObj, cameraHandlerObj, uiManagerObj, worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
     [SerializeField] private Slider simulationSpeedSlider;
     [SerializeField] private Slider lakeThresholdSlider;
     #endregion
@@ -80,7 +80,7 @@ public class InputHandler : MonoBehaviour
     {
         visualizer = visulizerObj?.GetComponent<Visualizer>();
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
-        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
+        windIndicator = uiManagerObj.GetComponent<WindIndicator>();
 
         if (worldWidthInputFieldObj != null)
             worldWidthInputField = worldWidthInputFieldObj.GetComponent<TMP_InputField>();

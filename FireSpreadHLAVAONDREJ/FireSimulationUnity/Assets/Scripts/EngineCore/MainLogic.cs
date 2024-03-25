@@ -7,7 +7,7 @@ public enum State { NewWorldState, RunningState, StoppedState }
 public class MainLogic : MonoBehaviour
 {
     #region Serialized Fields
-    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, windIndicatorObj, cameraHandlerObj, graphVisualizerObj;
+    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, cameraHandlerObj;
     #endregion
 
     #region Private Fields
@@ -67,17 +67,11 @@ public class MainLogic : MonoBehaviour
         worldFileManager = new WorldFileManager();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
+        graphVisualizer = uiManagerObj.GetComponent<GraphVisualizer>();
+        windIndicator = uiManagerObj.GetComponent<WindIndicator>();
         visualizer = visualizerObj.GetComponent<Visualizer>();
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
-        windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
-
-        // Optional
-        if (graphVisualizerObj != null)
-        {
-            graphVisualizer = graphVisualizerObj.GetComponent<GraphVisualizer>();
-
-        }
     }
 
     private void SubscribeToInputEvents()

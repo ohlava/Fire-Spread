@@ -496,7 +496,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 117938026}
-  - component: {fileID: 117938025}
   m_Layer: 0
   m_Name: GraphVisualizer
   m_TagString: Untagged
@@ -504,23 +503,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &117938025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117938024}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01574d8fa34e7425786a0958e93f79c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 782628376}
-  pointPrefab: {fileID: 1668172791072463248, guid: 028f505013bd541b689d383c1113f9e2, type: 3}
-  xAxisLabel: {fileID: 1011413594}
-  yAxisLabel: {fileID: 410074649}
-  lastMaxLabel: {fileID: 572018904}
 --- !u!4 &117938026
 Transform:
   m_ObjectHideFlags: 0
@@ -1409,9 +1391,7 @@ MonoBehaviour:
   uiManagerObj: {fileID: 630093510}
   visualizerObj: {fileID: 804466386}
   inputHandlerObj: {fileID: 846402035}
-  windIndicatorObj: {fileID: 1212355966}
   cameraHandlerObj: {fileID: 1613869247}
-  graphVisualizerObj: {fileID: 117938024}
   settings:
     useSimplifiedWorldVisualization: 0
     saveTerrainAutomatically: 0
@@ -2238,6 +2218,8 @@ GameObject:
   m_Component:
   - component: {fileID: 630093512}
   - component: {fileID: 630093511}
+  - component: {fileID: 630093513}
+  - component: {fileID: 630093514}
   m_Layer: 0
   m_Name: UiManager
   m_TagString: Untagged
@@ -2275,6 +2257,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &630093513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630093510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01574d8fa34e7425786a0958e93f79c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panel: {fileID: 782628376}
+  pointPrefab: {fileID: 1668172791072463248, guid: 028f505013bd541b689d383c1113f9e2, type: 3}
+  xAxisLabel: {fileID: 1011413594}
+  yAxisLabel: {fileID: 410074649}
+  lastMaxLabel: {fileID: 572018904}
+--- !u!114 &630093514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 630093510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e23d6f8cce7e408bab0854efe5b787a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainTargetCamera: {fileID: 0}
+  windSpeedText: {fileID: 212925920}
+  windArrowCamera: {fileID: 175735168}
+  windArrow: {fileID: 1554117721}
 --- !u!1 &654404996
 GameObject:
   m_ObjectHideFlags: 0
@@ -3140,7 +3155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visulizerObj: {fileID: 804466386}
   cameraHandlerObj: {fileID: 1613869247}
-  windIndicatorObj: {fileID: 1212355966}
+  uiManagerObj: {fileID: 630093510}
   worldWidthInputFieldObj: {fileID: 377332769}
   worldDepthInputFieldObj: {fileID: 1899859749}
   riversInputFieldObj: {fileID: 508024748}
@@ -4583,54 +4598,6 @@ RectTransform:
   m_AnchoredPosition: {x: -5, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1212355966
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1212355968}
-  - component: {fileID: 1212355969}
-  m_Layer: 0
-  m_Name: WindIndicator
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1212355968
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1212355966}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -164.89844, y: 10.987396, z: -798.49}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1526058720}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1212355969
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1212355966}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e23d6f8cce7e408bab0854efe5b787a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mainTargetCamera: {fileID: 0}
-  windSpeedText: {fileID: 212925920}
-  windArrowCamera: {fileID: 175735168}
-  windArrow: {fileID: 1554117721}
 --- !u!1 &1350519258
 GameObject:
   m_ObjectHideFlags: 0
@@ -5279,7 +5246,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1212355968}
   - {fileID: 175735169}
   - {fileID: 1360653971}
   m_Father: {fileID: 0}
