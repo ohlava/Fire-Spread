@@ -13,20 +13,21 @@ public class GraphVisualizer : MonoBehaviour
     [SerializeField] TextMeshProUGUI lastMaxLabel;
 
     private List<GameObject> points = new List<GameObject>();
-    private Dictionary<int, int> currentData;
+    private Dictionary<int, int> currentData = new Dictionary<int, int> { { -1, 0 } };
 
     private float width;
     private float height;
 
     void Start()
     {
-        // Adjust panel to cover left half of screen if it previously was the whole screen
         panel.anchorMin = new Vector2(0, 0);
-        panel.anchorMax = new Vector2(0.5f, 1);
+        panel.anchorMax = new Vector2(0.5f, 1); // First value is percentage of screen panel width for background panel to take, second is for screen panel height
         panel.offsetMin = new Vector2(0, 0);
         panel.offsetMax = new Vector2(0, 0);
 
-        // Calculate the space available in the panel
+        PositionLabels();
+
+        // Calculate the space available in the panel with some margin for the point
         width = panel.rect.width * 0.85f;
         height = panel.rect.height * 0.85f;
 
@@ -42,6 +43,29 @@ public class GraphVisualizer : MonoBehaviour
     {
         xAxisLabel.text = X_text;
         yAxisLabel.text = Y_text;
+    }
+
+    private void PositionLabels()
+    {
+        float margin = 15f; // Margin from the edges of the panel
+
+        // yAxisLabel at the left top
+        yAxisLabel.rectTransform.anchorMin = new Vector2(0, 1);
+        yAxisLabel.rectTransform.anchorMax = new Vector2(0, 1);
+        yAxisLabel.rectTransform.pivot = new Vector2(0, 1); // Top left pivot
+        yAxisLabel.rectTransform.anchoredPosition = new Vector2(margin, -margin);
+
+        // lastMaxLabel directly below yAxisLabel
+        lastMaxLabel.rectTransform.anchorMin = new Vector2(0, 1);
+        lastMaxLabel.rectTransform.anchorMax = new Vector2(0, 1);
+        lastMaxLabel.rectTransform.pivot = new Vector2(0, 1); // Top left pivot
+        lastMaxLabel.rectTransform.anchoredPosition = new Vector2(margin, -margin - yAxisLabel.preferredHeight - 5f);
+
+        // xAxisLabel at the bottom right
+        xAxisLabel.rectTransform.anchorMin = new Vector2(1, 0);
+        xAxisLabel.rectTransform.anchorMax = new Vector2(1, 0);
+        xAxisLabel.rectTransform.pivot = new Vector2(1, 0); // Bottom right pivot
+        xAxisLabel.rectTransform.anchoredPosition = new Vector2(-margin, margin);
     }
 
     public void UpdateGraph()
@@ -91,12 +115,12 @@ public class GraphVisualizer : MonoBehaviour
     {
         float newSize = width / (count * 1.2f); // scaling factor 1.2f to ensure points do not touch each other
 
-        // Ensure that points do not become too small or too large
-        newSize = Mathf.Clamp(newSize, 5f, 30f);
+        newSize = Mathf.Clamp(newSize, 5f, 30f); // Ensure that points do not become too small or too large
 
         return new Vector2(newSize, newSize);
     }
 
+    // Show the panel and labels
     public void ShowGraph()
     {
         if (currentData == null || currentData.Count == 0)
@@ -105,16 +129,15 @@ public class GraphVisualizer : MonoBehaviour
             return;
         }
 
-        // Show the panel and labels
         panel.gameObject.SetActive(true);
         xAxisLabel.gameObject.SetActive(true);
         yAxisLabel.gameObject.SetActive(true);
         lastMaxLabel.gameObject.SetActive(true);
     }
 
+    // Hide the panel and labels
     public void HideGraph()
     {
-        // Hide the panel and labels
         xAxisLabel.gameObject.SetActive(false);
         yAxisLabel.gameObject.SetActive(false);
         lastMaxLabel.gameObject.SetActive(false);

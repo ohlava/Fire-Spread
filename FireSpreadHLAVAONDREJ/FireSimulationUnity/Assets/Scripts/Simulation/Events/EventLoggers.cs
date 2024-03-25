@@ -96,7 +96,7 @@ public class FireLogger : EventLogger<FireEvent>
     // Calculates and returns the number of burning tiles over time.
     public Dictionary<int, int> GetBurningTilesOverTime()
     {
-        Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>();
+        Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int> {{ -1, 0 }};
         int currentBurningCount = 0;
 
         // Iterate over events in chronological order

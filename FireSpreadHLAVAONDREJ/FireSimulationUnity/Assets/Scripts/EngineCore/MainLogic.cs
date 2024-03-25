@@ -7,7 +7,7 @@ public enum State { NewWorldState, RunningState, StoppedState }
 public class MainLogic : MonoBehaviour
 {
     #region Serialized Fields
-    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, windIndicatorObj, cameraHandlerObj;
+    [SerializeField] private GameObject uiManagerObj, visualizerObj, inputHandlerObj, windIndicatorObj, cameraHandlerObj, graphVisualizerObj;
     #endregion
 
     #region Private Fields
@@ -70,8 +70,14 @@ public class MainLogic : MonoBehaviour
         visualizer = visualizerObj.GetComponent<Visualizer>();
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
         windIndicator = windIndicatorObj.GetComponent<WindIndicator>();
-        graphVisualizer = FindObjectOfType<GraphVisualizer>(); // GraphVisulizer object is attached to a main camera, this finds it, there is only one graphVisualizer
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+
+        // Optional
+        if (graphVisualizerObj != null)
+        {
+            graphVisualizer = graphVisualizerObj.GetComponent<GraphVisualizer>();
+
+        }
     }
 
     private void SubscribeToInputEvents()
@@ -314,7 +320,7 @@ public class MainLogic : MonoBehaviour
 
         if (showingGraph)
         {
-            Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int> { { 0, 0 } };
+            Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>();
 
             if (fireSimulation is not null)
             {
@@ -535,7 +541,6 @@ public class MainLogic : MonoBehaviour
         {
             graphVisualizer.ClearGraph();
             graphVisualizer.SetAxes("burning tiles", "time");
-            graphVisualizer.SetData(new Dictionary<int, int> { { 0, 0 } });
             graphVisualizer.UpdateGraph();
             graphVisualizer.HideGraph();
         }
