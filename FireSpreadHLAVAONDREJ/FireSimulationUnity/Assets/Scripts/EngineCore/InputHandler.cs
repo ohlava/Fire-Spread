@@ -35,7 +35,16 @@ public class InputHandler : MonoBehaviour
     public event PauseHandler OnPause;
 
     public delegate void SimulationSpeedChangeHandler(float newSpeed);
-    public event SimulationSpeedChangeHandler onSimulationSpeedChange;
+    public event SimulationSpeedChangeHandler OnSimulationSpeedChange;
+
+    public delegate void GenerateDataHandler();
+    public event GenerateDataHandler OnGenerateData;
+
+    public delegate void PythonHandler();
+    public event PythonHandler OnPythonPredict;
+
+    public delegate void HeatMapHandler();
+    public event HeatMapHandler OnHeatMap;
     #endregion
 
     #region Serialized Fields
@@ -273,6 +282,21 @@ public class InputHandler : MonoBehaviour
         OnPause?.Invoke();
     }
 
+    public void TriggerGenerateData()
+    {
+        OnGenerateData?.Invoke();
+    }
+
+    public void TriggerPythonPredict()
+    {
+        OnPythonPredict?.Invoke();
+    }
+
+    public void TriggerHeatMap()
+    {
+        OnHeatMap?.Invoke();
+    }
+
     // Sets the world width based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetWorldWidth(string widthString)
     {
@@ -341,7 +365,7 @@ public class InputHandler : MonoBehaviour
         SimulationSpeed = simulationSpeedSlider.maxValue - value;
         SimulationSpeed = Mathf.Max(SimulationSpeed, 0.1f);
 
-        onSimulationSpeedChange?.Invoke(SimulationSpeed);
+        OnSimulationSpeedChange?.Invoke(SimulationSpeed);
     }
 
     // Sets the lake threshold (amount of water tiles) based on the user's input through a connected UI slider "onValueChanged" event in Unity editor.

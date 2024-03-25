@@ -85,7 +85,7 @@ public class MainLogic : MonoBehaviour
         inputHandler.OnSave += OnSaveClicked;
         inputHandler.OnRun += OnRunButtonClicked;
         inputHandler.OnPause += OnPauseButtonClicked;
-        inputHandler.onSimulationSpeedChange += SetSimulationSpeed;
+        inputHandler.OnSimulationSpeedChange += SetSimulationSpeed;
     }
 
 

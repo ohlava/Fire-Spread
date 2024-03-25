@@ -74,4 +74,10 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("SandBox");
         return;
     }
+
+    public void LoadPredictions()
+    {
+        SceneManager.LoadScene("Predictions");
+        return;
+    }
 }
