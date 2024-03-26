@@ -16,7 +16,7 @@ public class MainLogic : MonoBehaviour
     private FileBrowserHandler fileBrowserHandler;
     private SimulationManager simulationManager;
     private FireSimulation fireSimulation;
-    private List<Tile> initBurningTiles = new List<Tile>();
+    private List<Tile> initBurningTiles;
     private WindSimulation windSimulation;
     private UIManager uiManager;
     private Visualizer visualizer;
@@ -24,17 +24,17 @@ public class MainLogic : MonoBehaviour
     private WindIndicator windIndicator;
     private GraphVisualizer graphVisualizer;
     private Tile currentlyHoveredTile;
-    private float elapsed = 0f;
-    private float speedOfUpdates = 1.2f; // in seconds
-    private bool showingGraph = false;
-    private State currentState = State.NewWorldState;
+    private float elapsed; // time elapsed for simulation updates
+    private float speedOfUpdates; // in seconds
+    private bool showingGraph;
+    private State currentState;
     #endregion
 
     #region public Fields
     public World world;
     public Settings settings;
     public WorldFileManager worldFileManager;
-    public FireSimParameters fireSimParams = new FireSimParameters();
+    public FireSimParameters fireSimParams;
     #endregion
 
     // Awake is called when the script instance is being loaded.
@@ -62,9 +62,16 @@ public class MainLogic : MonoBehaviour
 
     private void InitializeComponents()
     {
-        settings = SettingsManager.LoadSettings();
+        initBurningTiles = new List<Tile>();
+        elapsed = 0f;
+        speedOfUpdates = 1.2f;
+        showingGraph = false;
+        currentState = State.NewWorldState;
+        fireSimParams = new FireSimParameters();
         worldGenerator = new WorldGenerator();
         worldFileManager = new WorldFileManager();
+
+        settings = SettingsManager.LoadSettings();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
         graphVisualizer = uiManagerObj.GetComponent<GraphVisualizer>();
