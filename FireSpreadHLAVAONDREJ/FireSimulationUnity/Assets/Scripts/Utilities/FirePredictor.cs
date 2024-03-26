@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public class FirePredictor
 {
@@ -19,11 +20,23 @@ public class FirePredictor
 
         Map<float> heatMap = new Map<float>(world.Width, world.Depth);
 
-        List<World> runnedWorlds = GetSimulationRunnedWorlds(iterations);
-
-        // Aggregate burn data from all simulation runs to calculate heat intensity.
-        foreach (World runnedWorld in runnedWorlds)
+        // Use Task.Run to execute simulations in parallel. Running simulation on worlds - each task, different runned world.
+        var tasks = new Task<World>[iterations];
+        for (int i = 0; i < iterations; i++)
         {
+            tasks[i] = Task.Run(() =>
+            {
+                var worldCopy = new World(_world);
+                return RunSimulation(worldCopy, ConvertToIndices(_initBurningTiles)); // Run simulation and return the resulting World
+            });
+        }
+
+        Task.WaitAll(tasks); // Wait for all tasks to complete.
+
+        // Aggregate results from each completed task
+        foreach (var task in tasks)
+        {
+            World runnedWorld = task.Result;
             for (int i = 0; i < world.Width; i++)
             {
                 for (int j = 0; j < world.Depth; j++)
@@ -36,37 +49,26 @@ public class FirePredictor
             }
         }
 
-        // Normalize the heat map by the number of iterations to get average heat intensity.
+        // Normalize the heat map.
         for (int i = 0; i < world.Width; i++)
         {
             for (int j = 0; j < world.Depth; j++)
             {
-                heatMap.Data[i, j] = heatMap.Data[i, j] / iterations;
+                heatMap.Data[i, j] /= iterations;
             }
         }
 
         return heatMap;
     }
 
-    // Runs the fire simulation multiple times and captures the state of the world after each run.
-    private List<World> GetSimulationRunnedWorlds(int iterations)
+    private List<(int, int)> ConvertToIndices(List<Tile> tiles)
     {
-        // Convert initial burning tiles to a list of indices for reusability across simulation runs.
-        List<(int, int)> initBurningTilesIndices = new List<(int, int)>();
-        foreach (Tile tile in _initBurningTiles)
+        var indices = new List<(int, int)>();
+        foreach (Tile tile in tiles)
         {
-            initBurningTilesIndices.Add((tile.WidthPosition, tile.DepthPosition));
+            indices.Add((tile.WidthPosition, tile.DepthPosition));
         }
-
-        List<World> runnedWorlds = new List<World>();
-        for (int i = 0; i < iterations; i++)
-        {
-            World worldCopy = new World(_world);
-            worldCopy = RunSimulation(worldCopy, initBurningTilesIndices); // Run the simulation on the copied world.
-            runnedWorlds.Add(worldCopy);
-        }
-
-        return runnedWorlds;
+        return indices;
     }
 
     // Function that runs the same simulation multiple times on one world and returns

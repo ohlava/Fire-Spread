@@ -19,8 +19,9 @@ public class WindSimulation : SimulationBase
     {
         _calendar.AdvanceTime();
 
-        int windDirectionChange = UnityEngine.Random.Range(-15, 15);
-        float windStrengthChange = UnityEngine.Random.Range(-3f, 3f);
+        System.Random rand = new System.Random();
+        int windDirectionChange = rand.Next(-15, 15);
+        float windStrengthChange = (float)(rand.NextDouble() * (3.0 - (-3.0)) + (-3.0)); // between -3 and +3
 
         var oldDirection = _world.Wind.WindDirection;
         var oldSpeed = _world.Wind.WindSpeed;
@@ -35,7 +36,7 @@ public class WindSimulation : SimulationBase
     // Initializes the simulation's world with a starting wind state.
     protected override void SetWorldProperties()
     {
-        _world.Wind = new Wind(0, 15);
+        _world.Wind = new Wind();
     }
 
     // Designed to run indefinitely.

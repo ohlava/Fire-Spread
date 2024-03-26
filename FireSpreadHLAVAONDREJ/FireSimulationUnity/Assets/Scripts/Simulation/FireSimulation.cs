@@ -7,12 +7,14 @@ public class FireSimulation : SimulationBase
     private FireSimParameters _parameters;
     private List<Tile> _burningTiles;
     private FireLogger _fireLogger;
+    private System.Random rand;
 
     public FireSimulation(FireSimParameters parameters, World world, List<Tile> initBurningTiles) : base(world)
     {
         _parameters = parameters;
         _fireLogger = new FireLogger();
         _calendar = new SimulationCalendar();
+        rand = new System.Random();
 
         _burningTiles = initBurningTiles; // When creating the simulation we have to give what are the initial/starting tiles where the fire starts.
         foreach (Tile tile in initBurningTiles)
@@ -91,7 +93,7 @@ public class FireSimulation : SimulationBase
                     float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
                     spreadProbability *= distanceModifier;
 
-                    if (UnityEngine.Random.value < spreadProbability)
+                    if (rand.NextDouble() < spreadProbability)
                     {
                         bool ignited = neighborTile.Ignite();
 

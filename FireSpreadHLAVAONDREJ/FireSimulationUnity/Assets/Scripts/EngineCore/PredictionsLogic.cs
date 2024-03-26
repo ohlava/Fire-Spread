@@ -169,10 +169,10 @@ public class PredictionLogic : MonoBehaviour
 
     public void HeatMap()
     {
-        FireSimParameters fireSimParameters = new FireSimParameters(); // TODO default for now
+        FireSimParameters fireSimParameters = new FireSimParameters(); // TODO: default for now
         FirePredictor firePredictor = new FirePredictor(fireSimParameters);
 
-        Map<float> heatMap = firePredictor.GenerateHeatMap(10, world, initBurningTiles);
+        Map<float> heatMap = firePredictor.GenerateHeatMap(30, world, initBurningTiles);
 
         visualizer.ApplyHeatMapToWorld(heatMap, world);
         return;

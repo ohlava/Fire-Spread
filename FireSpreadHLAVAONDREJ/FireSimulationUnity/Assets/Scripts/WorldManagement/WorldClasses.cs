@@ -1,11 +1,6 @@
 // Core data structures
 
 using System;
-using System.Collections.Generic;
-using System.IO;
-using Unity.VisualScripting;
-using UnityEngine;
-using UnityEngine.UIElements;
 
 public class World
 {
@@ -28,7 +23,7 @@ public class World
         Depth = depth;
 
         Grid = new Tile[Width, Depth];
-        Wind = new Wind(0, 15);
+        Wind = new Wind();
 
         InitializeTiles();
     }
@@ -38,7 +33,7 @@ public class World
     {
         Width = other.Width;
         Depth = other.Depth;
-        Wind = new Wind(other.Wind.WindDirection, other.Wind.WindSpeed);
+        Wind = new Wind(other.Wind._initialWindDirection, other.Wind._initialWindSpeed);
         Grid = new Tile[Width, Depth];
 
         for (int x = 0; x < Width; x++)
@@ -114,6 +109,9 @@ public class Wind
 {
     private int _windDirection; // in degrees, 0-359 where 0 is Unity's +x axis, 90 is +z axis etc.
     private float _windSpeed; // in km/h
+    public readonly int _initialWindDirection;
+    public readonly float _initialWindSpeed;
+    private Random _rand = new System.Random();
 
     public int WindDirection
     {
@@ -127,15 +125,24 @@ public class Wind
         set => _windSpeed = Math.Clamp(value, 0f, 60f); // Clamp to 0-60
     }
 
-    public Wind(int windDirection, float windStrength)
+    public Wind()
     {
-        WindDirection = windDirection;
-        WindSpeed = windStrength;
+        _initialWindDirection = _rand.Next(0, 360);
+        _initialWindSpeed = (float)(_rand.NextDouble() * 60.0); // Assuming a random speed between 0 and 60 km/h
+        Reset(); // Set initial values
+    }
+
+    public Wind(int initialDirection, float initialSpeed)
+    {
+        _initialWindDirection = initialDirection;
+        _initialWindSpeed = initialSpeed;
+        Reset(); // Set initial values
     }
 
     public void Reset()
     {
-        WindDirection = UnityEngine.Random.Range(0, 360);
-        WindSpeed = UnityEngine.Random.Range(0f, 15f);
+        // Resets wind to initial values
+        _windDirection = _initialWindDirection;
+        _windSpeed = _initialWindSpeed;
     }
 }
