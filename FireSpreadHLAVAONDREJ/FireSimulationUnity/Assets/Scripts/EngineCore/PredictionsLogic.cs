@@ -169,6 +169,8 @@ public class PredictionLogic : MonoBehaviour
 
     public void HeatMap()
     {
+        currentState = PredictionState.Prediction;
+
         FireSimParameters fireSimParameters = new FireSimParameters(); // TODO: default for now
         FirePredictor firePredictor = new FirePredictor(fireSimParameters);
 
