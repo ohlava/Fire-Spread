@@ -74,7 +74,7 @@ public class MainLogic : MonoBehaviour
         worldFileManager = new WorldFileManager();
         mapImporter = new HeightMapImporter();
 
-    settings = SettingsManager.LoadSettings();
+        settings = SettingsManager.LoadSettings();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
         graphVisualizer = uiManagerObj.GetComponent<GraphVisualizer>();

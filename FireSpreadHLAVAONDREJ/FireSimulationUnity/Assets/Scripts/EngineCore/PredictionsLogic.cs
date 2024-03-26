@@ -16,6 +16,8 @@ public class PredictionLogic : MonoBehaviour
     private Visualizer visualizer;
     private PredictionState currentState;
     private UIManager uiManager;
+    private FileBrowserHandler fileBrowserHandler;
+    private FileManagementService fileManagementService;
 
     private InputHandler inputHandler;
 
@@ -41,6 +43,9 @@ public class PredictionLogic : MonoBehaviour
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
         visualizer = visualizerObj.GetComponent<Visualizer>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
+        fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
+
+        fileManagementService = new FileManagementService(fileBrowserHandler, new WorldFileManager(), new HeightMapImporter(), worldGenerator, inputHandler);
     }
 
     private void SubscribeToInputEvents()
@@ -50,6 +55,8 @@ public class PredictionLogic : MonoBehaviour
         inputHandler.OnPythonPredict += PythonPredict;
         inputHandler.OnHeatMap += HeatMap;
         inputHandler.OnReset += Reset;
+        inputHandler.OnImport += OnImportClicked;
+        inputHandler.OnSave += OnSaveClicked;
 
         inputHandler.OnTileClicked += HandleTileClick;
         inputHandler.OnTileHovered += HandleTileHover;
@@ -152,6 +159,23 @@ public class PredictionLogic : MonoBehaviour
     {
         world.Reset();
         PrepareForNewWorld();
+    }
+
+    // Handles the import button click event to load external maps or serialized worlds.
+    public void OnImportClicked()
+    {
+        fileManagementService.ImportFile(OnWorldImported);
+    }
+
+    private void OnWorldImported(World world)
+    {
+        this.world = world;
+        PrepareForNewWorld();
+    }
+
+    public void OnSaveClicked()
+    {
+        fileManagementService.SaveWorld(world);
     }
 
 
