@@ -83,7 +83,7 @@ public class PredictionLogic : MonoBehaviour
     private void PrepareForNewWorld()
     {
         currentState = PredictionState.NewWorldState;
-        uiManager.UpdateInfoPanel("New world - set fire");
+        uiManager.UpdateInfoPanel("New world - set some tiles on fire");
         
         initBurningTiles.Clear();
 
@@ -193,6 +193,13 @@ public class PredictionLogic : MonoBehaviour
 
     public void HeatMap()
     {
+        if (initBurningTiles.Count == 0)
+        {
+            uiManager.UpdateInfoPanel("Set some tiles \n on fire first");
+            return;
+        }
+
+        uiManager.UpdateInfoPanel($"Heat map prediction with {inputHandler.HeatMapIterations} runned simulations");
         currentState = PredictionState.Prediction;
 
         FireSimParameters fireSimParameters = new FireSimParameters(); // TODO: default for now
