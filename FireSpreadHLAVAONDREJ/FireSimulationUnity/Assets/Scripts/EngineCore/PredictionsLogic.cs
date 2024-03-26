@@ -108,7 +108,6 @@ public class PredictionLogic : MonoBehaviour
     // Responds to clicks on tiles, igniting them if the simulation is in the appropriate state.
     private void HandleTileClick(Tile clickedTile)
     {
-        // We can click on tiles only when simulation is not running
         if (currentState == PredictionState.NewWorldState)
         {
             if (clickedTile.Ignite())
@@ -202,7 +201,7 @@ public class PredictionLogic : MonoBehaviour
         uiManager.UpdateInfoPanel($"Heat map prediction with {inputHandler.HeatMapIterations} runned simulations");
         currentState = PredictionState.Prediction;
 
-        FireSimParameters fireSimParameters = new FireSimParameters(); // TODO: default for now
+        FireSimParameters fireSimParameters = new FireSimParameters(inputHandler.VegetationFactor, inputHandler.MoistureFactor, false, inputHandler.SlopeFactor, inputHandler.SpreadProbability);
         FirePredictor firePredictor = new FirePredictor(fireSimParameters);
 
         Map<float> heatMap = firePredictor.GenerateHeatMap(inputHandler.HeatMapIterations, world, initBurningTiles);
