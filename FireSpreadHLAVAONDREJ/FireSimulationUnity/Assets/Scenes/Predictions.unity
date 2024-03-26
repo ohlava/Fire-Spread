@@ -375,7 +375,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 846402036}
+        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
+        m_MethodName: SetHeatMapIterations
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -2514,9 +2526,10 @@ MonoBehaviour:
   visulizerObj: {fileID: 804466386}
   cameraHandlerObj: {fileID: 1613869247}
   uiManagerObj: {fileID: 630093510}
-  worldWidthInputFieldObj: {fileID: 377332769}
-  worldDepthInputFieldObj: {fileID: 1899859749}
+  worldWidthInputFieldObj: {fileID: 0}
+  worldDepthInputFieldObj: {fileID: 0}
   riversInputFieldObj: {fileID: 0}
+  heatMapInputFieldObj: {fileID: 88083567}
   simulationSpeedSlider: {fileID: 0}
   lakeThresholdSlider: {fileID: 0}
   ignoreLayer:

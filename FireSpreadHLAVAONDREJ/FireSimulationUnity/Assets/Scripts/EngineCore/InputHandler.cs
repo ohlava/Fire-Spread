@@ -48,7 +48,7 @@ public class InputHandler : MonoBehaviour
     #endregion
 
     #region Serialized Fields
-    [SerializeField] private GameObject visulizerObj, cameraHandlerObj, uiManagerObj, worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
+    [SerializeField] private GameObject visulizerObj, cameraHandlerObj, uiManagerObj, worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj, heatMapInputFieldObj;
     [SerializeField] private Slider simulationSpeedSlider;
     [SerializeField] private Slider lakeThresholdSlider;
     #endregion
@@ -61,6 +61,7 @@ public class InputHandler : MonoBehaviour
     private TMP_InputField worldWidthInputField;
     private TMP_InputField worldDepthInputField;
     private TMP_InputField riversInputField;
+    private TMP_InputField heatMapInputField;
     #endregion
 
     #region Public Properties
@@ -70,10 +71,12 @@ public class InputHandler : MonoBehaviour
     public int WorldDepth { get; private set; }
     public int Rivers { get; private set; }
     public float LakeThreshold { get; private set; }
+    public int HeatMapIterations { get; private set; }
 
     public int MaxWorldWidth { get; private set; }
     public int MaxWorldDepth { get; private set; }
     public int MaxRivers { get; private set; }
+    public int MaxHeatMapIterations { get; private set; }
     #endregion
 
     // Awake is called when the script instance is being loaded.
@@ -99,6 +102,9 @@ public class InputHandler : MonoBehaviour
 
         if (riversInputFieldObj != null)
             riversInputField = riversInputFieldObj.GetComponent<TMP_InputField>();
+
+        if (heatMapInputFieldObj != null)
+            heatMapInputField = heatMapInputFieldObj.GetComponent<TMP_InputField>();
     }
 
     private void InitializeDefaultValues()
@@ -108,10 +114,14 @@ public class InputHandler : MonoBehaviour
         WorldDepth = 25;
         Rivers = 3;
         LakeThreshold = 0.12f;
+        HeatMapIterations = 30;
+
 
         MaxWorldWidth = 150;
         MaxWorldDepth = 150;
         MaxRivers = 25;
+        MaxHeatMapIterations = 100;
+
 
         if (simulationSpeedSlider != null)
             simulationSpeedSlider.value = simulationSpeedSlider.maxValue - SimulationSpeed;
@@ -127,6 +137,9 @@ public class InputHandler : MonoBehaviour
 
         if (lakeThresholdSlider != null)
             lakeThresholdSlider.value = LakeThreshold;
+
+        if (heatMapInputField != null)
+            heatMapInputField.text = HeatMapIterations.ToString();
     }
 
     // Update is called once per frame
@@ -381,6 +394,22 @@ public class InputHandler : MonoBehaviour
         if (!initializing)
         {
             TriggerGenerateWorld();
+        }
+    }
+
+
+    // Sets the number of world rivers based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
+    public void SetHeatMapIterations(string iterations)
+    {
+        if (heatMapInputField == null) return;
+
+        int parsedValue;
+        if (int.TryParse(iterations, out parsedValue))
+        {
+            HeatMapIterations = Mathf.Min(parsedValue, MaxHeatMapIterations);
+            HeatMapIterations = Mathf.Max(HeatMapIterations, 0);
+
+            heatMapInputField.text = HeatMapIterations.ToString();
         }
     }
 }
