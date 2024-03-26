@@ -23,6 +23,8 @@ public class MainLogic : MonoBehaviour
     private InputHandler inputHandler;
     private WindIndicator windIndicator;
     private GraphVisualizer graphVisualizer;
+    private FileManagementService fileManagementService;
+    private IMapImporter mapImporter;
     private Tile currentlyHoveredTile;
     private float elapsed; // time elapsed for simulation updates
     private float speedOfUpdates; // in seconds
@@ -70,8 +72,9 @@ public class MainLogic : MonoBehaviour
         fireSimParams = new FireSimParameters();
         worldGenerator = new WorldGenerator();
         worldFileManager = new WorldFileManager();
+        mapImporter = new HeightMapImporter();
 
-        settings = SettingsManager.LoadSettings();
+    settings = SettingsManager.LoadSettings();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
         uiManager = uiManagerObj.GetComponent<UIManager>();
         graphVisualizer = uiManagerObj.GetComponent<GraphVisualizer>();
@@ -79,6 +82,8 @@ public class MainLogic : MonoBehaviour
         visualizer = visualizerObj.GetComponent<Visualizer>();
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
+
+        fileManagementService = new FileManagementService(fileBrowserHandler, worldFileManager, mapImporter, worldGenerator, inputHandler);
     }
 
     private void SubscribeToInputEvents()
@@ -365,95 +370,6 @@ public class MainLogic : MonoBehaviour
         uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
     }
 
-    // Handles the import button click event to load external maps or serialized worlds.
-    public void OnImportClicked()
-    {
-        if (fileBrowserHandler is null) return;
-
-        fileBrowserHandler.ImportFile(HandleFileLoad);
-    }
-
-    private void HandleFileLoad(string filePath)
-    {
-        if (filePath != null)
-        {
-            Debug.Log("Loading file from path: " + filePath);
-
-            string fileExtension = Path.GetExtension(filePath).ToLower();
-
-            if (fileExtension == ".png" || fileExtension == ".jpg" || fileExtension == ".jpeg")
-            {
-                Debug.Log("Importing height map from " + fileExtension + " file.");
-
-                IMapImporter mapImporter = new HeightMapImporter();
-                int requiredWidth = inputHandler.WorldWidth;
-                int requiredDepth = inputHandler.WorldDepth;
-
-                Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth, filePath);
-
-                Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
-                customMoistureMap.FillWithDefault(0);
-                Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
-                customVegetationMap.FillWithDefault(VegetationType.Grass);
-
-                if (customHeightMap != null)
-                {
-                    Debug.Log("Successfully imported height map from " + fileExtension + " file.");
-
-                    world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
-
-                    WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
-                    // Apply other maps if desired / only some can be applied
-                    // WorldBuilder.Apply...
-                }
-            }
-            else if (fileExtension == ".json")
-            {
-                Debug.Log("Loading serialized world from JSON file.");
-                world = worldFileManager.LoadWorld(filePath);
-            }
-            else
-            {
-                Debug.LogError("Unsupported file format: " + fileExtension);
-            }
-
-            PrepareForNewWorld();
-        }
-        else
-        {
-            Debug.Log("File loading was canceled.");
-        }
-    }
-
-    // Imports a tutorial map based on a given map number.
-    public void ImportTutorialMap(int mapNumber)
-    {
-        string tutorialFileName = mapNumber + "TutorialMap.json";
-
-        world = worldFileManager.LoadWorld(Application.streamingAssetsPath + "/TutorialWorlds/" + tutorialFileName);
-
-        PrepareForNewWorld();
-    }
-
-    public void OnSaveClicked()
-    {
-        if (fileBrowserHandler is null) return;
-
-        fileBrowserHandler.SaveFile(HandleFileSave);
-    }
-
-    private void HandleFileSave(string filePath)
-    {
-        if (filePath != null)
-        {
-            Debug.Log("Saving file path: " + filePath);
-            worldFileManager.SaveWorld(world, filePath);
-        }
-        else
-        {
-            Debug.Log("File saving was canceled.");
-        }
-    }
 
     public void SetSimulationSpeed(float newSpeed)
     {
@@ -468,6 +384,35 @@ public class MainLogic : MonoBehaviour
         worldGenerator.lakeThreshold = inputHandler.LakeThreshold;
     }
 
+
+    // Imports a tutorial map based on a given map number.
+    public void ImportTutorialMap(int mapNumber)
+    {
+        string tutorialFileName = mapNumber + "TutorialMap.json";
+
+        world = worldFileManager.LoadWorld(Application.streamingAssetsPath + "/TutorialWorlds/" + tutorialFileName);
+
+        PrepareForNewWorld();
+    }
+
+    // Handles the import button click event to load external maps or serialized worlds.
+    public void OnImportClicked()
+    {
+        fileManagementService.ImportFile(OnWorldImported);
+    }
+
+    private void OnWorldImported(World world)
+    {
+        this.world = world;
+        PrepareForNewWorld();
+    }
+
+    public void OnSaveClicked()
+    {
+        fileManagementService.SaveWorld(world);
+    }
+
+
     // Generates a new world based on the current parameters set in the world generator.
     public void GenereteNewWorld()
     {
@@ -477,43 +422,10 @@ public class MainLogic : MonoBehaviour
 
         if (settings.saveTerrainAutomatically)
         {
-            SaveWorldAutomatically();
+            fileManagementService.SaveWorldAutomatically(world);
         }
 
         PrepareForNewWorld();
-    }
-
-    // Saves the world to a new file with automatic numbering.
-    private void SaveWorldAutomatically()
-    {
-        string saveDirectory = Path.Combine(Application.streamingAssetsPath, "SavedWorlds");
-        if (!Directory.Exists(saveDirectory))
-        {
-            Directory.CreateDirectory(saveDirectory);
-        }
-
-        int nextWorldNumber = GetNextWorldNumber(saveDirectory);
-        string savePath = Path.Combine(saveDirectory, $"World_{nextWorldNumber}.json");
-        worldFileManager.SaveWorld(world, savePath);
-        Debug.Log($"World saved automatically to: {savePath}");
-    }
-
-    // Gets the next available world number for naming saved worlds. Lowest number of the current repository files.
-    private int GetNextWorldNumber(string directoryPath)
-    {
-        var worldFiles = Directory.GetFiles(directoryPath, "World_*.json");
-        int highestNumber = 0;
-
-        foreach (string filePath in worldFiles)
-        {
-            string fileName = Path.GetFileNameWithoutExtension(filePath);
-            if (int.TryParse(fileName.Split('_')[1], out int worldNumber) && worldNumber > highestNumber)
-            {
-                highestNumber = worldNumber;
-            }
-        }
-
-        return highestNumber + 1;
     }
 
     // Prepares the simulation and visualization for a new world.

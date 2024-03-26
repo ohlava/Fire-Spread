@@ -1,0 +1,145 @@
+using System;
+using System.IO;
+using UnityEngine;
+
+public class FileManagementService
+{
+    private FileBrowserHandler fileBrowserHandler;
+    private WorldFileManager worldFileManager;
+    private IMapImporter mapImporter;
+    private WorldGenerator worldGenerator;
+    private InputHandler inputHandler;
+
+    public FileManagementService(
+        FileBrowserHandler fileBrowserHandler,
+        WorldFileManager worldFileManager,
+        IMapImporter mapImporter,
+        WorldGenerator worldGenerator,
+        InputHandler inputHandler)
+    {
+        this.fileBrowserHandler = fileBrowserHandler; //?? throw new ArgumentNullException(nameof(fileBrowserHandler));
+        this.worldFileManager = worldFileManager ?? throw new ArgumentNullException(nameof(worldFileManager));
+        this.mapImporter = mapImporter ?? throw new ArgumentNullException(nameof(mapImporter));
+        this.worldGenerator = worldGenerator ?? throw new ArgumentNullException(nameof(worldGenerator));
+        this.inputHandler = inputHandler ?? throw new ArgumentNullException(nameof(inputHandler));
+    }
+
+    public void ImportFile(Action<World> onWorldImported)
+    {
+        fileBrowserHandler.ImportFile(FileImportedCallback);
+
+        void FileImportedCallback(string filePath)
+        {
+            if (filePath != null)
+            {
+                Debug.Log("Loading file from path: " + filePath);
+                World world = LoadWorldFromFile(filePath);
+                onWorldImported?.Invoke(world);
+            }
+            else
+            {
+                Debug.Log("File loading was canceled.");
+            }
+        }
+    }
+
+
+    private World LoadWorldFromFile(string filePath)
+    {
+        if (filePath != null)
+        {
+            Debug.Log("Loading file from path: " + filePath);
+
+            string fileExtension = Path.GetExtension(filePath).ToLower();
+
+            if (fileExtension == ".png" || fileExtension == ".jpg" || fileExtension == ".jpeg")
+            {
+                Debug.Log("Importing height map from " + fileExtension + " file.");
+
+                int requiredWidth = inputHandler.WorldWidth;
+                int requiredDepth = inputHandler.WorldDepth;
+
+                Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth, filePath);
+
+                Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
+                customMoistureMap.FillWithDefault(0);
+                Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
+                customVegetationMap.FillWithDefault(VegetationType.Grass);
+
+                if (customHeightMap != null)
+                {
+                    Debug.Log("Successfully imported height map from " + fileExtension + " file.");
+
+                    World world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
+                    WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
+
+                    return world;
+                }
+            }
+            else if (fileExtension == ".json")
+            {
+                Debug.Log("Loading serialized world from JSON file.");
+                return worldFileManager.LoadWorld(filePath);
+            }
+            else
+            {
+                Debug.LogError("Unsupported file format: " + fileExtension);
+            }
+        }
+        else
+        {
+            Debug.Log("File loading was canceled.");
+        }
+
+        return new World(1, 1);
+    }
+
+    public void SaveWorld(World world)
+    {
+        fileBrowserHandler.SaveFile(filePath =>
+        {
+            if (filePath != null)
+            {
+                Debug.Log("Saving file path: " + filePath);
+                worldFileManager.SaveWorld(world, filePath);
+            }
+            else
+            {
+                Debug.Log("File saving was canceled.");
+            }
+        });
+    }
+
+    // Saves the world to a new file with automatic numbering.
+    public void SaveWorldAutomatically(World world)
+    {
+        string saveDirectory = Path.Combine(Application.streamingAssetsPath, "SavedWorlds");
+        if (!Directory.Exists(saveDirectory))
+        {
+            Directory.CreateDirectory(saveDirectory);
+        }
+
+        int nextWorldNumber = GetNextWorldNumber(saveDirectory);
+        string savePath = Path.Combine(saveDirectory, $"World_{nextWorldNumber}.json");
+        worldFileManager.SaveWorld(world, savePath);
+        Debug.Log($"World saved automatically to: {savePath}");
+    }
+
+    // Gets the next available world number for naming saved worlds. Lowest number of the current repository files.
+    private int GetNextWorldNumber(string directoryPath)
+    {
+        var worldFiles = Directory.GetFiles(directoryPath, "World_*.json");
+        int highestNumber = 0;
+
+        foreach (string filePath in worldFiles)
+        {
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            if (int.TryParse(fileName.Split('_')[1], out int worldNumber) && worldNumber > highestNumber)
+            {
+                highestNumber = worldNumber;
+            }
+        }
+
+        return highestNumber + 1;
+    }
+}
