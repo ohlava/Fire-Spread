@@ -50,6 +50,35 @@ public class Visualizer : MonoBehaviour
         TileHeightMultiplier = 3.0f;
     }
 
+    // Function to apply heatmap to world tiles
+    public void ApplyHeatMapToWorld(Map<float> heatMap, World world)
+    {
+        if (heatMap.Width != world.Width || heatMap.Depth != world.Depth)
+        {
+            Debug.LogError("Heatmap dimensions do not match world dimensions.");
+            return;
+        }
+
+        Color minColor = Color.white; // White
+        Color maxColor = new Color(0.5f, 0, 0); // Dark Red
+
+        for (int x = 0; x < heatMap.Width; x++)
+        {
+            for (int y = 0; y < heatMap.Depth; y++)
+            {
+                Tile tile = world.GetTileAt(x, y);
+                GameObject tileInstance = GetTileInstance(tile);
+                if (tileInstance != null)
+                {
+                    // Interpolate color based on heat value
+                    float heatValue = heatMap.Data[x, y];
+                    Color tileColor = Color.Lerp(minColor, maxColor, heatValue);
+                    tileInstance.SetColorTo(tileColor);
+                }
+            }
+        }
+    }
+
     public void CreateWorldTiles(World world)
     {
         for (int x = 0; x < world.Width; x++)

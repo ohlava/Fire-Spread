@@ -227,10 +227,13 @@ public class InputHandler : MonoBehaviour
             rotationChange += Vector3.up;
 
 
-        if (rotationChange != Vector3.zero && cameraHandler != null)
+        if (rotationChange != Vector3.zero)
         {
-            cameraHandler.RotateCamera(rotationChange);
-            windIndicator.UpdateIndicatorCameraAngle();
+            if (cameraHandler != null)
+                cameraHandler.RotateCamera(rotationChange);
+
+            if (windIndicator != null) 
+                windIndicator.UpdateIndicatorCameraAngle();
         }
     }
 
