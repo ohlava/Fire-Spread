@@ -48,7 +48,7 @@ public class PredictionLogic : MonoBehaviour
         uiManager = uiManagerObj.GetComponent<UIManager>();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();
 
-        fileManagementService = new FileManagementService(fileBrowserHandler, new WorldFileManager(), new HeightMapImporter(), worldGenerator, inputHandler);
+        fileManagementService = new FileManagementService(fileBrowserHandler, worldGenerator);
     }
 
     private void SubscribeToInputEvents()
@@ -67,10 +67,10 @@ public class PredictionLogic : MonoBehaviour
 
     private void SetConstantProperties()
     {
-        worldGenerator.width = 30;
-        worldGenerator.depth = 30;
-        worldGenerator.rivers = 3;
-        worldGenerator.lakeThreshold = 0.1f;
+        worldGenerator.width = inputHandler.WorldWidth;
+        worldGenerator.depth = inputHandler.WorldDepth;
+        worldGenerator.rivers = inputHandler.Rivers;
+        worldGenerator.lakeThreshold = inputHandler.LakeThreshold;
 
         visualizer.mode = VisualizerMode.Simplified;
     }

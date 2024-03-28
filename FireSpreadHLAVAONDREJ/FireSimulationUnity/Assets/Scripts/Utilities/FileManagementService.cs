@@ -8,20 +8,15 @@ public class FileManagementService
     private WorldFileManager worldFileManager;
     private IMapImporter mapImporter;
     private WorldGenerator worldGenerator;
-    private InputHandler inputHandler;
 
     public FileManagementService(
         FileBrowserHandler fileBrowserHandler,
-        WorldFileManager worldFileManager,
-        IMapImporter mapImporter,
-        WorldGenerator worldGenerator,
-        InputHandler inputHandler)
+        WorldGenerator worldGenerator)
     {
         this.fileBrowserHandler = fileBrowserHandler; //?? throw new ArgumentNullException(nameof(fileBrowserHandler));
-        this.worldFileManager = worldFileManager ?? throw new ArgumentNullException(nameof(worldFileManager));
-        this.mapImporter = mapImporter ?? throw new ArgumentNullException(nameof(mapImporter));
+        this.worldFileManager = new WorldFileManager();
+        this.mapImporter = new HeightMapImporter();
         this.worldGenerator = worldGenerator ?? throw new ArgumentNullException(nameof(worldGenerator));
-        this.inputHandler = inputHandler ?? throw new ArgumentNullException(nameof(inputHandler));
     }
 
     public void ImportFile(Action<World> onWorldImported)
@@ -56,8 +51,8 @@ public class FileManagementService
             {
                 Debug.Log("Importing height map from " + fileExtension + " file.");
 
-                int requiredWidth = inputHandler.WorldWidth;
-                int requiredDepth = inputHandler.WorldDepth;
+                int requiredWidth = worldGenerator.width;
+                int requiredDepth = worldGenerator.depth;
 
                 Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth, filePath);
 

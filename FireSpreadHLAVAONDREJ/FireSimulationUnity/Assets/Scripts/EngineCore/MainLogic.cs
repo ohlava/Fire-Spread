@@ -83,7 +83,7 @@ public class MainLogic : MonoBehaviour
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
 
-        fileManagementService = new FileManagementService(fileBrowserHandler, worldFileManager, mapImporter, worldGenerator, inputHandler);
+        fileManagementService = new FileManagementService(fileBrowserHandler, worldGenerator);
     }
 
     private void SubscribeToInputEvents()
