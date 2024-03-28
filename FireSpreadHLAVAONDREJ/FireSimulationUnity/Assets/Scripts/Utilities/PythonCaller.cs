@@ -3,32 +3,37 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.IO;
 
-public class PythonCaller : MonoBehaviour
+public class PythonCaller
 {
-    [SerializeField] GameObject mainObj;
-    MainLogic mainLogic;
-    string scriptName;
+    public string scriptName = "PythonScripts/main.py";
+    public string pythonPath = "/usr/bin/python3";
 
-    private void Awake()
+    public PythonCaller()
     {
-        mainLogic = mainObj?.GetComponent<MainLogic>();
-
-        scriptName = "PythonScripts/main.py";
     }
-    public async void CallPythonScript()
+
+    public PythonCaller(string script, string python)
+    {
+        scriptName = script;
+        pythonPath = python;
+    }
+
+    public async Task<string> CallPythonScript(InputDataSerializationPackage inputData)
     {
         string scriptPath = Path.Join(Application.streamingAssetsPath, scriptName);
         string[] args = { "arg1", "arg2" };  // Example arguments for now
-        string jsonString = mainLogic.worldFileManager.GetWorldSerialized(mainLogic.world);
+        string jsonString = JsonUtility.ToJson(inputData);
+        UnityEngine.Debug.Log(jsonString);
 
         string output = await RunPythonScript(scriptPath, args, jsonString); // What python prints into StandardOutput
         UnityEngine.Debug.Log("Python script completed");
         UnityEngine.Debug.Log("Output of python script: " + output);
+        return output;
     }
 
     private async Task<string> RunPythonScript(string scriptPath, string[] args, string input)
     {
-        ProcessStartInfo psi = new ProcessStartInfo("/usr/bin/python3")
+        ProcessStartInfo psi = new ProcessStartInfo(pythonPath)
         {
             ArgumentList = { scriptPath },
             UseShellExecute = false,

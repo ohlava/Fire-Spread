@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class WorldFileManager
 {
-
     public void SaveWorld(World world, string fullPath)
     {
         string json = GetWorldSerialized(world);

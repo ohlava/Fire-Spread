@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -19,6 +20,7 @@ public class PredictionLogic : MonoBehaviour
     private UIManager uiManager;
     private FileBrowserHandler fileBrowserHandler;
     private FileManagementService fileManagementService;
+    private PythonCaller pythonCaller;
     private bool canInteract;
 
     private InputHandler inputHandler;
@@ -42,6 +44,7 @@ public class PredictionLogic : MonoBehaviour
         canInteract = true;
         initBurningTiles = new List<Tile>();
         worldGenerator = new WorldGenerator();
+        pythonCaller = new PythonCaller();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
         cameraHandler = cameraHandlerObj.GetComponent<CameraHandler>();
         visualizer = visualizerObj.GetComponent<Visualizer>();
@@ -223,7 +226,7 @@ public class PredictionLogic : MonoBehaviour
         return;
     }
 
-    public void PythonPredict()
+    public async void PythonPredict()
     {
         if (!canInteract)
         {
@@ -232,9 +235,22 @@ public class PredictionLogic : MonoBehaviour
             return;
         }
 
-        Debug.Log("PythonPredict called");
+        DisableInteractions();
+
+        InputDataSerializationPackage inputData = SerializableConversion.ConvertToInputDataSerializationPackage(world, initBurningTiles);
+        string output = await pythonCaller.CallPythonScript(inputData);
+        OutputData outputData = JsonUtility.FromJson<OutputData>(output);
+        Map<float> predictedMap = SerializableConversion.ConvertToMap(outputData);
+
+        uiManager.UpdateInfoPanel($"Heat map prediction with Python script");
+        currentState = PredictionState.Prediction;
+
+        visualizer.ApplyHeatMapToWorld(predictedMap, world);
+
+        EnableInteractions();
         return;
     }
+
 
     public async void HeatMap()
     {

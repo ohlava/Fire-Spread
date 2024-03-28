@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 [System.Serializable]
 public class SerializableWorld
@@ -17,6 +18,45 @@ public class SerializableTile
     public VegetationType Vegetation;
     public float Height;
 }
+
+[System.Serializable]
+public class InputDataSerializationPackage
+{
+    public SerializableWorld World;
+    public bool[] InitialBurnMap;
+
+    public InputDataSerializationPackage(SerializableWorld world, bool[] initialBurnMap)
+    {
+        World = world;
+        InitialBurnMap = initialBurnMap;
+    }
+}
+
+[System.Serializable]
+public class OutputData
+{
+    public List<RowData> data;
+}
+
+[System.Serializable]
+public class RowData
+{
+    public float[] rowData;
+}
+
+[System.Serializable]
+public class TrainDataSerializationPackage
+{
+    public List<SerializableWorld> Worlds;
+    public List<List<float>> HeatMaps;
+
+    public TrainDataSerializationPackage(List<SerializableWorld> worlds, List<List<float>> heatMaps)
+    {
+        Worlds = worlds;
+        HeatMaps = heatMaps;
+    }
+}
+
 
 public class SerializableConversion
 {
@@ -37,6 +77,48 @@ public class SerializableConversion
             }
         }
         return serializableWorld;
+    }
+
+    public static InputDataSerializationPackage ConvertToInputDataSerializationPackage(World world, List<Tile> initBurningTiles)
+    {
+        SerializableWorld serializedWorld = ConvertToWorldSerializable(world);
+
+        bool[] initialBurnMap = new bool[serializedWorld.Width * serializedWorld.Depth];
+        foreach (var tile in initBurningTiles)
+        {
+            // flattened row by row (row-major order)
+            int index = tile.WidthPosition * serializedWorld.Depth + tile.DepthPosition;
+
+            // Safely check if the index is within bounds
+            if (index >= 0 && index < initialBurnMap.Length)
+            {
+                initialBurnMap[index] = true;
+            }
+        }
+
+        return new InputDataSerializationPackage(serializedWorld, initialBurnMap);
+    }
+
+    public static Map<float> ConvertToMap(OutputData outputData)
+    {
+        int depth = outputData.data.Count;
+        int width = outputData.data.Max(row => row.rowData.Length);
+
+        Map<float> map = new Map<float>(width, depth);
+
+        float defaultValue = 0f;
+        map.FillWithDefault(defaultValue);
+
+        // Iterate through each RowData to fill the Map's Data.
+        for (int i = 0; i < depth; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                map.Data[j, i] = outputData.data[i].rowData[j];
+            }
+        }
+
+        return map;
     }
 
     public static World ConvertFromWorldSerializable(SerializableWorld serializableWorld)

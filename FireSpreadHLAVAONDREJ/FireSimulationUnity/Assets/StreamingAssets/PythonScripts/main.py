@@ -10,7 +10,7 @@ class VegetationType(Enum):
     Swamp = 3
 
 class Tile:
-    def __init__(self, height, moisture, vegetation, position_x, position_y):
+    def __init__(self, height, moisture, vegetation, position_x, position_y, is_initial_burning=False):
         self.width_position = position_x
         self.depth_position = position_y
         self.height = max(0, height)
@@ -20,6 +20,7 @@ class Tile:
         self.has_burned = False
         self.burning_for = 0
         self.burn_time = self._calculate_burn_time()
+        self.is_initial_burning = is_initial_burning
 
     def _calculate_burn_time(self):
         burn_time = {
@@ -39,22 +40,12 @@ class Tile:
         self.has_burned = False
         self.burning_for = 0
 
-class Weather:
-    def __init__(self, wind_direction, wind_speed):
-        self.wind_direction = wind_direction
-        self.wind_speed = wind_speed
-
-    def reset(self):
-        # Random values for wind direction and speed can be assigned here
-        self.wind_direction = 0  # Placeholder value
-        self.wind_speed = 0      # Placeholder value
-
 class World:
-    def __init__(self, width, depth, grid_tiles, weather):
+    def __init__(self, width, depth, grid_tiles, initial_burn_map):
         self.width = width
         self.depth = depth
         self.grid = grid_tiles
-        self.weather = weather
+        self.initial_burn_map = initial_burn_map
 
     def reset(self):
         self.weather.reset()
@@ -64,28 +55,50 @@ class World:
     def print_tile_heights(self):
         for tile in self.grid:
             print(f"Tile at ({tile.width_position}, {tile.depth_position}) has a height of {tile.height}")
+            
+    def generate_output_array(self):
+        output_array = []
+        for depth in range(self.depth):
+            row = {"rowData": [0.5 for _ in range(self.width)]}
+            output_array.append(row)
+        
+        for tile in self.grid:
+            value = 0 if tile.moisture == 100 else 1 if tile.is_initial_burning else 0.5
+            output_array[tile.depth_position]['rowData'][tile.width_position] = value
+            
+        return output_array
 
 
 def convert_json_to_world(json_str):
     data = json.loads(json_str)
 
-    width = data['Width']
-    depth = data['Depth']
-    grid_data = data['GridTiles']
+    width = data['World']['Width']
+    depth = data['World']['Depth']
+    initial_burn_map = data['InitialBurnMap']
+    grid_data = data['World']['GridTiles']
     grid_tiles = []
 
-    for tile_data in grid_data:
-        tile = Tile(tile_data['Height'], tile_data['moisture'], tile_data['Vegetation'], tile_data['widthPosition'], tile_data['depthPosition'])
+    for index, tile_data in enumerate(grid_data):
+        is_initial_burning = initial_burn_map[index]
+        tile = Tile(tile_data['Height'], tile_data['moisture'], tile_data['Vegetation'], tile_data['widthPosition'], tile_data['depthPosition'], is_initial_burning)
         grid_tiles.append(tile)
 
-    # Initialize Weather with placeholder values
-    weather = Weather(0, 0)  
 
-    return World(width, depth, grid_tiles, weather)
+    return World(width, depth, grid_tiles, initial_burn_map)
+
+
+
 
 # Main execution
+
+# Getting input from the file for Debug
+#with open("/Users/hlava/test.json", "r") as file:
+#    json_str = file.read()
+    
 json_str = input()
 world = convert_json_to_world(json_str)
-print("World loaded successfully!")
 
-world.print_tile_heights()
+output = {
+    "data": world.generate_output_array()
+}
+print(json.dumps(output))
