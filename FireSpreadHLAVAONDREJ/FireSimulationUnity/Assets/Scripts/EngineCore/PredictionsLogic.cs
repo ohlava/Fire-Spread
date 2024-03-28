@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public enum PredictionState { NewWorldState, Prediction }
@@ -18,6 +19,7 @@ public class PredictionLogic : MonoBehaviour
     private UIManager uiManager;
     private FileBrowserHandler fileBrowserHandler;
     private FileManagementService fileManagementService;
+    private bool canInteract;
 
     private InputHandler inputHandler;
 
@@ -32,11 +34,12 @@ public class PredictionLogic : MonoBehaviour
     void Start()
     {
         SetConstantProperties();
-        GenereteNewWorld();
+        GenerateNewWorld();
     }
 
     private void InitializeComponents()
     {
+        canInteract = true;
         initBurningTiles = new List<Tile>();
         worldGenerator = new WorldGenerator();
         inputHandler = inputHandlerObj.GetComponent<InputHandler>();
@@ -50,7 +53,7 @@ public class PredictionLogic : MonoBehaviour
 
     private void SubscribeToInputEvents()
     {
-        inputHandler.OnGenerateWorld += GenereteNewWorld;
+        inputHandler.OnGenerateWorld += GenerateNewWorld;
         inputHandler.OnGenerateData += GenerateData;
         inputHandler.OnPythonPredict += PythonPredict;
         inputHandler.OnHeatMap += HeatMap;
@@ -73,8 +76,15 @@ public class PredictionLogic : MonoBehaviour
     }
 
 
-    public void GenereteNewWorld()
+    public void GenerateNewWorld()
     {
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't generate new world while waiting for result from previous interaction");
+            return;
+        }
+
         world = worldGenerator.Generate();
 
         PrepareForNewWorld();
@@ -86,7 +96,6 @@ public class PredictionLogic : MonoBehaviour
         uiManager.UpdateInfoPanel("New world - set some tiles on fire");
         
         initBurningTiles.Clear();
-
         VisulizerRemakeAll();
         cameraHandler.SetWorldCenter(new Vector3(world.Width / 2f, 2f * visualizer.TileHeightMultiplier, world.Depth / 2f));
         cameraHandler.RotateCamera(); // Set to default position
@@ -108,7 +117,7 @@ public class PredictionLogic : MonoBehaviour
     // Responds to clicks on tiles, igniting them if the simulation is in the appropriate state.
     private void HandleTileClick(Tile clickedTile)
     {
-        if (currentState == PredictionState.NewWorldState)
+        if (canInteract && currentState == PredictionState.NewWorldState)
         {
             if (clickedTile.Ignite())
             {
@@ -121,6 +130,8 @@ public class PredictionLogic : MonoBehaviour
     // Updates the visual state of a tile when it is hovered over.
     private void HandleTileHover(bool hovered, Tile hoveredOverTile)
     {
+        if (!canInteract) return;
+
         ResetHoveredTileColor(); // Reset the old tile's color
 
         if (hovered == true && currentState == PredictionState.NewWorldState && currentlyHoveredTile != hoveredOverTile)
@@ -156,6 +167,13 @@ public class PredictionLogic : MonoBehaviour
     // Resets the world to its initial state.
     public void Reset()
     {
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't reset the world while waiting for result from previous interaction");
+            return;
+        }
+
         world.Reset();
         PrepareForNewWorld();
     }
@@ -163,6 +181,13 @@ public class PredictionLogic : MonoBehaviour
     // Handles the import button click event to load external maps or serialized worlds.
     public void OnImportClicked()
     {
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't import new world while waiting for result from previous interaction");
+            return;
+        }
+
         fileManagementService.ImportFile(OnWorldImported);
     }
 
@@ -174,23 +199,44 @@ public class PredictionLogic : MonoBehaviour
 
     public void OnSaveClicked()
     {
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't save the world while waiting for result from previous interaction");
+            return;
+        }
+
         fileManagementService.SaveWorld(world);
     }
 
 
     public void GenerateData()
     {
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't generate new while waiting for result from previous interaction");
+            return;
+        }
+
         Debug.Log("GenerateData called");
         return;
     }
 
     public void PythonPredict()
     {
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't call python for prediction while waiting for result from previous interaction");
+            return;
+        }
+
         Debug.Log("PythonPredict called");
         return;
     }
 
-    public void HeatMap()
+    public async void HeatMap()
     {
         if (initBurningTiles.Count == 0)
         {
@@ -198,15 +244,35 @@ public class PredictionLogic : MonoBehaviour
             return;
         }
 
-        uiManager.UpdateInfoPanel($"Heat map prediction with {inputHandler.HeatMapIterations} runned simulations");
-        currentState = PredictionState.Prediction;
+        if (!canInteract)
+        {
+            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            Debug.Log("You can't call for heat map while waiting for result from previous interaction");
+            return;
+        }
+
+        DisableInteractions();
 
         FireSimParameters fireSimParameters = new FireSimParameters(inputHandler.VegetationFactor, inputHandler.MoistureFactor, false, inputHandler.SlopeFactor, inputHandler.SpreadProbability);
         FirePredictor firePredictor = new FirePredictor(fireSimParameters);
+        var heatMap = await Task.Run(() => firePredictor.GenerateHeatMap(inputHandler.HeatMapIterations, world, initBurningTiles));
 
-        Map<float> heatMap = firePredictor.GenerateHeatMap(inputHandler.HeatMapIterations, world, initBurningTiles);
+        uiManager.UpdateInfoPanel($"Heat map prediction with {inputHandler.HeatMapIterations} runned simulations");
+        currentState = PredictionState.Prediction;
 
-        visualizer.ApplyHeatMapToWorld(heatMap, world);
+        visualizer.ApplyHeatMapToWorld(heatMap, world); // Can only be called in main thread, no await
+
+        EnableInteractions();
         return;
+    }
+
+    private void DisableInteractions()
+    {
+        canInteract = false;
+    }
+
+    private void EnableInteractions()
+    {
+        canInteract = true;
     }
 }
