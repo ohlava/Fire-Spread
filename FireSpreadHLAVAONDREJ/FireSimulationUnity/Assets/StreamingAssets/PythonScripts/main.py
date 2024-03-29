@@ -3,6 +3,7 @@ import json
 import math
 from enum import Enum
 from typing import List, Dict, Any
+from collections import deque
 
 class VegetationType(Enum):
     Grass = 0
@@ -60,7 +61,7 @@ class World:
 
 
 
-class PredictionModel:
+class Predictor:
     def __init__(self, model_path: str):
         self.model = self.load_model(model_path)
 
@@ -72,24 +73,29 @@ class PredictionModel:
         # Convert World data to a format suitable for your model
         pass
 
-    def predict(self, data: Any) -> Any:
-        # Make a prediction with the model
-        pass
-
-    def generate_prediction_array(self, world: World) -> List[List[float]]:
+    def predict(self, world: World) -> List[List[float]]:
         prediction_array = [[0 for _ in range(world.width)] for _ in range(world.depth)]
+        
+        # Queue for BFS: (x, y, distance from initial burning tile)
+        burning_tiles_queue = deque()
         for tile in world.grid:
-            value = self.determine_tile_value(tile)
-            prediction_array[tile.depth_position][tile.width_position] = value
-            
+            if tile.is_initial_burning:
+                prediction_array[tile.depth_position][tile.width_position] = 1.0
+                burning_tiles_queue.append((tile.width_position, tile.depth_position, 0))
+
+        # BFS to propagate decreasing probability from initially burning tiles
+        while burning_tiles_queue:
+            x, y, distance = burning_tiles_queue.popleft()
+            for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
+                nx, ny = x + dx, y + dy
+                if 0 <= nx < world.width and 0 <= ny < world.depth:
+                    new_distance = distance + 1
+                    new_probability = max(1.0 - new_distance * 0.1, 0)  # Decrease probability with distance
+                    if prediction_array[ny][nx] < new_probability:
+                        prediction_array[ny][nx] = new_probability
+                        burning_tiles_queue.append((nx, ny, new_distance))
+
         return prediction_array
-    
-    def determine_tile_value(self, tile: Tile) -> float:
-        if tile.moisture == 100:
-            return 0
-        elif tile.is_initial_burning:
-            return 1
-        return 0.3
 
 
 class JSONUtility:
@@ -128,8 +134,8 @@ def get_input():
 def main():
     json_str = get_input()
     world = JSONUtility.convert_json_to_world(json_str)
-    prediction_model = PredictionModel(model_path="./model")
-    prediction_array = prediction_model.generate_prediction_array(world)
+    predictor = Predictor(model_path="./model")
+    prediction_array = predictor.predict(world)
     output = {"data": JSONUtility.generate_output_array(prediction_array)}
     print(json.dumps(output))
 
