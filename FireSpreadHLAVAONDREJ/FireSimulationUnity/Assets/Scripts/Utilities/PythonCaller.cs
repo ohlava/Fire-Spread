@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using UnityEngine;
 using System.IO;
+using System;
 
 public class PythonCaller
 {
@@ -20,18 +21,42 @@ public class PythonCaller
 
     public async Task<string> CallPythonScript(InputDataSerializationPackage inputData)
     {
-        string scriptPath = Path.Join(Application.streamingAssetsPath, scriptName);
-        string[] args = { "arg1", "arg2" };  // Example arguments for now
-        string jsonString = JsonUtility.ToJson(inputData);
-        UnityEngine.Debug.Log(jsonString);
+        if (!File.Exists(pythonPath))
+        {
+            UnityEngine.Debug.LogError("Python executable not found at specified path.");
+            return null;
+        }
 
-        string output = await RunPythonScript(scriptPath, args, jsonString); // What python prints into StandardOutput
-        UnityEngine.Debug.Log("Python script completed");
-        UnityEngine.Debug.Log("Output of python script: " + output);
-        return output;
+        string scriptPath = Path.Join(Application.streamingAssetsPath, scriptName);
+        if (!File.Exists(scriptPath))
+        {
+            UnityEngine.Debug.LogError("Python script not found at specified path.");
+            return null;
+        }
+
+        try
+        {
+            int timeout = 5000; // Script timeout
+            string[] args = { "predict" }; // Can be modified, no use 
+            string jsonString = JsonUtility.ToJson(inputData);
+            string output = await RunPythonScript(scriptPath, args, jsonString, timeout); // What python prints into StandardOutput
+            UnityEngine.Debug.Log("Python script completed");
+            UnityEngine.Debug.Log("Output of python script: " + output);
+            return output;
+        }
+        catch (TimeoutException)
+        {
+            UnityEngine.Debug.LogError("Python script execution timed out.");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            UnityEngine.Debug.LogError($"An error occurred while calling the Python script: {ex.Message}");
+            return null;
+        }
     }
 
-    private async Task<string> RunPythonScript(string scriptPath, string[] args, string input)
+    private async Task<string> RunPythonScript(string scriptPath, string[] args, string input, int timeout)
     {
         ProcessStartInfo psi = new ProcessStartInfo(pythonPath)
         {
@@ -54,6 +79,7 @@ public class PythonCaller
         using (Process process = new Process())
         {
             process.StartInfo = psi;
+            process.EnableRaisingEvents = true;
 
             // Set up event handlers
             process.ErrorDataReceived += (sender, e) =>
@@ -63,42 +89,46 @@ public class PythonCaller
             };
             process.Exited += (sender, e) => exitCompletionSource.SetResult(true);
 
-            process.EnableRaisingEvents = true;
-
             process.Start();
-
             process.BeginErrorReadLine();
 
-            // this is how we are gona pass JSON file to that script for prediction / reading file training data will be from file
-            Task writeTask = process.StandardInput.WriteLineAsync(input);
+            Task writeTask = process.StandardInput.WriteLineAsync(input); // Pass JSON string to that script
             Task<string> outputTask = process.StandardOutput.ReadToEndAsync();
 
-            // Wait for the process to exit
-            await exitCompletionSource.Task;
-            if (process.ExitCode != 0)
+            var timeoutTask = Task.Delay(timeout); // Start the timeout task
+
+            // Wait for either the process to exit or the timeout
+            var completedTask = await Task.WhenAny(exitCompletionSource.Task, timeoutTask);
+
+            if (completedTask == timeoutTask && !process.HasExited)
             {
+                // Timeout logic
+                process.Kill();
+                throw new TimeoutException("Python script execution exceeded the time limit.");
+            }
+            else if (process.ExitCode != 0)
+            {
+                // Process exited before timeout but with an error
                 UnityEngine.Debug.LogError("Python process exited with code: " + process.ExitCode + " (problem occured)");
+                throw new Exception("Python script exited with error.");
             }
 
             try
             {
                 await writeTask;
             }
-            catch (IOException ex)
+            catch (IOException writeException)
             {
-                UnityEngine.Debug.LogError("Writing python input failed");
-                UnityEngine.Debug.LogException(ex);
+                throw new Exception($"Failed to write input to Python script: {writeException.Message}");
             }
 
             try
             {
                 return await outputTask;
             }
-            catch (IOException ex)
+            catch (IOException readException)
             {
-                UnityEngine.Debug.LogError("Reading python output failed");
-                UnityEngine.Debug.LogException(ex);
-                return null;
+                throw new Exception($"Failed to read output from Python script: {readException.Message}");
             }
         }
     }

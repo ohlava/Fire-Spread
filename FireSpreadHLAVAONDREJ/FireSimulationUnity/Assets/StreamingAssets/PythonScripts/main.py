@@ -1,3 +1,4 @@
+import sys
 import json
 import math
 from enum import Enum
@@ -94,7 +95,13 @@ def convert_json_to_world(json_str):
 # Getting input from the file for Debug
 #with open("/Users/hlava/test.json", "r") as file:
 #    json_str = file.read()
-    
+
+# For testing
+# import time
+# time.sleep(1)
+# exit(1)
+# print(sys.argv)
+
 json_str = input()
 world = convert_json_to_world(json_str)
 

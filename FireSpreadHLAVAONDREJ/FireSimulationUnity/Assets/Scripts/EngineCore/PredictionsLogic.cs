@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -239,8 +240,40 @@ public class PredictionLogic : MonoBehaviour
 
         InputDataSerializationPackage inputData = SerializableConversion.ConvertToInputDataSerializationPackage(world, initBurningTiles);
         string output = await pythonCaller.CallPythonScript(inputData);
-        OutputData outputData = JsonUtility.FromJson<OutputData>(output);
-        Map<float> predictedMap = SerializableConversion.ConvertToMap(outputData);
+
+        if (string.IsNullOrEmpty(output))
+        {
+            uiManager.UpdateInfoPanel("Python script failed");
+            Debug.LogError("Python script did not return a valid result.");
+            EnableInteractions();
+            return;
+        }
+
+        OutputData outputData;
+        try
+        {
+            outputData = JsonUtility.FromJson<OutputData>(output);
+        }
+        catch (Exception ex)
+        {
+            uiManager.UpdateInfoPanel("Error parsing Python script output");
+            Debug.LogError($"Error parsing Python output: {ex.Message}");
+            EnableInteractions();
+            return;
+        }
+
+        Map<float> predictedMap;
+        try
+        {
+            predictedMap = SerializableConversion.ConvertToMap(outputData);
+        }
+        catch (Exception ex)
+        {
+            uiManager.UpdateInfoPanel("Error converting Python script output to map.");
+            Debug.LogError($"Error converting Python output to map: {ex.Message}");
+            EnableInteractions();
+            return;
+        }
 
         uiManager.UpdateInfoPanel($"Heat map prediction with Python script");
         currentState = PredictionState.Prediction;
