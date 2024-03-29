@@ -2,7 +2,7 @@ import sys
 import json
 import math
 from enum import Enum
-from typing import List
+from typing import List, Dict, Any
 
 class VegetationType(Enum):
     Grass = 0
@@ -57,55 +57,87 @@ class World:
         for tile in self.grid:
             print(f"Tile at ({tile.width_position}, {tile.depth_position}) has a height of {tile.height}")
             
-    def generate_output_array(self):
-        output_array = []
-        for depth in range(self.depth):
-            row = {"rowData": [0.5 for _ in range(self.width)]}
-            output_array.append(row)
-        
-        for tile in self.grid:
-            value = 0 if tile.moisture == 100 else 1 if tile.is_initial_burning else 0.5
-            output_array[tile.depth_position]['rowData'][tile.width_position] = value
+
+
+
+class PredictionModel:
+    def __init__(self, model_path: str):
+        self.model = self.load_model(model_path)
+
+    def load_model(self, model_path: str):
+        # Load machine learning model here
+        pass
+
+    def preprocess_data(self, world: World) -> Any:
+        # Convert World data to a format suitable for your model
+        pass
+
+    def predict(self, data: Any) -> Any:
+        # Make a prediction with the model
+        pass
+
+    def generate_prediction_array(self, world: World) -> List[List[float]]:
+        prediction_array = [[0 for _ in range(world.width)] for _ in range(world.depth)]
+        for tile in world.grid:
+            value = self.determine_tile_value(tile)
+            prediction_array[tile.depth_position][tile.width_position] = value
             
+        return prediction_array
+    
+    def determine_tile_value(self, tile: Tile) -> float:
+        if tile.moisture == 100:
+            return 0
+        elif tile.is_initial_burning:
+            return 1
+        return 0.3
+
+
+class JSONUtility:
+    @staticmethod
+    def generate_output_array(prediction_array: List[List[float]]) -> List[Dict[str, List[float]]]:
+        output_array = [{"rowData": row} for row in prediction_array]
         return output_array
 
+    @staticmethod
+    def convert_json_to_world(json_str: str) -> World:
+        data = json.loads(json_str)
 
-def convert_json_to_world(json_str):
-    data = json.loads(json_str)
+        width = data['World']['Width']
+        depth = data['World']['Depth']
+        initial_burn_map = data['InitialBurnMap']
+        grid_data = data['World']['GridTiles']
+        grid_tiles = []
 
-    width = data['World']['Width']
-    depth = data['World']['Depth']
-    initial_burn_map = data['InitialBurnMap']
-    grid_data = data['World']['GridTiles']
-    grid_tiles = []
+        for index, tile_data in enumerate(grid_data):
+            is_initial_burning = initial_burn_map[index]
+            tile = Tile(tile_data['Height'], tile_data['moisture'], tile_data['Vegetation'], tile_data['widthPosition'], tile_data['depthPosition'], is_initial_burning)
+            grid_tiles.append(tile)
 
-    for index, tile_data in enumerate(grid_data):
-        is_initial_burning = initial_burn_map[index]
-        tile = Tile(tile_data['Height'], tile_data['moisture'], tile_data['Vegetation'], tile_data['widthPosition'], tile_data['depthPosition'], is_initial_burning)
-        grid_tiles.append(tile)
-
-
-    return World(width, depth, grid_tiles, initial_burn_map)
-
+        return World(width, depth, grid_tiles, initial_burn_map)
 
 
+
+def get_input():
+    input_string = input()
+    # Or getting input from the file for Debug purposes
+    #with open("/Users/hlava/test.json", "r") as file:
+    #   json_str = file.read()
+    return input_string
 
 # Main execution
+def main():
+    json_str = get_input()
+    world = JSONUtility.convert_json_to_world(json_str)
+    prediction_model = PredictionModel(model_path="./model")
+    prediction_array = prediction_model.generate_prediction_array(world)
+    output = {"data": JSONUtility.generate_output_array(prediction_array)}
+    print(json.dumps(output))
 
-# Getting input from the file for Debug
-#with open("/Users/hlava/test.json", "r") as file:
-#    json_str = file.read()
-
-# For testing
+if __name__ == "__main__":
+    main()
+    
+# For testing purposes
 # import time
 # time.sleep(1)
 # exit(1)
 # print(sys.argv)
-
-json_str = input()
-world = convert_json_to_world(json_str)
-
-output = {
-    "data": world.generate_output_array()
-}
-print(json.dumps(output))
