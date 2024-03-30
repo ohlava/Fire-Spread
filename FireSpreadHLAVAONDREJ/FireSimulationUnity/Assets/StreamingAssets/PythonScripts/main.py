@@ -97,7 +97,15 @@ class Predictor:
 
         return prediction_array
 
+class HeatMap:
+    def __init__(self, data):
+        self.data = data
 
+    @staticmethod
+    def from_output_data(output_data):
+        heatmap_rows = [row_data['rowData'] for row_data in output_data['data']]
+        return HeatMap(heatmap_rows)
+    
 class JSONUtility:
     @staticmethod
     def generate_output_array(prediction_array: List[List[float]]) -> List[Dict[str, List[float]]]:
@@ -121,14 +129,58 @@ class JSONUtility:
 
         return World(width, depth, grid_tiles, initial_burn_map)
 
+    @staticmethod
+    def load_multiple_jsons(file_path):
+        with open(file_path, 'r') as file:
+            data = []
+            for line in file:
+                # Each line contains a separate JSON object
+                json_object = json.loads(line)
+                data.append(json_object)
+        return data
+    
+    @staticmethod
+    def convert_json_to_world_and_heatmap(data) -> (World, HeatMap):
+        world_data = data['World']
+        heatmap_data = data['HeatMap']
+        
+        width = world_data['Width']
+        depth = world_data['Depth']
+        grid_tiles = []
+
+        for tile_data in world_data['GridTiles']:
+            tile = Tile(
+                height=tile_data['Height'], 
+                moisture=tile_data['moisture'], 
+                vegetation=tile_data['Vegetation'], 
+                position_x=tile_data['widthPosition'], 
+                position_y=tile_data['depthPosition']
+            )
+            grid_tiles.append(tile)
+
+        world = World(width, depth, grid_tiles, initial_burn_map=[])
+
+        heatmap = HeatMap.from_output_data(heatmap_data)
+
+        return world, heatmap
 
 
 def get_input():
     input_string = input()
     # Or getting input from the file for Debug purposes
     #with open("/Users/hlava/test.json", "r") as file:
-    #   json_str = file.read()
+    #   input_string = file.read()
     return input_string
+
+def load_generated_data():
+    data = JSONUtility.load_multiple_jsons("./datafile.json")
+    loaded_data = []
+    for d in data:
+        world, heatmap = JSONUtility.convert_json_to_world_and_heatmap(d)
+        loaded_data.append((world, heatmap))
+    #print(loaded_data)
+    return
+    
 
 # Main execution
 def main():
@@ -140,6 +192,7 @@ def main():
     print(json.dumps(output))
 
 if __name__ == "__main__":
+    #load_generated_data()
     main()
     
 # For testing purposes
