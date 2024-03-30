@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -213,8 +214,7 @@ public class PredictionLogic : MonoBehaviour
         fileManagementService.SaveWorld(world);
     }
 
-
-    public void GenerateData()
+    public async void GenerateData()
     {
         if (!canInteract)
         {
@@ -223,7 +223,37 @@ public class PredictionLogic : MonoBehaviour
             return;
         }
 
-        Debug.Log("GenerateData called");
+        DisableInteractions();
+        FireSimParameters fireSimParameters = new FireSimParameters(inputHandler.VegetationFactor, inputHandler.MoistureFactor, false, inputHandler.SlopeFactor, inputHandler.SpreadProbability);
+        FirePredictor firePredictor = new FirePredictor(fireSimParameters);
+
+        try
+        {
+            int numberOfWorlds = 5; // Number of random worlds to generate
+            int simulationIterations = 10; // Number of simulations to run per world
+            List<Task> tasks = new List<Task>();
+
+            for (int i = 0; i < numberOfWorlds; i++)
+            {
+                tasks.Add(Task.Run(async () =>
+                {
+                    World world = worldGenerator.Generate(); // Generate a random world
+                    List<Tile> initBurningTiles = world.GetRandomInitBurningTiles(); // Generate initial burning tiles
+                    Map<float> heatMap = await Task.Run(() => firePredictor.GenerateHeatMap(simulationIterations, world, initBurningTiles));
+
+                    WorldFileManager manager = new WorldFileManager();
+                    manager.AppendSimulationDataToFile(world, heatMap); // Serialize and append the data for this world
+                }));
+            }
+
+            await Task.WhenAll(tasks);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Error during data generation: {ex.Message}");
+        }
+
+        EnableInteractions();
         return;
     }
 
@@ -304,7 +334,7 @@ public class PredictionLogic : MonoBehaviour
 
         FireSimParameters fireSimParameters = new FireSimParameters(inputHandler.VegetationFactor, inputHandler.MoistureFactor, false, inputHandler.SlopeFactor, inputHandler.SpreadProbability);
         FirePredictor firePredictor = new FirePredictor(fireSimParameters);
-        var heatMap = await Task.Run(() => firePredictor.GenerateHeatMap(inputHandler.HeatMapIterations, world, initBurningTiles));
+        Map<float> heatMap = await Task.Run(() => firePredictor.GenerateHeatMap(inputHandler.HeatMapIterations, world, initBurningTiles));
 
         uiManager.UpdateInfoPanel($"Heat map prediction with {inputHandler.HeatMapIterations} runned simulations");
         currentState = PredictionState.Prediction;

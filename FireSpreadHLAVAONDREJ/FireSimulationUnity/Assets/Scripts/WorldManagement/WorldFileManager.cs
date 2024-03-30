@@ -41,4 +41,22 @@ public class WorldFileManager
         string json = JsonUtility.ToJson(serializableWorld);
         return json;
     }
+
+    public void AppendSimulationDataToFile(World world, Map<float> heatMap)
+    {
+        SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(world);
+        OutputData serializedHeatMap = SerializableConversion.ConvertMapToOutputData(heatMap);
+        WorldAndHeatMapData worldAndHeatMapData = new WorldAndHeatMapData(serializableWorld, serializedHeatMap);
+        string jsonData = JsonUtility.ToJson(worldAndHeatMapData);
+        string filePath = Path.Join(Application.streamingAssetsPath, "PythonScripts/datafile.json");
+
+        // Append the data to the file in a thread-safe manner
+        lock (this)
+        {
+            using (StreamWriter file = new StreamWriter(filePath, true))
+            {
+                file.WriteLine(jsonData);
+            }
+        }
+    }
 }

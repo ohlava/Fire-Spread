@@ -33,6 +33,55 @@ public static class TileUtilities
 
 public static class WorldUtilities
 {
+    public static List<Tile> GetRandomInitBurningTiles(this World world)
+    {
+        List<Tile> burningTiles = new List<Tile>();
+        int attempts = 5; // Number of initial points to try to set on fire
+        int spreadSteps = 4; // Maximum steps to spread from the initial point
+
+        for (int attempt = 0; attempt < attempts; attempt++)
+        {
+            // Randomly select a starting tile that is not water
+            Tile startTile;
+            do
+            {
+                int x = RandomUtility.NextInt(world.Width);
+                int y = RandomUtility.NextInt(world.Depth);
+                startTile = world.Grid[x, y];
+            }
+            while (startTile.IsWater);
+
+            // Try to spread fire from the starting point
+            Tile currentTile = startTile;
+            for (int step = 0; step < spreadSteps; step++)
+            {
+                if (!currentTile.IsWater)
+                {
+                    burningTiles.Add(currentTile);
+                }
+
+                // Randomly decide to move
+                switch (RandomUtility.NextInt(2))
+                {
+                    case 0: // Move left
+                        if (currentTile.WidthPosition > 0)
+                        {
+                            currentTile = world.Grid[currentTile.WidthPosition - 1, currentTile.DepthPosition];
+                        }
+                        break;
+                    case 1: // Move up
+                        if (currentTile.DepthPosition > 0)
+                        {
+                            currentTile = world.Grid[currentTile.WidthPosition, currentTile.DepthPosition - 1];
+                        }
+                        break;
+                }
+            }
+        }
+
+        return burningTiles;
+    }
+
     // Return how many tiles you have to move from one tile to get to the second tile for x, y position.
     public static (int xDiff, int yDiff) GetTilesDistanceXY(Tile tile1, Tile tile2)
     {

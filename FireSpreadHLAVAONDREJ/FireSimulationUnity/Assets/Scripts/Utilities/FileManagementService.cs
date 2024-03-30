@@ -13,7 +13,7 @@ public class FileManagementService
         FileBrowserHandler fileBrowserHandler,
         WorldGenerator worldGenerator)
     {
-        this.fileBrowserHandler = fileBrowserHandler; //?? throw new ArgumentNullException(nameof(fileBrowserHandler));
+        this.fileBrowserHandler = fileBrowserHandler ?? throw new ArgumentNullException(nameof(fileBrowserHandler));
         this.worldFileManager = new WorldFileManager();
         this.mapImporter = new HeightMapImporter();
         this.worldGenerator = worldGenerator ?? throw new ArgumentNullException(nameof(worldGenerator));

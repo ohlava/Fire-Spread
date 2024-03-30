@@ -45,15 +45,15 @@ public class RowData
 }
 
 [System.Serializable]
-public class TrainDataSerializationPackage
+public class WorldAndHeatMapData
 {
-    public List<SerializableWorld> Worlds;
-    public List<List<float>> HeatMaps;
+    public SerializableWorld World;
+    public OutputData HeatMap;
 
-    public TrainDataSerializationPackage(List<SerializableWorld> worlds, List<List<float>> heatMaps)
+    public WorldAndHeatMapData(SerializableWorld world, OutputData heatMap)
     {
-        Worlds = worlds;
-        HeatMaps = heatMaps;
+        World = world;
+        HeatMap = heatMap;
     }
 }
 
@@ -119,6 +119,23 @@ public class SerializableConversion
         }
 
         return map;
+    }
+
+    public static OutputData ConvertMapToOutputData(Map<float> map)
+    {
+        OutputData outputData = new OutputData { data = new List<RowData>() };
+
+        for (int y = 0; y < map.Depth; y++)
+        {
+            float[] rowData = new float[map.Width];
+            for (int x = 0; x < map.Width; x++)
+            {
+                rowData[x] = map.Data[x, y];
+            }
+            outputData.data.Add(new RowData { rowData = rowData });
+        }
+
+        return outputData;
     }
 
     public static World ConvertFromWorldSerializable(SerializableWorld serializableWorld)
