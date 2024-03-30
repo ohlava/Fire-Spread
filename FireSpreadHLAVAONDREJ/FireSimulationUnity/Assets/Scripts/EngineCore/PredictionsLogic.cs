@@ -14,7 +14,6 @@ public class PredictionLogic : MonoBehaviour
     private List<Tile> initBurningTiles;
     private World world;
     private WorldGenerator worldGenerator;
-
     private CameraHandler cameraHandler;
     private Tile currentlyHoveredTile;
     private Visualizer visualizer;
@@ -24,7 +23,6 @@ public class PredictionLogic : MonoBehaviour
     private FileManagementService fileManagementService;
     private PythonCaller pythonCaller;
     private bool canInteract;
-
     private InputHandler inputHandler;
 
     // Awake is called when the script instance is being loaded.

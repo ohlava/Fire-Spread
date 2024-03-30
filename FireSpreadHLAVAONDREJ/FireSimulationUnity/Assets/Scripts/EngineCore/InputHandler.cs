@@ -3,6 +3,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class InputHandler : MonoBehaviour
 {
@@ -361,64 +363,57 @@ public class InputHandler : MonoBehaviour
         OnHeatMap?.Invoke();
     }
 
-    // Sets the world width based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
+    // Method to set values from input fields for ints.
+    public void SetValueFromInput(string input, Action<int> setter, int maxValue, TMP_InputField inputField, Action eventTrigger = null)
+    {
+        if (int.TryParse(input, out int parsedValue))
+        {
+            parsedValue = Mathf.Clamp(parsedValue, 0, maxValue);
+            setter(parsedValue);
+            inputField.text = parsedValue.ToString();
+
+            if (!initializing)
+            {
+                eventTrigger?.Invoke();
+            }
+        }
+    }
+
+    // Method to set values from input fields for floats, including those with a trailing dot.
+    public void SetValueFromInput(string input, Action<float> setter, float maxValue, TMP_InputField inputField, Action eventTrigger = null)
+    {
+        // Check if the input ends with a dot and remove it for parsing
+        string parseString = input.EndsWith(".") ? input.Substring(0, input.Length - 1) : input;
+
+        if (float.TryParse(parseString, out float parsedValue))
+        {
+            parsedValue = Mathf.Clamp(parsedValue, 0f, maxValue);
+            setter(parsedValue);
+
+            // Update the input field text to ensure it reflects the parsed value, keeping the dot if it was present.
+            inputField.text = input.EndsWith(".") ? parsedValue.ToString() + "." : parsedValue.ToString();
+
+            if (!initializing)
+            {
+                eventTrigger?.Invoke();
+            }
+        }
+    }
+
+
     public void SetWorldWidth(string widthString)
     {
-        if (worldWidthInputField == null) return;
-
-        int parsedValue;
-        if (int.TryParse(widthString, out parsedValue))
-        {
-            WorldWidth = Mathf.Min(parsedValue, MaxWorldWidth);
-            WorldWidth = Mathf.Max(WorldWidth, 1);
-
-            worldWidthInputField.text = WorldWidth.ToString();
-
-            if (!initializing)
-            {
-                TriggerGenerateWorld();
-            }
-        }
+        SetValueFromInput(widthString, value => WorldWidth = value, MaxWorldWidth, worldWidthInputField, TriggerGenerateWorld);
     }
 
-    // Sets the world depth based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetWorldDepth(string depthString)
     {
-        if (worldDepthInputField == null) return;
-
-        int parsedValue;
-        if (int.TryParse(depthString, out parsedValue))
-        {
-            WorldDepth = Mathf.Min(parsedValue, MaxWorldDepth);
-            WorldDepth = Mathf.Max(WorldDepth, 1);
-
-            worldDepthInputField.text = WorldDepth.ToString();
-
-            if (!initializing)
-            {
-                TriggerGenerateWorld();
-            }
-        }
+        SetValueFromInput(depthString, value => WorldDepth = value, MaxWorldDepth, worldDepthInputField, TriggerGenerateWorld);
     }
 
-    // Sets the number of world rivers based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetRivers(string riversString)
     {
-        if (riversInputField == null) return;
-
-        int parsedValue;
-        if (int.TryParse(riversString, out parsedValue))
-        {
-            Rivers = Mathf.Min(parsedValue, MaxRivers);
-            Rivers = Mathf.Max(Rivers, 0);
-
-            riversInputField.text = Rivers.ToString();
-
-            if (!initializing)
-            {
-                TriggerGenerateWorld();
-            }
-        }
+        SetValueFromInput(riversString, value => Rivers = value, MaxRivers, riversInputField, TriggerGenerateWorld);
     }
 
     // Sets the simulation speed based on the user's input through a connected UI slider "onValueChanged" event in Unity editor.
@@ -445,92 +440,28 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-
-    // Sets the number of heat map iterations based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetHeatMapIterations(string iterations)
     {
-        if (heatMapInputField == null) return;
-
-        int parsedValue;
-        if (int.TryParse(iterations, out parsedValue))
-        {
-            HeatMapIterations = Mathf.Min(parsedValue, MaxHeatMapIterations);
-            HeatMapIterations = Mathf.Max(HeatMapIterations, 0);
-
-            heatMapInputField.text = HeatMapIterations.ToString();
-        }
+        SetValueFromInput(iterations, value => HeatMapIterations = value, MaxHeatMapIterations, heatMapInputField, null);
     }
 
-    // Sets the base probability for fire spread in simulation based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetSpreadProbability(string probability)
     {
-        if (spreadProbabilityField == null) return;
-
-        // Check if the input ends with a dot and remove it for parsing
-        string parseString = probability.EndsWith(".") ? probability.Substring(0, probability.Length - 1) : probability;
-
-        if (float.TryParse(parseString, out float parsedValue))
-        {
-            SpreadProbability = Mathf.Min(parsedValue, MaxSpreadProbability);
-            SpreadProbability = Mathf.Max(SpreadProbability, 0);
-
-            // Display the original string with the dot if it was present
-            spreadProbabilityField.text = probability.EndsWith(".") ? SpreadProbability.ToString() + "." : SpreadProbability.ToString();
-        }
+        SetValueFromInput(probability, value => SpreadProbability = value, MaxSpreadProbability, spreadProbabilityField, null);
     }
 
-    // Sets the vegetation factor for fire spread in simulation based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetVegetationFactor(string probability)
     {
-        if (vegetationFactorField == null) return;
-
-        // Check if the input ends with a dot and remove it for parsing
-        string parseString = probability.EndsWith(".") ? probability.Substring(0, probability.Length - 1) : probability;
-
-        if (float.TryParse(parseString, out float parsedValue))
-        {
-            VegetationFactor = Mathf.Min(parsedValue, MaxVegetationFactor);
-            VegetationFactor = Mathf.Max(VegetationFactor, 0);
-
-            // Display the original string with the dot if it was present
-            vegetationFactorField.text = probability.EndsWith(".") ? VegetationFactor.ToString() + "." : VegetationFactor.ToString();
-        }
+        SetValueFromInput(probability, value => VegetationFactor = value, MaxVegetationFactor, vegetationFactorField, null);
     }
 
-    // Sets the slope factor for fire spread in simulation based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetSlopeFactor(string probability)
     {
-        if (slopeFactorField == null) return;
-
-        // Check if the input ends with a dot and remove it for parsing
-        string parseString = probability.EndsWith(".") ? probability.Substring(0, probability.Length - 1) : probability;
-
-        if (float.TryParse(parseString, out float parsedValue))
-        {
-            SlopeFactor = Mathf.Min(parsedValue, MaxSlopeFactor);
-            SlopeFactor = Mathf.Max(SlopeFactor, 0);
-
-            // Display the original string with the dot if it was present
-            slopeFactorField.text = probability.EndsWith(".") ? SlopeFactor.ToString() + "." : SlopeFactor.ToString();
-        }
+        SetValueFromInput(probability, value => SlopeFactor = value, MaxSlopeFactor, slopeFactorField, null);
     }
 
-
-    // Sets the moisture factor for fire spread in simulation based on the user's input through a connected UI input field's "onValueChanged" event in Unity editor.
     public void SetMoistureFactor(string probability)
     {
-        if (moistureFactorField == null) return;
-
-        // Check if the input ends with a dot and remove it for parsing
-        string parseString = probability.EndsWith(".") ? probability.Substring(0, probability.Length - 1) : probability;
-
-        if (float.TryParse(parseString, out float parsedValue))
-        {
-            MoistureFactor = Mathf.Min(parsedValue, MaxMoistureFactor);
-            MoistureFactor = Mathf.Max(MoistureFactor, 0);
-
-            // Display the original string with the dot if it was present
-            moistureFactorField.text = probability.EndsWith(".") ? MoistureFactor.ToString() + "." : MoistureFactor.ToString();
-        }
+        SetValueFromInput(probability, value => MoistureFactor = value, MaxMoistureFactor, moistureFactorField, null);
     }
 }
