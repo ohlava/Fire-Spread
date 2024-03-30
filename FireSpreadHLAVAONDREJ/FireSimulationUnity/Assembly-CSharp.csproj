@@ -80,6 +80,7 @@
     <Compile Include="Assets/Scripts/Visualization/UIManager.cs" />
     <Compile Include="Assets/Scripts/EngineCore/TutorialManager.cs" />
     <Compile Include="Assets/Scripts/Utilities/HeightMapImporter.cs" />
+    <Compile Include="Assets/Scripts/Utilities/RandomUtility.cs" />
     <Compile Include="Assets/Scripts/Visualization/GraphVisualizer.cs" />
     <Compile Include="Assets/Scripts/EngineCore/InputHandler.cs" />
     <Compile Include="Assets/Scripts/Simulation/FireSimParameters.cs" />

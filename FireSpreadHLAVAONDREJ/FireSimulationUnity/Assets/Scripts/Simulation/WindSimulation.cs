@@ -19,9 +19,8 @@ public class WindSimulation : SimulationBase
     {
         _calendar.AdvanceTime();
 
-        System.Random rand = new System.Random();
-        int windDirectionChange = rand.Next(-15, 15);
-        float windStrengthChange = (float)(rand.NextDouble() * (3.0 - (-3.0)) + (-3.0)); // between -3 and +3
+        int windDirectionChange = RandomUtility.Range(-15, 15);
+        float windStrengthChange = RandomUtility.Range(-3.0f, 3.0f);
 
         var oldDirection = _world.Wind.WindDirection;
         var oldSpeed = _world.Wind.WindSpeed;

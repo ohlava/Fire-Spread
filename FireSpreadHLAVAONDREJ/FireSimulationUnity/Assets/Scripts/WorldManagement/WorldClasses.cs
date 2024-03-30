@@ -111,7 +111,6 @@ public class Wind
     private float _windSpeed; // in km/h
     public readonly int _initialWindDirection;
     public readonly float _initialWindSpeed;
-    private Random _rand = new System.Random();
 
     public int WindDirection
     {
@@ -127,8 +126,8 @@ public class Wind
 
     public Wind()
     {
-        _initialWindDirection = _rand.Next(0, 360);
-        _initialWindSpeed = (float)(_rand.NextDouble() * 60.0); // Assuming a random speed between 0 and 60 km/h
+        _initialWindDirection = RandomUtility.Range(0, 360);
+        _initialWindSpeed = RandomUtility.Range(0.0f, 60.0f); // Assuming a random speed between 0 and 60 km/h
         Reset(); // Set initial values
     }
 

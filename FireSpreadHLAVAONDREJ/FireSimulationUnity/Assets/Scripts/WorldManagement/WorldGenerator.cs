@@ -24,8 +24,8 @@ public class BaseTerrainGenerator : IMapGenerator<float>
         int octaves = 5;
         float persistence = 0.4f;
 
-        float offsetX = UnityEngine.Random.Range(0, 10000f);
-        float offsetY = UnityEngine.Random.Range(0, 10000f);
+        float offsetX = RandomUtility.Range(0, 10000f); ;
+        float offsetY = RandomUtility.Range(0, 10000f); ;
 
         // Generate multi-octave Perlin noise for the height map
         for (int x = 0; x < width; x++)
@@ -103,12 +103,12 @@ public class RiverMapGenerator : IMapGenerator<int>
         // Generate rivers
         for (int i = 0; i < rivers; i++)
         {
-            int riverStartX = UnityEngine.Random.Range(0, heightMap.Width);
-            int riverStartY = UnityEngine.Random.Range(0, heightMap.Depth);
+            int riverStartX = RandomUtility.Range(0, heightMap.Width);
+            int riverStartY = RandomUtility.Range(0, heightMap.Depth);
 
             int x = riverStartX;
             int y = riverStartY;
-            int direction = UnityEngine.Random.Range(0, 4);
+            int direction = RandomUtility.Range(0, 4);
 
             while (x < heightMap.Width && y < heightMap.Depth)
             {
@@ -117,10 +117,10 @@ public class RiverMapGenerator : IMapGenerator<int>
                 // Move in a semi-random direction
                 switch (direction)
                 {
-                    case 0: if (UnityEngine.Random.value < 0.5f) x++; else y++; break;
-                    case 1: if (UnityEngine.Random.value < 0.5f) y--; else x++; break;
-                    case 2: if (UnityEngine.Random.value < 0.5f) x--; else y--; break;
-                    case 3: if (UnityEngine.Random.value < 0.5f) y++; else x--; break;
+                    case 0: if (RandomUtility.NextFloat() < 0.5f) x++; else y++; break;
+                    case 1: if (RandomUtility.NextFloat() < 0.5f) y--; else x++; break;
+                    case 2: if (RandomUtility.NextFloat() < 0.5f) x--; else y--; break;
+                    case 3: if (RandomUtility.NextFloat() < 0.5f) y++; else x--; break;
                 }
 
                 if (x < 0 || y < 0 || x >= heightMap.Width || y >= heightMap.Depth || lakeMap.Data[x, y] == 1)
@@ -153,8 +153,8 @@ public class MoistureMapGenerator : IMapGenerator<int>
     {
         Map<int> moistureMap = new Map<int>(heightMap.Width, heightMap.Depth);
 
-        float offsetX = UnityEngine.Random.Range(0, 10000f);
-        float offsetY = UnityEngine.Random.Range(0, 10000f);
+        float offsetX = RandomUtility.Range(0, 10000f);
+        float offsetY = RandomUtility.Range(0, 10000f);
 
         for (int x = 0; x < heightMap.Width; x++)
         {
@@ -221,7 +221,7 @@ public class VegetationMapGenerator : IMapGenerator<VegetationType>
 
                 vegetationMap.Data[x, y] = VegetationType.Grass; // base vegetation
 
-                if (UnityEngine.Random.Range(0f, 1f) <= 0.85f) // call 85% of the time
+                if (RandomUtility.Range(0f, 1f) <= 0.85f) // call 85% of the time
                 {
                     // Adjust these moisture thresholds to change the distribution and amount of certain vegetation
                     if (moisture < 30)
@@ -256,7 +256,6 @@ public class WorldGenerator
 
     public WorldGenerator()
     {
-        UnityEngine.Random.InitState((int)System.DateTime.Now.Ticks);
     }
 
     public World Generate()
