@@ -1,16 +1,16 @@
 using System.IO;
 using UnityEngine;
 
-public class WorldFileManager
+public static class WorldFileManager
 {
-    public void SaveWorld(World world, string fullPath)
+    public static void SaveWorld(World world, string fullPath)
     {
         string json = GetWorldSerialized(world);
         string finalFilePath = fullPath;
         File.WriteAllText(finalFilePath, json);
     }
 
-    public World LoadWorld(string fullPath)
+    public static World LoadWorld(string fullPath)
     {
         string finalFilePath = fullPath;
 
@@ -35,14 +35,16 @@ public class WorldFileManager
         }
     }
 
-    public string GetWorldSerialized(World world)
+    public static string GetWorldSerialized(World world)
     {
         SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(world);
         string json = JsonUtility.ToJson(serializableWorld);
         return json;
     }
 
-    public void AppendSimulationDataToFile(World world, Map<float> heatMap)
+    private static readonly object _fileLock = new object(); // This object doesn't have particular value. Its purpose is to serve as a token for the lock statement. Used as a mutex for synchronization purposes
+
+    public static void AppendSimulationDataToFile(World world, Map<float> heatMap)
     {
         SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(world);
         OutputData serializedHeatMap = SerializableConversion.ConvertMapToOutputData(heatMap);
@@ -51,7 +53,7 @@ public class WorldFileManager
         string filePath = Path.Join(Application.streamingAssetsPath, "PythonScripts/datafile.json");
 
         // Append the data to the file in a thread-safe manner
-        lock (this)
+        lock (_fileLock)
         {
             using (StreamWriter file = new StreamWriter(filePath, true))
             {

@@ -35,7 +35,6 @@ public class MainLogic : MonoBehaviour
     #region public Fields
     public World world;
     public Settings settings;
-    public WorldFileManager worldFileManager;
     public FireSimParameters fireSimParams;
     #endregion
 
@@ -71,7 +70,6 @@ public class MainLogic : MonoBehaviour
         currentState = State.NewWorldState;
         fireSimParams = new FireSimParameters();
         worldGenerator = new WorldGenerator();
-        worldFileManager = new WorldFileManager();
         mapImporter = new HeightMapImporter();
 
         settings = SettingsManager.LoadSettings();
@@ -390,7 +388,7 @@ public class MainLogic : MonoBehaviour
     {
         string tutorialFileName = mapNumber + "TutorialMap.json";
 
-        world = worldFileManager.LoadWorld(Application.streamingAssetsPath + "/TutorialWorlds/" + tutorialFileName);
+        world = WorldFileManager.LoadWorld(Application.streamingAssetsPath + "/TutorialWorlds/" + tutorialFileName);
 
         PrepareForNewWorld();
     }

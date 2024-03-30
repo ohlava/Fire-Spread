@@ -241,8 +241,7 @@ public class PredictionLogic : MonoBehaviour
                     List<Tile> initBurningTiles = world.GetRandomInitBurningTiles(); // Generate initial burning tiles
                     Map<float> heatMap = await Task.Run(() => firePredictor.GenerateHeatMap(simulationIterations, world, initBurningTiles));
 
-                    WorldFileManager manager = new WorldFileManager();
-                    manager.AppendSimulationDataToFile(world, heatMap); // Serialize and append the data for this world
+                    WorldFileManager.AppendSimulationDataToFile(world, heatMap); // Serialize and append the data for this world
                 }));
             }
 

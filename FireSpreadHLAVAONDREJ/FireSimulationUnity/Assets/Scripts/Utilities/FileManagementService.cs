@@ -5,7 +5,6 @@ using UnityEngine;
 public class FileManagementService
 {
     private FileBrowserHandler fileBrowserHandler;
-    private WorldFileManager worldFileManager;
     private IMapImporter mapImporter;
     private WorldGenerator worldGenerator;
 
@@ -13,8 +12,7 @@ public class FileManagementService
         FileBrowserHandler fileBrowserHandler,
         WorldGenerator worldGenerator)
     {
-        this.fileBrowserHandler = fileBrowserHandler ?? throw new ArgumentNullException(nameof(fileBrowserHandler));
-        this.worldFileManager = new WorldFileManager();
+        this.fileBrowserHandler = fileBrowserHandler;
         this.mapImporter = new HeightMapImporter();
         this.worldGenerator = worldGenerator ?? throw new ArgumentNullException(nameof(worldGenerator));
     }
@@ -74,7 +72,7 @@ public class FileManagementService
             else if (fileExtension == ".json")
             {
                 Debug.Log("Loading serialized world from JSON file.");
-                return worldFileManager.LoadWorld(filePath);
+                return WorldFileManager.LoadWorld(filePath);
             }
             else
             {
@@ -96,7 +94,7 @@ public class FileManagementService
             if (filePath != null)
             {
                 Debug.Log("Saving file path: " + filePath);
-                worldFileManager.SaveWorld(world, filePath);
+                WorldFileManager.SaveWorld(world, filePath);
             }
             else
             {
@@ -116,7 +114,7 @@ public class FileManagementService
 
         int nextWorldNumber = GetNextWorldNumber(saveDirectory);
         string savePath = Path.Combine(saveDirectory, $"World_{nextWorldNumber}.json");
-        worldFileManager.SaveWorld(world, savePath);
+        WorldFileManager.SaveWorld(world, savePath);
         Debug.Log($"World saved automatically to: {savePath}");
     }
 
