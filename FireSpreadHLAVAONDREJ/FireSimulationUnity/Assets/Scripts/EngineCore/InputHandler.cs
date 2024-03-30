@@ -52,7 +52,7 @@ public class InputHandler : MonoBehaviour
     #region Serialized Fields
     [SerializeField] private GameObject visulizerObj, cameraHandlerObj, uiManagerObj;
     [SerializeField] private GameObject worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
-    [SerializeField] private GameObject heatMapInputFieldObj, spreadProbabilityFieldObj, vegetationFactorFieldObj, slopeFactorFieldObj, moistureFactorFieldObj;
+    [SerializeField] private GameObject heatMapInputFieldObj, generateDataAmountFieldObj, spreadProbabilityFieldObj, vegetationFactorFieldObj, slopeFactorFieldObj, moistureFactorFieldObj;
     [SerializeField] private Slider simulationSpeedSlider;
     [SerializeField] private Slider lakeThresholdSlider;
     #endregion
@@ -63,7 +63,7 @@ public class InputHandler : MonoBehaviour
     private Visualizer visualizer;
     private CameraHandler cameraHandler;
     private TMP_InputField worldWidthInputField, worldDepthInputField, riversInputField;
-    private TMP_InputField heatMapInputField, spreadProbabilityField, vegetationFactorField, slopeFactorField, moistureFactorField;
+    private TMP_InputField heatMapInputField, generateDataAmountField, spreadProbabilityField, vegetationFactorField, slopeFactorField, moistureFactorField;
     #endregion
 
     #region Public Properties
@@ -85,12 +85,14 @@ public class InputHandler : MonoBehaviour
     public float VegetationFactor { get; private set; }
     public float SlopeFactor { get; private set; }
     public float MoistureFactor { get; private set; }
+    public int GenerateDataAmount { get; private set; }
 
     public int MaxHeatMapIterations { get; private set; }
     public float MaxSpreadProbability { get; private set; }
     public float MaxVegetationFactor { get; private set; }
     public float MaxSlopeFactor { get; private set; }
     public float MaxMoistureFactor { get; private set; }
+    public int MaxGenerateDataAmount { get; private set; }
     #endregion
 
     // Awake is called when the script instance is being loaded.
@@ -132,6 +134,9 @@ public class InputHandler : MonoBehaviour
 
         if (moistureFactorFieldObj != null)
             moistureFactorField = moistureFactorFieldObj.GetComponent<TMP_InputField>();
+
+        if (generateDataAmountFieldObj != null)
+            generateDataAmountField = generateDataAmountFieldObj.GetComponent<TMP_InputField>();
     }
 
     private void InitializeDefaultValues()
@@ -148,12 +153,14 @@ public class InputHandler : MonoBehaviour
 
         // predictions scene
         HeatMapIterations = 30;
+        GenerateDataAmount = 10;
         SpreadProbability = 0.3f;
         VegetationFactor = 1f;
         SlopeFactor = 1f;
         MoistureFactor = 1f;
 
         MaxHeatMapIterations = 100;
+        MaxGenerateDataAmount = 999;
         MaxSpreadProbability = 1.0f;
         MaxVegetationFactor = 2.0f;
         MaxSlopeFactor = 2.0f;
@@ -178,6 +185,9 @@ public class InputHandler : MonoBehaviour
 
         if (heatMapInputField != null)
             heatMapInputField.text = HeatMapIterations.ToString();
+
+        if (generateDataAmountField != null)
+            generateDataAmountField.text = GenerateDataAmount.ToString();
 
         if (spreadProbabilityField != null)
             spreadProbabilityField.text = SpreadProbability.ToString();
@@ -443,6 +453,11 @@ public class InputHandler : MonoBehaviour
     public void SetHeatMapIterations(string iterations)
     {
         SetValueFromInput(iterations, value => HeatMapIterations = value, MaxHeatMapIterations, heatMapInputField, null);
+    }
+
+    public void SetGenerateDataAmount(string amount)
+    {
+        SetValueFromInput(amount, value => GenerateDataAmount = value, MaxGenerateDataAmount, generateDataAmountField, null);
     }
 
     public void SetSpreadProbability(string probability)

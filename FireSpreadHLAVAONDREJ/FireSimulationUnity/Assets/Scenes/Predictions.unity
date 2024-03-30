@@ -2339,9 +2339,9 @@ MonoBehaviour:
   m_fontSize: 15
   m_fontSizeBase: 15
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 15
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2372,7 +2372,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -9.954567, y: 0, z: -48.463795, w: 0}
+  m_margin: {x: -9.954567, y: -17.889727, z: -48.463795, w: -63.89309}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -2422,6 +2422,7 @@ MonoBehaviour:
   worldDepthInputFieldObj: {fileID: 0}
   riversInputFieldObj: {fileID: 0}
   heatMapInputFieldObj: {fileID: 88083567}
+  generateDataAmountFieldObj: {fileID: 1452830214}
   spreadProbabilityFieldObj: {fileID: 377332769}
   vegetationFactorFieldObj: {fileID: 1899859749}
   slopeFactorFieldObj: {fileID: 1946997569}
@@ -4377,7 +4378,19 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 846402036}
+        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
+        m_MethodName: SetGenerateDataAmount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []

@@ -44,13 +44,12 @@ public static class WorldFileManager
 
     private static readonly object _fileLock = new object(); // This object doesn't have particular value. Its purpose is to serve as a token for the lock statement. Used as a mutex for synchronization purposes
 
-    public static void AppendSimulationDataToFile(World world, Map<float> heatMap)
+    public static void AppendSimulationDataToFile(World world, Map<float> heatMap, string filePath)
     {
         SerializableWorld serializableWorld = SerializableConversion.ConvertToWorldSerializable(world);
         OutputData serializedHeatMap = SerializableConversion.ConvertMapToOutputData(heatMap);
         WorldAndHeatMapData worldAndHeatMapData = new WorldAndHeatMapData(serializableWorld, serializedHeatMap);
         string jsonData = JsonUtility.ToJson(worldAndHeatMapData);
-        string filePath = Path.Join(Application.streamingAssetsPath, "PythonScripts/datafile.json");
 
         // Append the data to the file in a thread-safe manner
         lock (_fileLock)

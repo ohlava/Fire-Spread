@@ -83,7 +83,7 @@ public class PredictionLogic : MonoBehaviour
     {
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't generate new world while waiting for result from previous interaction");
             return;
         }
@@ -172,7 +172,7 @@ public class PredictionLogic : MonoBehaviour
     {
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't reset the world while waiting for result from previous interaction");
             return;
         }
@@ -186,7 +186,7 @@ public class PredictionLogic : MonoBehaviour
     {
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't import new world while waiting for result from previous interaction");
             return;
         }
@@ -204,7 +204,7 @@ public class PredictionLogic : MonoBehaviour
     {
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't save the world while waiting for result from previous interaction");
             return;
         }
@@ -216,18 +216,22 @@ public class PredictionLogic : MonoBehaviour
     {
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't generate new while waiting for result from previous interaction");
             return;
         }
 
         DisableInteractions();
+
+        uiManager.UpdateInfoPanel("Generating worlds and running simulations on them...");
+
         FireSimParameters fireSimParameters = new FireSimParameters(inputHandler.VegetationFactor, inputHandler.MoistureFactor, false, inputHandler.SlopeFactor, inputHandler.SpreadProbability);
         FirePredictor firePredictor = new FirePredictor(fireSimParameters);
+        string filePath = Path.Join(Application.streamingAssetsPath, "PythonScripts/datafile.json");
 
         try
         {
-            int numberOfWorlds = 5; // Number of random worlds to generate
+            int numberOfWorlds = inputHandler.GenerateDataAmount; // Number of random worlds to generate
             int simulationIterations = 10; // Number of simulations to run per world
             List<Task> tasks = new List<Task>();
 
@@ -239,7 +243,7 @@ public class PredictionLogic : MonoBehaviour
                     List<Tile> initBurningTiles = world.GetRandomInitBurningTiles(); // Generate initial burning tiles
                     Map<float> heatMap = await Task.Run(() => firePredictor.GenerateHeatMap(simulationIterations, world, initBurningTiles));
 
-                    WorldFileManager.AppendSimulationDataToFile(world, heatMap); // Serialize and append the data for this world
+                    WorldFileManager.AppendSimulationDataToFile(world, heatMap, filePath); // Serialize and append the data for this world
                 }));
             }
 
@@ -250,6 +254,7 @@ public class PredictionLogic : MonoBehaviour
             Debug.LogError($"Error during data generation: {ex.Message}");
         }
 
+        uiManager.UpdateInfoPanel($"Done, generation complete: {filePath}");
         EnableInteractions();
         return;
     }
@@ -258,7 +263,7 @@ public class PredictionLogic : MonoBehaviour
     {
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't call python for prediction while waiting for result from previous interaction");
             return;
         }
@@ -322,7 +327,7 @@ public class PredictionLogic : MonoBehaviour
 
         if (!canInteract)
         {
-            uiManager.UpdateInfoPanel("Wait for other task to complete");
+            uiManager.UpdateInfoPanel("Wait for previous task to complete");
             Debug.Log("You can't call for heat map while waiting for result from previous interaction");
             return;
         }
