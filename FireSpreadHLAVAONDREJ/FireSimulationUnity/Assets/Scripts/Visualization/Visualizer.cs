@@ -212,10 +212,10 @@ public class Visualizer : MonoBehaviour
                         if (tiles.Contains(tileToInstanceDict[neighbor])) // check if it is also water tile instance
                         {
                             // Check if the current face is facing the neighbor directly, that means the face is internal and should be skipped
-                            if (faceNormal == Vector3.left && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (1, 0) ||
-                                faceNormal == Vector3.right && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (-1, 0) ||
-                                faceNormal == Vector3.forward && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (0, 1) ||
-                                faceNormal == Vector3.back && WorldUtilities.GetTilesDistanceXY(tile, neighbor) == (0, -1))
+                            if (faceNormal == Vector3.left && WorldExtensions.GetTilesDistanceXY(tile, neighbor) == (1, 0) ||
+                                faceNormal == Vector3.right && WorldExtensions.GetTilesDistanceXY(tile, neighbor) == (-1, 0) ||
+                                faceNormal == Vector3.forward && WorldExtensions.GetTilesDistanceXY(tile, neighbor) == (0, 1) ||
+                                faceNormal == Vector3.back && WorldExtensions.GetTilesDistanceXY(tile, neighbor) == (0, -1))
                             {
                                 skipFace = true;
                                 break;

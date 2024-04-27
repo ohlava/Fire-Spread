@@ -70,7 +70,7 @@
     <Compile Include="Assets/Scripts/WorldManagement/WorldClasses.cs" />
     <Compile Include="Assets/Scripts/Simulation/WindSimulation.cs" />
     <Compile Include="Assets/Scripts/Simulation/SimulationBase.cs" />
-    <Compile Include="Assets/Scripts/WorldManagement/WorldUtilities.cs" />
+    <Compile Include="Assets\Scripts\WorldManagement\WorldExtensions.cs" />
     <Compile Include="Assets/Scripts/EngineCore/MainLogic.cs" />
     <Compile Include="Assets/Scripts/Visualization/WindIndicator.cs" />
     <Compile Include="Assets/Scripts/Simulation/Events/EventLoggers.cs" />
