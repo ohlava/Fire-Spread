@@ -2431,7 +2431,7 @@ MonoBehaviour:
   lakeThresholdSlider: {fileID: 0}
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4
 --- !u!4 &846402037
 Transform:
   m_ObjectHideFlags: 0

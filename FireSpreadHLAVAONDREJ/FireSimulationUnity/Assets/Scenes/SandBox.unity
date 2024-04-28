@@ -3159,11 +3159,17 @@ MonoBehaviour:
   worldWidthInputFieldObj: {fileID: 377332769}
   worldDepthInputFieldObj: {fileID: 1899859749}
   riversInputFieldObj: {fileID: 508024748}
+  heatMapInputFieldObj: {fileID: 0}
+  generateDataAmountFieldObj: {fileID: 0}
+  spreadProbabilityFieldObj: {fileID: 0}
+  vegetationFactorFieldObj: {fileID: 0}
+  slopeFactorFieldObj: {fileID: 0}
+  moistureFactorFieldObj: {fileID: 0}
   simulationSpeedSlider: {fileID: 1021912702}
   lakeThresholdSlider: {fileID: 558203656}
   ignoreLayer:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 4
 --- !u!4 &846402037
 Transform:
   m_ObjectHideFlags: 0
