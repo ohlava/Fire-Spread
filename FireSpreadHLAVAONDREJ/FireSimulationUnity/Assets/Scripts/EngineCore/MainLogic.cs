@@ -24,7 +24,6 @@ public class MainLogic : MonoBehaviour
     private WindIndicator windIndicator;
     private GraphVisualizer graphVisualizer;
     private FileManagementService fileManagementService;
-    private IMapImporter mapImporter;
     private Tile currentlyHoveredTile;
     private float elapsed; // time elapsed for simulation updates
     private float speedOfUpdates; // in seconds
@@ -70,7 +69,6 @@ public class MainLogic : MonoBehaviour
         currentState = State.NewWorldState;
         fireSimParams = new FireSimParameters();
         worldGenerator = new WorldGenerator();
-        mapImporter = new HeightMapImporter();
 
         settings = SettingsManager.LoadSettings();
         fileBrowserHandler = FindObjectOfType<FileBrowserHandler>();

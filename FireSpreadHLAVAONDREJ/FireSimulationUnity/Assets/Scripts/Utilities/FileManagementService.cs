@@ -5,7 +5,7 @@ using UnityEngine;
 public class FileManagementService
 {
     private FileBrowserHandler fileBrowserHandler;
-    private IMapImporter mapImporter;
+    private IMapImporter<float> heightMapImporter;
     private WorldGenerator worldGenerator;
 
     public FileManagementService(
@@ -13,7 +13,7 @@ public class FileManagementService
         WorldGenerator worldGenerator)
     {
         this.fileBrowserHandler = fileBrowserHandler;
-        this.mapImporter = new HeightMapImporter();
+        this.heightMapImporter = new HeightMapImporter();
         this.worldGenerator = worldGenerator ?? throw new ArgumentNullException(nameof(worldGenerator));
     }
 
@@ -52,15 +52,15 @@ public class FileManagementService
                 int requiredWidth = worldGenerator.width;
                 int requiredDepth = worldGenerator.depth;
 
-                Map<float> customHeightMap = mapImporter.GetMap(requiredWidth, requiredDepth, filePath);
-
-                Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
-                customMoistureMap.FillWithDefault(0);
-                Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
-                customVegetationMap.FillWithDefault(VegetationType.Grass);
-
+                Map<float> customHeightMap = heightMapImporter.GetMap(requiredWidth, requiredDepth, filePath);
                 if (customHeightMap != null)
                 {
+                    Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
+                    customMoistureMap.FillWithDefault(0);
+
+                    Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
+                    customVegetationMap.FillWithDefault(VegetationType.Grass);
+
                     Debug.Log("Successfully imported height map from " + fileExtension + " file.");
 
                     World world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);

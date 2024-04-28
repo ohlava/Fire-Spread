@@ -2,12 +2,12 @@ using UnityEngine;
 using System.IO;
 
 
-public interface IMapImporter
+public interface IMapImporter<T>
 {
-    Map<float> GetMap(int width, int depth, string fullFilePath);
+    Map<T> GetMap(int width, int depth, string fullFilePath);
 }
 
-public class HeightMapImporter : IMapImporter
+public class HeightMapImporter : IMapImporter<float>
 {
     private Map<float> heightMap;
 
