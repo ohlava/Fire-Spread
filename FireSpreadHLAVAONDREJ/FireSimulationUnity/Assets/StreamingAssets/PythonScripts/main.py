@@ -191,12 +191,23 @@ def main():
     output = {"data": JSONUtility.generate_output_array(prediction_array)}
     print(json.dumps(output))
 
-if __name__ == "__main__":
-    #load_generated_data()
-    main()
-    
-# For testing purposes
+
+
+
+###
+
+def trigger_division_by_zero():
+    return 1 / 0
+
+# Call this function to simulate an error
+# trigger_division_by_zero()
+
+# For other testing purposes
 # import time
 # time.sleep(1)
 # exit(1)
 # print(sys.argv)
+
+if __name__ == "__main__":
+    #load_generated_data()
+    main()

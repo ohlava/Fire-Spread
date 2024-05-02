@@ -27,7 +27,10 @@ public class FileManagementService
             {
                 Debug.Log("Loading file from path: " + filePath);
                 World world = LoadWorldFromFile(filePath);
-                onWorldImported?.Invoke(world);
+                if (world != null)
+                {
+                    onWorldImported?.Invoke(world);
+                }
             }
             else
             {
@@ -41,8 +44,6 @@ public class FileManagementService
     {
         if (filePath != null)
         {
-            Debug.Log("Loading file from path: " + filePath);
-
             string fileExtension = Path.GetExtension(filePath).ToLower();
 
             if (fileExtension == ".png" || fileExtension == ".jpg" || fileExtension == ".jpeg")
@@ -84,7 +85,7 @@ public class FileManagementService
             Debug.Log("File loading was canceled.");
         }
 
-        return new World(1, 1);
+        return null;
     }
 
     public void SaveWorld(World world)

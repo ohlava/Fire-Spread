@@ -18,7 +18,7 @@ public static class WorldFileManager
         {
             string json = File.ReadAllText(finalFilePath);
             SerializableWorld serializableWorld = JsonUtility.FromJson<SerializableWorld>(json);
-            if (serializableWorld != null)
+            if (serializableWorld != null && serializableWorld.Depth != 0 && serializableWorld.Width != 0)
             {
                 // The JSON was valid and deserialized correctly.
                 return SerializableConversion.ConvertFromWorldSerializable(serializableWorld);

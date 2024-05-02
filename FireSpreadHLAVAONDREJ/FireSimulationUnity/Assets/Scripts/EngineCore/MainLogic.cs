@@ -436,11 +436,15 @@ public class MainLogic : MonoBehaviour
         {
             visualizer.mode = VisualizerMode.Simplified;
         }
+        else
+        {
+            visualizer.mode = VisualizerMode.Standard;
+        }
 
         initBurningTiles.Clear();
         VisulizerRemakeAll();
         cameraHandler.SetWorldCenter(new Vector3(world.Width / 2f, 2f * visualizer.TileHeightMultiplier, world.Depth / 2f));
-        cameraHandler.RotateCamera(); // Set to default position
+        cameraHandler.SetCamera(world.Width, world.Depth);
         windIndicator.SetIndicatorToDefault();
         windIndicator.UpdateIndicatorCameraAngle();
 

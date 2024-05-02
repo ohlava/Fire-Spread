@@ -467,7 +467,6 @@ public class Visualizer : MonoBehaviour
     // for clicking on some tile instance = to see which we clicked in combination with RayCast
     public Tile GetWorldTileFromInstance(GameObject instance)
     {
-        Tile ft = tileToInstanceDict.Keys.First();
         foreach (Tile tile in tileToInstanceDict.Keys)
         {
             if (tileToInstanceDict[tile] == instance)
@@ -475,8 +474,8 @@ public class Visualizer : MonoBehaviour
                 return tile;
             }
         }
-        Debug.LogError("No Tile found for the given instance.");
-        return ft;
+        // Debug.LogError("No Tile found for the given instance.");
+        return null;
     }
 }
 

@@ -147,8 +147,8 @@ public class InputHandler : MonoBehaviour
         Rivers = 3;
         LakeThreshold = 0.12f;
 
-        MaxWorldWidth = 150;
-        MaxWorldDepth = 150;
+        MaxWorldWidth = 100;
+        MaxWorldDepth = 100;
         MaxRivers = 25;
 
         // predictions scene
