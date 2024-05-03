@@ -56,6 +56,8 @@ public class FileManagementService
                 Map<float> customHeightMap = heightMapImporter.GetMap(requiredWidth, requiredDepth, filePath);
                 if (customHeightMap != null)
                 {
+                    // Get and apply other maps differently if desired.
+
                     Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
                     customMoistureMap.FillWithDefault(0);
 
@@ -64,8 +66,7 @@ public class FileManagementService
 
                     Debug.Log("Successfully imported height map from " + fileExtension + " file.");
 
-                    World world = worldGenerator.GenerateWorldFromMaps(customHeightMap, customMoistureMap, customVegetationMap);
-                    WorldBuilder.ApplyHeightMapToWorld(world, customHeightMap);
+                    World world = WorldBuilder.CreateWorld(requiredWidth, requiredDepth, customHeightMap, customMoistureMap, customVegetationMap);
 
                     return world;
                 }

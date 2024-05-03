@@ -87,6 +87,10 @@ public class Visualizer : MonoBehaviour
             {
                 Tile worldTile = world.GetTileAt(x, y);
                 float height = worldTile.Height;
+                if (worldTile.IsWater)
+                {
+                    height = 0.01f;
+                }
 
                 GameObject tileInstance = Instantiate(tilePrefab, new Vector3(x, height, y), Quaternion.identity);
 
@@ -133,7 +137,7 @@ public class Visualizer : MonoBehaviour
                 Tile tile = world.GetTileAt(x, y);
 
                 // Skip the tile if it has already been visited or if it's not a water tile
-                if (visitedTiles.Contains(tile) || tile.Moisture != 100)
+                if (visitedTiles.Contains(tile) || !tile.IsWater)
                     continue;
 
                 List<GameObject> group = new List<GameObject>();
@@ -150,11 +154,11 @@ public class Visualizer : MonoBehaviour
                     visitedTiles.Add(currentTile);
                     group.Add(tileToInstanceDict[currentTile]);
 
-                    foreach (Tile neighbor in world.GetEdgeNeighborTiles(currentTile))
+                    foreach (Tile neighborTile in world.GetEdgeNeighborTiles(currentTile))
                     {
-                        if (neighbor.Moisture == 100 && !visitedTiles.Contains(neighbor))
+                        if (neighborTile.IsWater && !visitedTiles.Contains(neighborTile))
                         {
-                            queue.Enqueue(neighbor);
+                            queue.Enqueue(neighborTile);
                         }
                     }
                 }
@@ -291,7 +295,7 @@ public class Visualizer : MonoBehaviour
     {
         int maxVegetationType = Enum.GetNames(typeof(VegetationType)).Length;
 
-        if (tile.Moisture == 100)  // Is a water tile
+        if (tile.IsWater)
         {
             GetTileInstance(tile).SetMaterialTo(waterMaterial);
         }
@@ -318,7 +322,7 @@ public class Visualizer : MonoBehaviour
         {
             foreach (var tile in world.Grid)
             {
-                if (tile.Moisture != 100)
+                if (!tile.IsWater)
                 {
                     CreateVegetationOnTile(tile, tile.Vegetation);
                 }

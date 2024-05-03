@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public static class WorldBuilder
 {
+    // Applies the height map to the world class. Sets corresponding height for tiles from map.
     public static void ApplyHeightMapToWorld(World world, Map<float> heightMap)
     {
         for (int i = 0; i < world.Width; i++)
@@ -16,6 +13,7 @@ public static class WorldBuilder
         }
     }
 
+    // Applies the moisture map to the world. Sets corresponding moisture for tiles from map.
     public static void ApplyMoistureMapToWorld(World world, Map<int> moistureMap)
     {
         for (int i = 0; i < world.Width; i++)
@@ -28,6 +26,7 @@ public static class WorldBuilder
         }
     }
 
+    // Applies the vegetation map to the world. Sets corresponding vegetation for tiles from map.
     public static void ApplyVegetationMapToWorld(World world, Map<VegetationType> vegetationMap)
     {
         for (int i = 0; i < world.Width; i++)
@@ -40,6 +39,7 @@ public static class WorldBuilder
         }
     }
 
+    // Creates a new world based on provided size and optional maps.
     public static World CreateWorld(int width, int depth, Map<float> heightMap = null, Map<int> moistureMap = null, Map<VegetationType> vegetationMap = null)
     {
         World world = new World(width, depth);
@@ -62,4 +62,3 @@ public static class WorldBuilder
         return world;
     }
 }
-

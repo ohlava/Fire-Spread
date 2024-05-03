@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public static class TileExtensions
@@ -22,7 +23,7 @@ public static class TileExtensions
     // Start burning this tile just if it's not already burning or burned.
     public static bool Ignite(this Tile tile)
     {
-        if (tile.IsBurning == true || tile.IsBurned == true || tile.Moisture == 100 || tile.IsWater)
+        if (tile.IsBurning == true || tile.IsBurned == true || tile.IsWater)
         {
             return false;
         }
@@ -33,6 +34,7 @@ public static class TileExtensions
 
 public static class WorldExtensions
 {
+    // Gets a list of randomly selected non-water tiles
     public static List<Tile> GetRandomInitBurningTiles(this World world)
     {
         List<Tile> burningTiles = new List<Tile>();
@@ -115,6 +117,7 @@ public static class WorldExtensions
 
                 if (nx != x || ny != y)
                 {
+                    // Check if the coordinates are valid (within the grid bounds)
                     if (nx >= 0 && nx < world.Width && ny >= 0 && ny < world.Depth)
                     {
                         yield return GetTileAt(world, nx, ny);
@@ -143,24 +146,21 @@ public static class WorldExtensions
             yield return GetTileAt(world, x, y - 1);
     }
 
+    // Returns the neighboring tiles of a given tile within a circular boundary defined by a specified radius.
     public static IEnumerable<Tile> GetCircularEdgeNeighborTiles(this World world, Tile tile, int radius)
     {
         int xCenter = tile.WidthPosition;
         int yCenter = tile.DepthPosition;
 
-        // A threshold to determine if a tile is close enough to the edge of the circle.
-        // This accounts for the discrete nature of the grid.
-        double edgeThreshold = 0.5;
+        double edgeThreshold = 0.5; // A threshold to determine if a tile is close enough to the edge of the circle.
 
-        // Loop through a square grid that approximately covers the area of the circle
         for (int x = xCenter - radius; x <= xCenter + radius; x++)
         {
             for (int y = yCenter - radius; y <= yCenter + radius; y++)
             {
                 double distanceFromCenter = Math.Sqrt((x - xCenter) * (x - xCenter) + (y - yCenter) * (y - yCenter));
 
-                // Check if the tile is close to the edge of the circle
-                if (Math.Abs(distanceFromCenter - radius) <= edgeThreshold)
+                if (Math.Abs(distanceFromCenter - radius) <= edgeThreshold) // tile is close to the edge of the circle
                 {
                     // Check if the coordinates are valid (within the grid bounds)
                     if (x >= 0 && x < world.Width && y >= 0 && y < world.Depth)
@@ -172,7 +172,7 @@ public static class WorldExtensions
         }
     }
 
-    // Reset the dynamic properties of simulations - world weather and non static atributes for all the tiles. 
+    // Reset the dynamic properties of simulation - world weather and non static atributes for all the tiles. 
     public static void Reset(this World world)
     {
         world.Wind.Reset();

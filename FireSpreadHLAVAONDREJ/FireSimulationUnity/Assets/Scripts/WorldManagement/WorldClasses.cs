@@ -73,7 +73,23 @@ public class Tile
     public int DepthPosition { get; private set; } // y position in the world
 
     public float Height { get; set; }
-    public int Moisture { get; set; } // percent 0-100, 0 (dry) and 100 (water)
+    private int _moisture; // percent 0-100, 0 (dry) and 100 (water)
+    public int Moisture
+    {
+        get => _moisture;
+        set
+        {
+            _moisture = value;
+            if (_moisture == 100)
+            {
+                IsWater = true;
+            }
+            else
+            {
+                IsWater = false;
+            }
+        }
+    }
     public bool IsWater { get; private set; }
     public VegetationType Vegetation { get; set; }
 
@@ -91,11 +107,6 @@ public class Tile
         Height = height;
         Vegetation = vegetation;
         Moisture = moisture;
-        if (moisture == 100)
-        {
-            IsWater = true;
-            Height = 0.01f;
-        }
     }
 }
 
