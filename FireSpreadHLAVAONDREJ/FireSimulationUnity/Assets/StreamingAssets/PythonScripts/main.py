@@ -18,49 +18,20 @@ class Tile:
         self.height = max(0, height)
         self.moisture = max(0, min(100, moisture))
         self.vegetation = VegetationType(vegetation)
-        self.is_burning = False
-        self.has_burned = False
-        self.burning_for = 0
-        self.burn_time = self._calculate_burn_time()
         self.is_initial_burning = is_initial_burning
-
-    def _calculate_burn_time(self):
-        burn_time = {
-            VegetationType.Grass: 1,
-            VegetationType.Sparse: 2,
-            VegetationType.Forest: 4,
-            VegetationType.Swamp: 3
-        }.get(self.vegetation, 0)
-
-        if self.moisture >= 50:
-            burn_time += 1
-
-        return burn_time
-
-    def reset(self):
-        self.is_burning = False
-        self.has_burned = False
-        self.burning_for = 0
-
+        
 class World:
     def __init__(self, width, depth, grid_tiles, initial_burn_map):
         self.width = width
         self.depth = depth
         self.grid = grid_tiles
         self.initial_burn_map = initial_burn_map
-
-    def reset(self):
-        self.weather.reset()
-        for tile in self.grid:
-            tile.reset()
             
     def print_tile_heights(self):
         for tile in self.grid:
             print(f"Tile at ({tile.width_position}, {tile.depth_position}) has a height of {tile.height}")
-            
 
-
-
+# Simple predictor
 class Predictor:
     def __init__(self, model_path: str):
         self.model = self.load_model(model_path)
@@ -179,7 +150,7 @@ def load_generated_data():
         world, heatmap = JSONUtility.convert_json_to_world_and_heatmap(d)
         loaded_data.append((world, heatmap))
     #print(loaded_data)
-    return
+    return loaded_data
     
 
 # Main execution
@@ -190,9 +161,6 @@ def main():
     prediction_array = predictor.predict(world)
     output = {"data": JSONUtility.generate_output_array(prediction_array)}
     print(json.dumps(output))
-
-
-
 
 ###
 
@@ -208,6 +176,8 @@ def trigger_division_by_zero():
 # exit(1)
 # print(sys.argv)
 
+###
+
 if __name__ == "__main__":
-    #load_generated_data()
+    #load_generated_data() # uncomment to test loading training data
     main()
