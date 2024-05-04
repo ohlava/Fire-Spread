@@ -446,7 +446,7 @@ public class MainLogic : MonoBehaviour
 
         currentlyHoveredTile = null;
 
-        if (graphVisualizer is not null)
+        if (graphVisualizer != null)
         {
             graphVisualizer.ClearGraph();
             graphVisualizer.SetAxes("burning tiles", "time");
