@@ -4,7 +4,6 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class InputHandler : MonoBehaviour
 {
@@ -394,19 +393,22 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    // Method to set values from input fields for floats, including those with a trailing dot.
+    // Method to set values from input fields for floats, including those with a trailing dot or comma.
     public void SetValueFromInput(string input, Action<float> setter, float maxValue, TMP_InputField inputField, Action eventTrigger = null)
     {
-        // Check if the input ends with a dot and remove it for parsing
-        string parseString = input.EndsWith(".") ? input.Substring(0, input.Length - 1) : input;
+        // Replace comma with dot if present
+        string normalizedInput = input.Replace(',', '.').Trim();
 
-        if (float.TryParse(parseString, out float parsedValue))
+        // Check if the input ends with a dot and remove it for parsing
+        string parseString = normalizedInput.EndsWith(".") ? normalizedInput.Substring(0, normalizedInput.Length - 1) : normalizedInput;
+
+        if (float.TryParse(parseString, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out float parsedValue))
         {
             parsedValue = Mathf.Clamp(parsedValue, 0f, maxValue);
             setter(parsedValue);
 
-            // Update the input field text to ensure it reflects the parsed value, keeping the dot if it was present.
-            inputField.text = input.EndsWith(".") ? parsedValue.ToString() + "." : parsedValue.ToString();
+            // Update the input field text to ensure it reflects the parsed value, keeping the original format.
+            inputField.text = input.EndsWith(".") || input.EndsWith(",") ? parsedValue.ToString() + input[input.Length - 1] : parsedValue.ToString();
 
             if (!initializing)
             {
