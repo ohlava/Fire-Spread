@@ -261,6 +261,12 @@ public class PredictionLogic : MonoBehaviour
 
     public async void PythonPredict()
     {
+        if (initBurningTiles.Count == 0)
+        {
+            uiManager.UpdateInfoPanel("Set some tiles \n on fire first");
+            return;
+        }
+
         if (!canInteract)
         {
             uiManager.UpdateInfoPanel("Wait for previous task to complete");
