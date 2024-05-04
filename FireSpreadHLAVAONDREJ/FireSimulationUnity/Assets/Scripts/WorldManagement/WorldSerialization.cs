@@ -17,8 +17,8 @@ public class SerializableTile
     public int widthPosition;
     public int depthPosition;
     public int moisture;
-    public VegetationType Vegetation;
-    public float Height;
+    public VegetationType vegetation;
+    public float height;
 }
 
 [System.Serializable]
@@ -161,17 +161,17 @@ public class SerializableConversion
             widthPosition = tile.WidthPosition,
             depthPosition = tile.DepthPosition,
             moisture = tile.Moisture,
-            Vegetation = tile.Vegetation,
-            Height = tile.Height,
+            vegetation = tile.Vegetation,
+            height = tile.Height,
         };
     }
 
     public static Tile ConvertFromTileSerializable(SerializableTile serializableTile)
     {
         Tile tile = new Tile(
-            serializableTile.Height,
+            serializableTile.height,
             serializableTile.moisture,
-            serializableTile.Vegetation,
+            serializableTile.vegetation,
             serializableTile.widthPosition,
             serializableTile.depthPosition
         );

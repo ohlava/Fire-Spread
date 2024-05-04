@@ -124,7 +124,7 @@ class JSONUtility:
 
         for index, tile_data in enumerate(grid_data):
             is_initial_burning = initial_burn_map[index]
-            tile = Tile(tile_data['Height'], tile_data['moisture'], tile_data['Vegetation'], tile_data['widthPosition'], tile_data['depthPosition'], is_initial_burning)
+            tile = Tile(tile_data['height'], tile_data['moisture'], tile_data['vegetation'], tile_data['widthPosition'], tile_data['depthPosition'], is_initial_burning)
             grid_tiles.append(tile)
 
         return World(width, depth, grid_tiles, initial_burn_map)
@@ -150,9 +150,9 @@ class JSONUtility:
 
         for tile_data in world_data['GridTiles']:
             tile = Tile(
-                height=tile_data['Height'], 
+                height=tile_data['height'], 
                 moisture=tile_data['moisture'], 
-                vegetation=tile_data['Vegetation'], 
+                vegetation=tile_data['vegetation'], 
                 position_x=tile_data['widthPosition'], 
                 position_y=tile_data['depthPosition']
             )
