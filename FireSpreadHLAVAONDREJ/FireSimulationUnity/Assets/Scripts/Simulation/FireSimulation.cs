@@ -159,7 +159,7 @@ public class FireSimulation : SimulationBase
         for (int i = 0; i < 100; i++) // 100 should be enough iterations to get a good approximation
         {
             p = (lowerBound + upperBound) / 2;
-            float calcTotalProbability = p * (1 - (float)Math.Pow(1 - p, BurnTime)) / p;
+            float calcTotalProbability = 1 - (float)Math.Pow(1 - p, BurnTime); // prob. tile catches fire at least once
 
             if (calcTotalProbability > totalProbability)
             {
@@ -170,7 +170,6 @@ public class FireSimulation : SimulationBase
                 lowerBound = p;
             }
         }
-
         return (lowerBound + upperBound) / 2;
     }
 

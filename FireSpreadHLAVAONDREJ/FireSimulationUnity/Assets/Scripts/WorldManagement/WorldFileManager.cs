@@ -11,7 +11,7 @@ public static class WorldFileManager
         File.WriteAllText(finalFilePath, json);
     }
 
-    // Tries to load the world classs from a JSON file.
+    // Tries to load the world class from a JSON file.
     public static World LoadWorld(string fullPath)
     {
         string finalFilePath = fullPath;
