@@ -4,16 +4,17 @@ using UnityEngine;
 [System.Serializable]
 public class Settings
 {
-    public bool useSimplifiedWorldVisualization;
-    public bool saveTerrainAutomatically;
+    public bool UseSimplifiedWorldVisualization;
+    public bool SaveTerrainAutomatically;
 
     public Settings(bool useSimplifiedWorldVisualization, bool saveTerrainAutomatically)
     {
-        this.useSimplifiedWorldVisualization = useSimplifiedWorldVisualization;
-        this.saveTerrainAutomatically = saveTerrainAutomatically;
+        UseSimplifiedWorldVisualization = useSimplifiedWorldVisualization;
+        SaveTerrainAutomatically = saveTerrainAutomatically;
     }
 }
 
+// Manages loading and saving of Settings instances to a JSON file
 public class SettingsManager
 {
     private static string settingsPath = Path.Combine(Application.streamingAssetsPath, "settings.json");

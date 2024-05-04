@@ -416,7 +416,7 @@ public class MainLogic : MonoBehaviour
 
         world = worldGenerator.Generate();
 
-        if (settings.saveTerrainAutomatically)
+        if (settings.SaveTerrainAutomatically)
         {
             fileManagementService.SaveWorldAutomatically(world);
         }
@@ -432,7 +432,7 @@ public class MainLogic : MonoBehaviour
         uiManager.UpdateRunPauseButtons(currentState == State.RunningState);
         
         // Settings enabled or number of tiles is too high!
-        if (settings.useSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) 
+        if (settings.UseSimplifiedWorldVisualization || world.Width * world.Depth >= 2500) 
         {
             visualizer.mode = VisualizerMode.Simplified;
         }

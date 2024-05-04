@@ -50,11 +50,11 @@ public class InputHandler : MonoBehaviour
     #endregion
 
     #region Serialized Fields
-    [SerializeField] private GameObject visulizerObj, cameraHandlerObj, uiManagerObj;
-    [SerializeField] private GameObject worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
-    [SerializeField] private GameObject heatMapInputFieldObj, generateDataAmountFieldObj, spreadProbabilityFieldObj, vegetationFactorFieldObj, slopeFactorFieldObj, moistureFactorFieldObj;
-    [SerializeField] private Slider simulationSpeedSlider;
-    [SerializeField] private Slider lakeThresholdSlider;
+    [SerializeField] GameObject visulizerObj, cameraHandlerObj, uiManagerObj;
+    [SerializeField] GameObject worldWidthInputFieldObj, worldDepthInputFieldObj, riversInputFieldObj;
+    [SerializeField] GameObject heatMapInputFieldObj, generateDataAmountFieldObj, spreadProbabilityFieldObj, vegetationFactorFieldObj, slopeFactorFieldObj, moistureFactorFieldObj;
+    [SerializeField] Slider simulationSpeedSlider;
+    [SerializeField] Slider lakeThresholdSlider;
     #endregion
 
     #region Private Fields

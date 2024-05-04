@@ -19,10 +19,9 @@ public class CameraHandler : MonoBehaviour
 
     void Awake()
     {
-        // If no camera is set, use the main camera
         if (targetCamera == null)
         {
-            targetCamera = Camera.main;
+            targetCamera = Camera.main; // If no camera is set, use the main camera as default
         }
     }
 
@@ -54,7 +53,7 @@ public class CameraHandler : MonoBehaviour
 
         // Calculate new rotation angles
         Vector3 angles = Camera.main.transform.eulerAngles + new Vector3(-1 * effectiveRotationChange.x * UpDownSpeed * Time.deltaTime, -1 * effectiveRotationChange.y * RotationSpeed * Time.deltaTime, 0);
-        angles.x = Mathf.Clamp(angles.x, 10f, 89f); // Min/max angle range
+        angles.x = Mathf.Clamp(angles.x, 10f, 89f); // Min/max angle range of the camera
 
         targetCamera.transform.eulerAngles = angles;
         targetCamera.transform.position = worldCenter - (targetCamera.transform.forward * CameraDistance); // Move camera to new position

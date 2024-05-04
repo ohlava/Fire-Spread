@@ -11,14 +11,10 @@ public class Visualizer : MonoBehaviour
     public float TileHeightMultiplier;
 
     #region Tile Management Fields
-    // To keep track of actuall tile instance GameObject created for each Tile
-    private Dictionary<Tile, GameObject> tileToInstanceDict;
-    // To keep track of vegetation GameObject created on each Tile
-    private Dictionary<Tile, GameObject> tileToVegetationInstanceDict;
-    // To keep track of fire GameObject created on each Tile
-    private Dictionary<Tile, GameObject> tileToFireInstanceDict;
-    // To keep track of combined water tiles - chunks
-    private List<GameObject> waterChunks;
+    private Dictionary<Tile, GameObject> tileToInstanceDict; // actuall tile instance GameObject created for each Tile
+    private Dictionary<Tile, GameObject> tileToVegetationInstanceDict; // vegetation GameObject created on each Tile
+    private Dictionary<Tile, GameObject> tileToFireInstanceDict; // fire GameObject created on each Tile
+    private List<GameObject> waterChunks; // combined water tiles - chunks
     #endregion
 
     #region Prefabs and Materials
@@ -105,7 +101,7 @@ public class Visualizer : MonoBehaviour
         CombineAllWaterTiles(world);
     }
 
-    // Transforms all water tiles into list of bigger chunks - waterChunks. Combining all water tiles into one improves speed and performance
+    // Transforms all water tiles into list of bigger chunks - waterChunks. Combining all water tiles into one improves speed and performance.
     private void CombineAllWaterTiles(World world)
     {
         List<List<GameObject>> groups = FindContiguousWaterTileGroups(world);
@@ -117,10 +113,7 @@ public class Visualizer : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Finds and groups contiguous water tiles in the world.
-    /// </summary>
-    /// <returns>A list of tile groups, where each group contains GameObjects of contiguous water tiles.</returns>
+    // Finds and groups contiguous water tiles in the world and return a list of tile groups, where each group contains GameObjects of contiguous water tiles.
     private List<List<GameObject>> FindContiguousWaterTileGroups(World world)
     {
         // List to store groups of contiguous water tiles
@@ -170,13 +163,7 @@ public class Visualizer : MonoBehaviour
         return groups;
     }
 
-    /// <summary>
-    /// Combines multiple water tiles into a single mesh for optimization. This method works by merging 
-    /// the vertices of contiguous water tiles and selectively excluding faces that are internal to the group, 
-    /// thus creating a simplified mesh representation. The top and bottom faces of each tile are always retained, 
-    /// while the side faces are excluded if they're facing another tile in the group. 
-    /// </summary>
-    /// <returns>A new GameObject with a combined mesh representing the group of water tiles.</returns>
+    // Combines multiple contiguous water tiles into a single simplified mesh for optimization, returning a new GameObject with a combined mesh representing the group of water tiles.
     private GameObject CombineWaterTilesOfGroup(List<GameObject> tiles, World world)
     {
         // Lists to store the combined mesh's vertices and triangles
@@ -289,7 +276,7 @@ public class Visualizer : MonoBehaviour
         }
     }
 
-    // Tile instance should already be in the tileToInstanceDict
+    // Sets tile material based on its properties or state. Tile instance should already be in the tileToInstanceDict
     public void SetAppropriateMaterial(Tile tile)
     {
         int maxVegetationType = Enum.GetNames(typeof(VegetationType)).Length;
@@ -363,7 +350,7 @@ public class Visualizer : MonoBehaviour
             // Create a new vegetation at the top of the tile
             GameObject vegetationInstance = Instantiate(chosenPrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.identity);
 
-            // Make a random rotation
+            // Make a random rotation for that vegetation
             vegetationInstance.transform.rotation = Quaternion.Euler(0f, UnityEngine.Random.Range(0f, 360f), 0f);
 
             tileToVegetationInstanceDict[tile] = vegetationInstance;
@@ -401,7 +388,7 @@ public class Visualizer : MonoBehaviour
             Vector3 tilePosition = tileInstance.GetPosition();
             float tileHeight = tileInstance.GetHeight();
 
-            // Create a new fire at the top of the tile
+            // Create a new fire instance at the top of the tile
             GameObject fireInstance = Instantiate(firePrefab, tilePosition + new Vector3(0, tileHeight / 2, 0), Quaternion.Euler(-90, 0, 0));
 
             tileToFireInstanceDict[tile] = fireInstance;
@@ -459,7 +446,7 @@ public class Visualizer : MonoBehaviour
         }
         tileToInstanceDict.Clear();
 
-        // Also destroy water mesh - sort of tiles merged together
+        // Also destroy water mesh - chunks of tiles merged together
         foreach (GameObject chunk in waterChunks)
         {
             Destroy(chunk);
@@ -479,36 +466,5 @@ public class Visualizer : MonoBehaviour
         }
         // Debug.LogError("No Tile found for the given instance.");
         return null;
-    }
-}
-
-public static class TileInstancesExtensions
-{
-    public static void SetMaterialTo(this GameObject instance, Material material)
-    {
-        Renderer renderer = instance.transform.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            renderer.material = material;
-        }
-    }
-
-    public static void SetColorTo(this GameObject instance, Color color)
-    {
-        Renderer renderer = instance.transform.GetComponent<Renderer>();
-        if (renderer != null)
-        {
-            renderer.material.color = color;
-        }
-    }
-
-    public static Vector3 GetPosition(this GameObject instance)
-    {
-        return instance.transform.position;
-    }
-
-    public static float GetHeight(this GameObject instance)
-    {
-        return instance.transform.localScale.y;
     }
 }

@@ -4,20 +4,19 @@ using UnityEngine;
 
 public class FireSimulation : SimulationBase
 {
-    private FireSimParameters _parameters;
-    private List<Tile> _burningTiles;
-    private FireLogger _fireLogger;
+    private FireSimParameters parameters;
+    private List<Tile> burningTiles;
+    private FireLogger fireLogger;
 
     public FireSimulation(FireSimParameters parameters, World world, List<Tile> initBurningTiles) : base(world)
     {
-        _parameters = parameters;
-        _fireLogger = new FireLogger();
-        _calendar = new SimulationCalendar();
+        this.parameters = parameters;
+        fireLogger = new FireLogger();
 
-        _burningTiles = initBurningTiles; // When creating the simulation we have to give what are the initial/starting tiles where the fire starts.
+        burningTiles = initBurningTiles; // When creating the simulation we have to give what are the initial/starting tiles where the fire starts.
         foreach (Tile tile in initBurningTiles)
         {
-            _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, tile);
+            fireLogger.LogTileStartedBurning(calendar.CurrentTime, tile);
         }
 
         SetWorldProperties();
@@ -26,7 +25,7 @@ public class FireSimulation : SimulationBase
     // Helper method that prepares the base class world/tiles with the initial properties that will be used during the simulation.
     protected override void SetWorldProperties()
     {
-        foreach (Tile tile in _world.Grid)
+        foreach (Tile tile in world.Grid)
         {
             tile.IsBurning = false;
             tile.BurningFor = 0;
@@ -64,7 +63,7 @@ public class FireSimulation : SimulationBase
     // Determines whether the simulation has finished.
     public override bool Finished()
     {
-        if (_burningTiles.Count == 0)
+        if (burningTiles.Count == 0)
         {
             return true;
         }
@@ -74,21 +73,21 @@ public class FireSimulation : SimulationBase
     // Advances the simulation by one time step, updating the state of burning and neighboring tiles, logging the changes.
     public override void Update()
     {
-        _calendar.AdvanceTime();
+        calendar.AdvanceTime();
 
         // To track the update simulation change, some of the tiles are currently burning will keep burning, but some will in this update stop burning.
-        List<Tile> nextBurningTiles = new List<Tile>(_burningTiles);
+        List<Tile> nextBurningTiles = new List<Tile>(burningTiles);
 
-        foreach (Tile tile in _burningTiles)
+        foreach (Tile tile in burningTiles)
         {
             // Process neighbors at distance 1 and 2 - tiles further away can also catch on fire, but with much smaller probability.
             for (int distance = 1; distance <= 2; distance++)
             {
-                foreach (Tile neighborTile in _world.GetCircularEdgeNeighborTiles(tile, distance))
+                foreach (Tile neighborTile in world.GetCircularEdgeNeighborTiles(tile, distance))
                 {
                     float distanceModifier = distance == 1 ? 1f : 0.1f;
 
-                    float spreadProbability = CalculateFireSpreadProbability(_world, tile, neighborTile, _parameters);
+                    float spreadProbability = CalculateFireSpreadProbability(world, tile, neighborTile, parameters);
                     spreadProbability *= distanceModifier;
 
                     if (RandomUtility.NextFloat() < spreadProbability)
@@ -98,7 +97,7 @@ public class FireSimulation : SimulationBase
                         if (ignited && !nextBurningTiles.Contains(neighborTile))
                         {
                             nextBurningTiles.Add(neighborTile);
-                            _fireLogger.LogTileStartedBurning(_calendar.CurrentTime, neighborTile);
+                            fireLogger.LogTileStartedBurning(calendar.CurrentTime, neighborTile);
                         }
                     }
                 }
@@ -110,31 +109,31 @@ public class FireSimulation : SimulationBase
             {
                 tile.Extinguish();
                 nextBurningTiles.Remove(tile);
-                _fireLogger.LogTileStoppedBurning(_calendar.CurrentTime, tile);
+                fireLogger.LogTileStoppedBurning(calendar.CurrentTime, tile);
             }
         }
 
         // This allows us to iterate through the list of currently burning tiles without modification, while preparing the list of tiles that will be burning in the next update.
-        _burningTiles = nextBurningTiles;
+        burningTiles = nextBurningTiles;
     }
-
 
 
     public List<FireEvent> GetLastUpdateEvents()
     {
-        return _fireLogger.GetLastUpdateEvents(_calendar.CurrentTime);
+        return fireLogger.GetLastUpdateEvents(calendar.CurrentTime);
     }
 
     public Dictionary<int, int> GetBurningTilesOverTime()
     {
-        return _fireLogger.GetBurningTilesOverTime();
+        return fireLogger.GetBurningTilesOverTime();
     }
+
 
     // Calculates the probability of fire spreading from a source tile to a target tile, taking into account factors like vegetation, slope, moisture, and wind.
     private float CalculateFireSpreadProbability(World world, Tile source, Tile target, FireSimParameters parameters)
     {
-        float vegetationFactor = parameters.VegetationSpreadFactor > 0 ? GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor) : _parameters.BaseSpreadProbability;
-        float slopeFactor = parameters.SlopeSpreadFactor > 0 ? GetSlopeFactor(source, target, parameters.SlopeSpreadFactor) : _parameters.BaseSpreadProbability;
+        float vegetationFactor = parameters.VegetationSpreadFactor > 0 ? GetVegetationFactor(target.Vegetation, parameters.VegetationSpreadFactor) : this.parameters.BaseSpreadProbability;
+        float slopeFactor = parameters.SlopeSpreadFactor > 0 ? GetSlopeFactor(source, target, parameters.SlopeSpreadFactor) : this.parameters.BaseSpreadProbability;
 
         float combined = (vegetationFactor + slopeFactor) / 2; // Average the vegetation and slope factors
 
@@ -178,7 +177,7 @@ public class FireSimulation : SimulationBase
     // Modifies fire spread probability based on the type, with dense vegetation like forests increasing it, and less flammable types like grass decreasing it.
     private float GetVegetationFactor(VegetationType vegetation, float spreadFactor)
     {
-        float factor = _parameters.BaseSpreadProbability;
+        float factor = parameters.BaseSpreadProbability;
 
         switch (vegetation)
         {
@@ -266,7 +265,7 @@ public class FireSimulation : SimulationBase
         // Calculate factor using linear interpolation formula
         factor = slopeInDegrees >= 0 ? y1 + ((slopeInDegrees - x1) * (y2 - y1) / (x2 - x1)) : 1f; // No change for downhill
 
-        factor = factor * _parameters.BaseSpreadProbability;
+        factor = factor * parameters.BaseSpreadProbability;
         factor = Math.Min(0.8f, factor);
 
         return factor * spreadFactor;

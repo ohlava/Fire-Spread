@@ -45,7 +45,7 @@ public static class WorldFileManager
         return json;
     }
 
-    private static readonly object _fileLock = new object(); // This object doesn't have particular value. Its purpose is to serve as a token for the lock statement. Used as a mutex for synchronization purposes
+    private static readonly object s_fileLock = new object(); // This object doesn't have particular value. Its purpose is to serve as a token for the lock statement. Used as a mutex for synchronization purposes
 
     // Appends simulation data to a file if it exists otherwise create that file.
     public static void AppendSimulationDataToFile(World world, Map<float> heatMap, string filePath)
@@ -56,7 +56,7 @@ public static class WorldFileManager
         string jsonData = JsonUtility.ToJson(worldAndHeatMapData);
 
         // Append the data to the file in a thread-safe manner
-        lock (_fileLock)
+        lock (s_fileLock)
         {
             using (StreamWriter file = new StreamWriter(filePath, true))
             {

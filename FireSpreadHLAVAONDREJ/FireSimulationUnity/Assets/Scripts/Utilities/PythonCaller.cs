@@ -4,10 +4,11 @@ using UnityEngine;
 using System.IO;
 using System;
 
+// Handles script execution with support for input/output redirection and timeout management.
 public class PythonCaller
 {
-    public string scriptName = "PythonScripts/main.py";
-    public string pythonPath = "/usr/bin/python3";
+    public string ScriptName = "PythonScripts/main.py";
+    public string PythonPath = "/usr/bin/python3";
 
     public PythonCaller()
     {
@@ -15,19 +16,20 @@ public class PythonCaller
 
     public PythonCaller(string script, string python)
     {
-        scriptName = script;
-        pythonPath = python;
+        ScriptName = script;
+        PythonPath = python;
     }
 
+    // Asynchronously calls a Python script using the configured paths and input data while handling errors and script timeouts, logging details for troubleshooting.
     public async Task<string> CallPythonScript(InputDataSerializationPackage inputData)
     {
-        if (!File.Exists(pythonPath))
+        if (!File.Exists(PythonPath))
         {
             UnityEngine.Debug.LogError("Python executable not found at specified path.");
             return null;
         }
 
-        string scriptPath = Path.Join(Application.streamingAssetsPath, scriptName);
+        string scriptPath = Path.Join(Application.streamingAssetsPath, ScriptName);
         if (!File.Exists(scriptPath))
         {
             UnityEngine.Debug.LogError("Python script not found at specified path.");
@@ -37,7 +39,7 @@ public class PythonCaller
         try
         {
             int timeout = 5000; // Script timeout
-            string[] args = { "predict" }; // Can be modified, no use 
+            string[] args = { "predict" }; // Can be modified, no use right now
             string jsonString = JsonUtility.ToJson(inputData);
             string output = await RunPythonScript(scriptPath, args, jsonString, timeout); // What python prints into StandardOutput
             UnityEngine.Debug.Log("Python script completed");
@@ -58,7 +60,7 @@ public class PythonCaller
 
     private async Task<string> RunPythonScript(string scriptPath, string[] args, string input, int timeout)
     {
-        ProcessStartInfo psi = new ProcessStartInfo(pythonPath)
+        ProcessStartInfo psi = new ProcessStartInfo(PythonPath)
         {
             ArgumentList = { scriptPath },
             UseShellExecute = false,

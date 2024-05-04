@@ -3,23 +3,23 @@ using System.Collections.Generic;
 // Manages the execution and coordination of different simulations.
 public class SimulationManager
 {
-    private World _world;
-    private List<ISimulation> _simulations;
-    private FireSimulation _mainFireSimulation;
+    private World world;
+    private List<ISimulation> simulations;
+    private FireSimulation mainFireSimulation; // Right now master simulation that will lead other simulations to stop
 
     public SimulationManager(World world)
     {
-        _world = world;
-        _simulations = new List<ISimulation>();
+        this.world = world;
+        simulations = new List<ISimulation>();
     }
 
     // Adds a new simulation to the manager, returns self for ability to chain this function
     public SimulationManager AddSimulation(ISimulation simulation)
     {
-        _simulations.Add(simulation);
+        simulations.Add(simulation);
         if (simulation is FireSimulation)
         {
-            _mainFireSimulation = simulation as FireSimulation;
+            mainFireSimulation = simulation as FireSimulation;
         }
 
         return this;
@@ -28,7 +28,7 @@ public class SimulationManager
     // Updates all the simulations once in order of how they were added.
     public void UpdateAllSimulations()
     {
-        foreach (var simulation in _simulations)
+        foreach (var simulation in simulations)
         {
             if (simulation is not null)
             {
@@ -37,12 +37,12 @@ public class SimulationManager
         }
     }
 
-    // Runs all simulations to completion, or until the main fire simulation finishes.
+    // Runs all simulations to completion, or until the main/master fire simulation finishes.
     public void RunAllSimulations()
     {
         ResetWorld();
 
-        while (!_mainFireSimulation.Finished())
+        while (!mainFireSimulation.Finished())
         {
             UpdateAllSimulations();
         }
@@ -51,6 +51,6 @@ public class SimulationManager
     // Resets the world to its initial state for a new simulations to run.
     private void ResetWorld()
     {
-        _world.Reset();
+        world.Reset();
     }
 }

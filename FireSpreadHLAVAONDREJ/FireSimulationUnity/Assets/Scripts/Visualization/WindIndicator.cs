@@ -49,14 +49,14 @@ public class WindIndicator : MonoBehaviour
         return;
     }
 
-    // Method to show/activate the wind indicator objects
+    // Show/activate the wind indicator objects
     public void ActivateIndicator()
     {
         windSpeedText.gameObject.SetActive(true);
         windArrow.SetActive(true);
     }
 
-    // Method to hide/deactivate the wind indicator objects
+    // Hide/deactivate the wind indicator objects
     public void DeactivateIndicator()
     {
         windSpeedText.gameObject.SetActive(false);

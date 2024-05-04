@@ -17,6 +17,7 @@ public class FileManagementService
         this.worldGenerator = worldGenerator ?? throw new ArgumentNullException(nameof(worldGenerator));
     }
 
+    // Initiates the file import process and handles the imported file.
     public void ImportFile(Action<World> onWorldImported)
     {
         fileBrowserHandler.ImportFile(FileImportedCallback);
@@ -39,7 +40,7 @@ public class FileManagementService
         }
     }
 
-
+    // Loads a world from a file based on the file extension.
     private World LoadWorldFromFile(string filePath)
     {
         if (filePath != null)
@@ -54,24 +55,20 @@ public class FileManagementService
                 int requiredDepth = worldGenerator.depth;
 
                 Map<float> customHeightMap = heightMapImporter.GetMap(requiredWidth, requiredDepth, filePath);
-                if (customHeightMap != null)
-                {
-                    // Get and apply other maps differently if desired.
 
-                    Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
-                    customMoistureMap.FillWithDefault(0);
+                // Get and apply other maps differently if desired. Smooth, GaussianBlur and other MapExtensions methods.
 
-                    Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
-                    customVegetationMap.FillWithDefault(VegetationType.Grass);
+                Map<int> customMoistureMap = new Map<int>(requiredWidth, requiredDepth);
+                customMoistureMap.FillWithDefault(0);
 
-                    Debug.Log("Successfully imported height map from " + fileExtension + " file.");
+                Map<VegetationType> customVegetationMap = new Map<VegetationType>(requiredWidth, requiredDepth);
+                customVegetationMap.FillWithDefault(VegetationType.Grass);
 
-                    World world = WorldBuilder.CreateWorld(requiredWidth, requiredDepth, customHeightMap, customMoistureMap, customVegetationMap);
+                World world = WorldBuilder.CreateWorld(requiredWidth, requiredDepth, customHeightMap, customMoistureMap, customVegetationMap);
 
-                    return world;
-                }
+                return world;
             }
-            else if (fileExtension == ".json")
+            else if (fileExtension == ".json") // Using world serialization with all the maps at once.
             {
                 Debug.Log("Loading serialized world from JSON file.");
                 return WorldFileManager.LoadWorld(filePath);
@@ -89,6 +86,7 @@ public class FileManagementService
         return null;
     }
 
+    // Initiates the process to save a world to a file.
     public void SaveWorld(World world)
     {
         fileBrowserHandler.SaveFile(filePath =>
@@ -105,7 +103,7 @@ public class FileManagementService
         });
     }
 
-    // Saves the world to a new file with automatic numbering.
+    // Saves the world to a new file with automatic numbering - incremented name - to avoid overwriting.
     public void SaveWorldAutomatically(World world)
     {
         string saveDirectory = Path.Combine(Application.streamingAssetsPath, "SavedWorlds");

@@ -24,13 +24,13 @@ public class SimulationCalendar
 // It requires derived classes to implement specific update behaviors, world and tiles state settings, and a termination condition.
 public abstract class SimulationBase : ISimulation
 {
-    protected World _world;
-    protected SimulationCalendar _calendar;
+    protected World world;
+    protected SimulationCalendar calendar;
 
     public SimulationBase(World world)
     {
-        _world = world;
-        _calendar = new SimulationCalendar();
+        this.world = world;
+        calendar = new SimulationCalendar();
     }
 
     public abstract void Update();

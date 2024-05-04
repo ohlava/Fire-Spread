@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.IO;
 
-
 public interface IMapImporter<T>
 {
     Map<T> GetMap(int width, int depth, string fullFilePath);
@@ -10,18 +9,23 @@ public interface IMapImporter<T>
 public class HeightMapImporter : IMapImporter<float>
 {
     private Map<float> heightMap;
+    public float HeightMultiplier = 5f; // Adjust this to change how the height values will be scaled
 
-    // Adjust this to change how the height values will be scaled
-    public float HeightMultiplier = 5f;
-
+    // Retrieves a height map from a file or returns a default map if the file import fails.
     public Map<float> GetMap(int requiredWidth, int requiredDepth, string fullFilePath)
     {
-        if (ImportHeightMap(requiredWidth, requiredDepth, fullFilePath) == true)
+        if (ImportHeightMap(requiredWidth, requiredDepth, fullFilePath))
         {
+            // Do other stuff like smoothing etc. if needed
             return heightMap;
         }
-        Debug.Log("Something went wrong with map Import, check the file path:");
-        return null;
+        else
+        {
+            Debug.Log($"Something went wrong with map Import, using default map instead, check the file path: {fullFilePath}");
+            Map<float> defaultMap = new Map<float>(requiredWidth, requiredDepth);
+            defaultMap.FillWithDefault(1.0f);
+            return defaultMap;
+        }
     }
 
     private bool ImportHeightMap(int requiredWidth, int requiredDepth, string fullFilePath)
@@ -31,11 +35,12 @@ public class HeightMapImporter : IMapImporter<float>
             var fileContent = File.ReadAllBytes(fullFilePath);
 
             // Create a texture and load the image file into it
-            Texture2D tex = new Texture2D(2, 2);
+            Texture2D tex = new Texture2D(2, 2); // Temporary allocation before loading the actual image data
             tex.LoadImage(fileContent);
 
             if (tex.width < requiredWidth || tex.height < requiredDepth)
             {
+                Debug.Log("Required world dimensions exceed for this image.");
                 return false;
             }
 
@@ -46,7 +51,7 @@ public class HeightMapImporter : IMapImporter<float>
         return false;
     }
 
-
+    // Converts a texture into a height map using a calculated sample ratio to fit the required dimensions.
     private Map<float> ConvertToHeightmap(Texture2D tex, int requiredWidth, int requiredDepth)
     {
         Map<float> heights = new Map<float>(requiredWidth, requiredDepth);

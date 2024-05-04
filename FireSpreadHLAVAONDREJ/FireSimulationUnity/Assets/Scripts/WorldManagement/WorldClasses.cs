@@ -33,7 +33,7 @@ public class World
     {
         Width = other.Width;
         Depth = other.Depth;
-        Wind = new Wind(other.Wind._initialWindDirection, other.Wind._initialWindSpeed);
+        Wind = new Wind(other.Wind.InitialWindDirection, other.Wind.InitialWindSpeed);
         Grid = new Tile[Width, Depth];
 
         for (int x = 0; x < Width; x++)
@@ -73,14 +73,14 @@ public class Tile
     public int DepthPosition { get; private set; } // y position in the world
 
     public float Height { get; set; }
-    private int _moisture; // Percent 0-100, 0 (dry) and 100 (water)
+    private int moisture; // Percent 0-100, 0 (dry) and 100 (water)
     public int Moisture
     {
-        get => _moisture;
+        get => moisture;
         set
         {
-            _moisture = value;
-            if (_moisture == 100)
+            moisture = value;
+            if (moisture == 100)
             {
                 IsWater = true;
             }
@@ -112,41 +112,41 @@ public class Tile
 
 public class Wind
 {
-    private int _windDirection; // 0-359 degrees, where 0 is Unity's +x axis, 90 is +z axis etc.
-    private float _windSpeed;
-    public readonly int _initialWindDirection;
-    public readonly float _initialWindSpeed;
+    private int windDirection; // 0-359 degrees, where 0 is Unity's +x axis, 90 is +z axis etc.
+    private float windSpeed;
+    public readonly int InitialWindDirection;
+    public readonly float InitialWindSpeed;
 
     public int WindDirection
     {
-        get => _windDirection;
-        set => _windDirection = ((value % 360) + 360) % 360; // 0-359
+        get => windDirection;
+        set => windDirection = ((value % 360) + 360) % 360; // 0-359
     }
 
     public float WindSpeed
     {
-        get => _windSpeed;
-        set => _windSpeed = Math.Clamp(value, 0f, 60f); // 0-60
+        get => windSpeed;
+        set => windSpeed = Math.Clamp(value, 0f, 60f); // 0-60
     }
 
     public Wind()
     {
-        _initialWindDirection = RandomUtility.Range(0, 360); // Random direction 0-359
-        _initialWindSpeed = RandomUtility.Range(0.0f, 60.0f); // Random speed 0-60
+        InitialWindDirection = RandomUtility.Range(0, 360); // Random direction 0-359
+        InitialWindSpeed = RandomUtility.Range(0.0f, 60.0f); // Random speed 0-60
         Reset();
     }
 
     public Wind(int initialDirection, float initialSpeed)
     {
-        _initialWindDirection = initialDirection;
-        _initialWindSpeed = initialSpeed;
+        InitialWindDirection = initialDirection;
+        InitialWindSpeed = initialSpeed;
         Reset();
     }
 
     // Resets and sets current wind to initial values.
     public void Reset()
     {
-        _windDirection = _initialWindDirection;
-        _windSpeed = _initialWindSpeed;
+        windDirection = InitialWindDirection;
+        windSpeed = InitialWindSpeed;
     }
 }

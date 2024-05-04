@@ -3,31 +3,31 @@ using System.Threading.Tasks;
 
 public class FirePredictor
 {
-    private FireSimParameters _fireParams;
-    private List<Tile> _initBurningTiles;
-    private World _world;
+    private FireSimParameters fireParams;
+    private List<Tile> initBurningTiles;
+    private World world;
 
     public FirePredictor(FireSimParameters fireParams)
     {
-        _fireParams = fireParams;
+        this.fireParams = fireParams;
     }
 
     // Generates a heat map representing the intensity of fires across a given world running multiple simulations and collecting the final state of the world for each run.
     public Map<float> GenerateHeatMap(int iterations, World world, List<Tile> initBurningTiles)
     {
-        _world = world;
-        _initBurningTiles = initBurningTiles;
+        this.world = world;
+        this.initBurningTiles = initBurningTiles;
 
         Map<float> heatMap = new Map<float>(world.Width, world.Depth);
 
-        // Use Task.Run to execute simulations in parallel. Running simulation on worlds - each task, different runned world.
+        // Task.Run execute simulations in parallel. Running simulation on worlds - each task, different runned world.
         var tasks = new Task<World>[iterations];
         for (int i = 0; i < iterations; i++)
         {
             tasks[i] = Task.Run(() =>
             {
-                var worldCopy = new World(_world);
-                return RunSimulation(worldCopy, ConvertToIndices(_initBurningTiles)); // Run simulation and return the resulting World
+                var worldCopy = new World(this.world);
+                return RunSimulation(worldCopy, ConvertToIndices(this.initBurningTiles)); // Run simulation and return the resulting World
             });
         }
 
@@ -71,7 +71,7 @@ public class FirePredictor
         return indices;
     }
 
-    // Function that runs the same simulation multiple times on one world and returns
+    // Runs the same simulation on the world and returns it
     private World RunSimulation(World world, List<(int, int)> initBurningTiles)
     {
         SimulationManager manager = new SimulationManager(world);
@@ -84,7 +84,7 @@ public class FirePredictor
             specificBurningTiles.Add(tile);
         }
 
-        FireSimulation fireSim = new FireSimulation(_fireParams, world, specificBurningTiles);
+        FireSimulation fireSim = new FireSimulation(fireParams, world, specificBurningTiles);
         WindSimulation windSim = new WindSimulation(world);
         manager.AddSimulation(fireSim).AddSimulation(windSim);
 

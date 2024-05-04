@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
-    public Toggle useSimplifiedWorldVisualizationToggle;
-    public Toggle saveTerrainAutomaticallyToggle;
+    [SerializeField] Toggle useSimplifiedWorldVisualizationToggle;
+    [SerializeField] Toggle saveTerrainAutomaticallyToggle;
 
     // Start is called before the first frame update
     void Start()
@@ -27,8 +27,8 @@ public class MainMenu : MonoBehaviour
     void LoadSettings()
     {
         Settings currentSettings = SettingsManager.LoadSettings();
-        useSimplifiedWorldVisualizationToggle.isOn = currentSettings.useSimplifiedWorldVisualization;
-        saveTerrainAutomaticallyToggle.isOn = currentSettings.saveTerrainAutomatically;
+        useSimplifiedWorldVisualizationToggle.isOn = currentSettings.UseSimplifiedWorldVisualization;
+        saveTerrainAutomaticallyToggle.isOn = currentSettings.SaveTerrainAutomatically;
     }
 
     void OnUseSimplifiedWorldVisualizationChanged(bool isOn)

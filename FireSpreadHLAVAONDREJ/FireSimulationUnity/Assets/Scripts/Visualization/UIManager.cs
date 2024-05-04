@@ -4,16 +4,16 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private Button runButton, pauseButton;
-    [SerializeField] private TextMeshProUGUI InfoPanel;
+    [SerializeField] Button runButton, pauseButton;
+    [SerializeField] TextMeshProUGUI InfoPanel;
 
-    // Method to update InfoPanel text
+    // Update InfoPanel text when connected
     public void UpdateInfoPanel(string text)
     {
         InfoPanel.text = text;
     }
 
-    // Method to set run and pause button states
+    // Set run and pause button states - allowing or not clicking on them
     public void UpdateRunPauseButtons(bool isRunning)
     {
         runButton.interactable = !isRunning;
