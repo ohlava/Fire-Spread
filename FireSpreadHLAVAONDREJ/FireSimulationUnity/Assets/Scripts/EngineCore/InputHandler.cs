@@ -320,7 +320,12 @@ public class InputHandler : MonoBehaviour
             TriggerRun();
 
         if (Input.GetKeyDown(KeyCode.Escape))
-            SceneManager.LoadScene("MainMenu");
+            BackToMainMenu();
+    }
+
+    public void BackToMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void TriggerGraph()

@@ -55,7 +55,7 @@ public class TutorialManager : MonoBehaviour
         tutorialSections[5] =
             " Fire Behavior can be very unpredictable" +
             "\n Understand how combining all aspects (wind, terrain, vegetation) can lead to unpredictable and complex fire behaviors." +
-            "\n Use the ESC key or the main menu button to transition to either Play or Sandbox mode for further experimentation." +
+            "\n Use the ESC key or back arrow button to return to the main menu and then transition to either Sandbox or Predictions scene for further experimentation." +
             "\n Real-World Fact: Wildfires are complex and often unpredictable due to the interplay of various factors like weather, topography, and fuel types.";
 
         UpdateTutorialSection();
