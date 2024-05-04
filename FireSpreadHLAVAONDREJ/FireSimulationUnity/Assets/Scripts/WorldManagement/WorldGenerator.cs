@@ -269,11 +269,11 @@ public class WorldGenerator
         heightMap.Smooth();
         heightMap.GaussianBlur();
 
+        // Combine maps differently or call other methods on those maps from MapExtensions.
+
         Map<int> moistureMap = new MoistureMapGenerator(lakeMap, riverMap).Generate(); // 0-100 range
 
         Map<VegetationType> vegetationMap = new VegetationMapGenerator(moistureMap).Generate();
-
-        // Combine maps differently or call other methods on those maps from MapExtensions.
 
         return WorldBuilder.CreateWorld(width, depth, heightMap, moistureMap, vegetationMap);
     }

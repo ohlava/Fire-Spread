@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+// Serialization and deserialization of choosen data (properties), choose own
+
 [System.Serializable]
 public class SerializableWorld
 {
@@ -57,7 +59,7 @@ public class WorldAndHeatMapData
     }
 }
 
-
+// Provides methods for converting between different data representations (serialized and non serialized, back-and-forth).
 public class SerializableConversion
 {
     public static SerializableWorld ConvertToWorldSerializable(World world)

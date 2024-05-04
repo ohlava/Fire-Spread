@@ -39,7 +39,7 @@ public static class WorldBuilder
         }
     }
 
-    // Creates a new world based on provided size and optional maps.
+    // Creates a new world based on provided size and some optional maps.
     public static World CreateWorld(int width, int depth, Map<float> heightMap = null, Map<int> moistureMap = null, Map<VegetationType> vegetationMap = null)
     {
         World world = new World(width, depth);

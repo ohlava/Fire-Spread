@@ -6,11 +6,11 @@ public class WindIndicator : MonoBehaviour
     [SerializeField] Camera mainTargetCamera;
     [SerializeField] TextMeshProUGUI windSpeedText;
     [SerializeField] Camera windArrowCamera;
-    [SerializeField] GameObject windArrow; // for wind indicator
+    [SerializeField] GameObject windArrow; // Wind indicator
 
     void Awake()
     {
-        // If no camera is set, use the main camera
+        // If no camera is set
         if (mainTargetCamera == null)
         {
             mainTargetCamera = Camera.main;
@@ -20,8 +20,7 @@ public class WindIndicator : MonoBehaviour
     // Update the wind indicator to show the current wind direction and speed
     public void UpdateIndicator(int windDirection, float windSpeed)
     {
-        // Update the arrow's rotation to match the wind direction for Unity
-        windArrow.transform.eulerAngles = new Vector3(0, -windDirection + 90, 90);
+        windArrow.transform.eulerAngles = new Vector3(0, -windDirection + 90, 90); // Update the arrow's rotation to match the wind direction for Unity
 
         windSpeedText.text = $"Wind: \n {windSpeed.ToString("F1")} km/h";
     }
@@ -29,10 +28,8 @@ public class WindIndicator : MonoBehaviour
     // Ensures the wind arrow is correctly oriented (looked through the windArrowCamera with the mainTargetCamera) to appear for the main camera as it is pointing in the right direction.
     public void UpdateIndicatorCameraAngle()
     {
-        // Calculate the direction vector from the main camera to its focal point (assuming it's the world's center)
         Vector3 mainCameraDirection = mainTargetCamera.transform.forward;
 
-        // Determine the distance from the arrow to the windArrowCamera
         float distanceToArrow = (windArrowCamera.transform.position - windArrow.transform.position).magnitude;
 
         // Update the secondary camera's position to be at the same distance from the arrow but in the opposite direction of the main camera
@@ -40,7 +37,7 @@ public class WindIndicator : MonoBehaviour
 
         windArrowCamera.transform.position = windArrowCameraPosition;
 
-        if (mainCameraDirection == Vector3.down) // main camera looking straight down
+        if (mainCameraDirection == Vector3.down) // Main camera looking straight down.
         {
             windArrowCamera.transform.rotation = mainTargetCamera.transform.rotation;
         }

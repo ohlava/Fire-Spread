@@ -3,13 +3,12 @@ using System.Collections.Generic;
 
 public static class MapExtensions
 {
-    // Normalizes all heights to be between 0 and 1
+    // Normalizes all heights to be between 0 and 1.
     public static Map<float> Normalize(this Map<float> map)
     {
         // Find min and max values
         float minValue = float.MaxValue;
         float maxValue = float.MinValue;
-
         for (int x = 0; x < map.Width; x++)
         {
             for (int y = 0; y < map.Depth; y++)
@@ -38,7 +37,7 @@ public static class MapExtensions
         return map;
     }
 
-    // Reduce the height of the neighbors of waterMap by the beach factor
+    // Reduce the height of the neighbors of waterMap by the beach factor.
     public static Map<float> ReduceByBeachFactor(this Map<float> map, Map<int> waterMap, float beachFactor)
     {
         for (int x = 3; x < map.Width - 3; x++)
@@ -98,6 +97,7 @@ public static class MapExtensions
         return map;
     }
 
+    // Raise all values by specific amount.
     public static Map<float> RaiseElevation(this Map<float> map, float amount)
     {
         for (int x = 0; x < map.Width; x++)
@@ -128,10 +128,11 @@ public static class MapExtensions
         return map;
     }
 
+    // Gaussian Blur: This method applies a Gaussian blur filter to the map, smoothing out height variations.
     public static Map<float> GaussianBlur(this Map<float> map)
     {
         float[,] blurredData = new float[map.Width, map.Depth];
-        int blurSize = 1;  // this is a simple 3x3 kernel
+        int blurSize = 1;  // Define the size of the kernel
 
         for (int x = 0; x < map.Width; x++)
         {
@@ -159,7 +160,7 @@ public static class MapExtensions
             }
         }
 
-        return blurredData;  // Converted automatically due to the implicit conversion we defined earlier
+        return blurredData; // Converted automatically due to the implicit conversion between float[,] and Map<float>
     }
 }
 

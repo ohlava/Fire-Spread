@@ -8,6 +8,7 @@ public enum VisualizerMode { Standard, Simplified }
 public class Visualizer : MonoBehaviour
 {
     public VisualizerMode mode;
+    public float TileHeightMultiplier;
 
     #region Tile Management Fields
     // To keep track of actuall tile instance GameObject created for each Tile
@@ -25,9 +26,6 @@ public class Visualizer : MonoBehaviour
     [SerializeField] Material grassMaterial, waterMaterial, burnedMaterial, fireMaterial;
     [SerializeField] GameObject tilePrefab, firePrefab;
     #endregion
-
-    [SerializeField] LayerMask tileLayer; // Add the layer mask for the tileInstances - for handling Raycasting
-    public float TileHeightMultiplier;
 
     // Awake is called when the script instance is being loaded.
     private void Awake()
@@ -79,6 +77,7 @@ public class Visualizer : MonoBehaviour
         }
     }
 
+    // Main function for creating the visualizer world representation.
     public void CreateWorldTiles(World world)
     {
         for (int x = 0; x < world.Width; x++)
@@ -103,10 +102,10 @@ public class Visualizer : MonoBehaviour
             }
         }
 
-        // Transforms all water tiles into list of bigger chunks - waterChunks. Combining all water tiles into one improves speed and performance
         CombineAllWaterTiles(world);
     }
 
+    // Transforms all water tiles into list of bigger chunks - waterChunks. Combining all water tiles into one improves speed and performance
     private void CombineAllWaterTiles(World world)
     {
         List<List<GameObject>> groups = FindContiguousWaterTileGroups(world);

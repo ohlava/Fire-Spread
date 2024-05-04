@@ -73,7 +73,7 @@ public class Tile
     public int DepthPosition { get; private set; } // y position in the world
 
     public float Height { get; set; }
-    private int _moisture; // percent 0-100, 0 (dry) and 100 (water)
+    private int _moisture; // Percent 0-100, 0 (dry) and 100 (water)
     public int Moisture
     {
         get => _moisture;
@@ -95,8 +95,8 @@ public class Tile
 
     public bool IsBurning { get; set; }
     public bool IsBurned { get; set; }
-    public int BurnTime { get; set; } // episodes required to burn this tile
-    public int BurningFor { get; set; } // burning episodes - non static during simulation
+    public int BurnTime { get; set; } // Episodes required to burn this tile
+    public int BurningFor { get; set; } // Burning episodes - non static during simulation
     #endregion
 
     public Tile(float height, int moisture, VegetationType vegetation, int positionX, int positionY)
@@ -143,7 +143,7 @@ public class Wind
         Reset();
     }
 
-    // Resets and sets current wind to initial values
+    // Resets and sets current wind to initial values.
     public void Reset()
     {
         _windDirection = _initialWindDirection;

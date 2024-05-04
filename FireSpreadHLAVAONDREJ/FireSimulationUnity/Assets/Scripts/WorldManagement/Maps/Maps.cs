@@ -14,6 +14,7 @@ public class Map<T>
         Depth = depth;
     }
 
+    // Fills the map with a default value.
     public void FillWithDefault(T defaultValue)
     {
         for (int i = 0; i < Width; i++)
@@ -25,44 +26,7 @@ public class Map<T>
         }
     }
 
-    public static implicit operator Map<T>(T[,] data)
-    {
-        return new Map<T>(data.GetLength(0), data.GetLength(1)) { Data = data };
-    }
-
-    public static implicit operator Map<T>(T[][] data)
-    {
-        int width = data.Length;
-        int maxDepth = data.Max(row => row.Length); // get the maximum length
-
-        Map<T> map = new Map<T>(width, maxDepth);
-
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < data[i].Length; j++) // only iterate to the length of the current row
-                map.Data[i, j] = data[i][j];
-        }
-
-        return map;
-    }
-
-    public T[,] To2DArray()
-    {
-        return Data;
-    }
-
-    public T[][] ToJaggedArray()
-    {
-        T[][] jagged = new T[Width][];
-        for (int i = 0; i < Width; i++)
-        {
-            jagged[i] = new T[Depth];
-            for (int j = 0; j < Depth; j++)
-                jagged[i][j] = Data[i, j];
-        }
-        return jagged;
-    }
-
+    // Allowing printing the map nicely formatted.
     public override string ToString()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -91,4 +55,47 @@ public class Map<T>
         }
         return sb.ToString();
     }
+
+
+    #region Implicit Conversions
+
+    public static implicit operator Map<T>(T[,] data)
+    {
+        return new Map<T>(data.GetLength(0), data.GetLength(1)) { Data = data };
+    }
+
+    public static implicit operator Map<T>(T[][] data)
+    {
+        int width = data.Length;
+        int maxDepth = data.Max(row => row.Length); // Get the maximum length
+
+        Map<T> map = new Map<T>(width, maxDepth);
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < data[i].Length; j++) // Only iterate to the length of the current row
+                map.Data[i, j] = data[i][j];
+        }
+
+        return map;
+    }
+
+    public static implicit operator T[,](Map<T> map)
+    {
+        return map.Data;
+    }
+
+    public static implicit operator T[][](Map<T> map)
+    {
+        T[][] jagged = new T[map.Width][];
+        for (int i = 0; i < map.Width; i++)
+        {
+            jagged[i] = new T[map.Depth];
+            for (int j = 0; j < map.Depth; j++)
+                jagged[i][j] = map.Data[i, j];
+        }
+        return jagged;
+    }
+
+    #endregion
 }

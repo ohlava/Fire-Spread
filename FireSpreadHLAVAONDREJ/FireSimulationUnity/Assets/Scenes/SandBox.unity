@@ -487,37 +487,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 93894637}
   m_CullTransparentMesh: 1
---- !u!1 &117938024
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 117938026}
-  m_Layer: 0
-  m_Name: GraphVisualizer
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &117938026
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 117938024}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 666.13837, y: 561.80005, z: 85.836914}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &138955243
 GameObject:
   m_ObjectHideFlags: 0
@@ -2961,6 +2930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mode: 0
+  TileHeightMultiplier: 3
   grassPrefab: {fileID: 8903058273634794869, guid: f1fc5bb90ac285e4486771552d63bcb8, type: 3}
   forestPrefab: {fileID: 2222111361404534124, guid: 88f2fd29f58b9734683512546acec310, type: 3}
   sparsePrefab: {fileID: 38335279662140195, guid: 34d3f526198dae440bb2ce6005d86055, type: 3}
@@ -2971,10 +2941,6 @@ MonoBehaviour:
   fireMaterial: {fileID: 2100000, guid: f431d44b98e354f5f90b54a6bcd388ae, type: 2}
   tilePrefab: {fileID: 4454232705506599062, guid: 928250b0fbfab4f60bb4a345d4d7ed35, type: 3}
   firePrefab: {fileID: 1253142483436318, guid: 89956e675b749204c8e10395ce2b5fb9, type: 3}
-  tileLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  TileHeightMultiplier: 3
 --- !u!4 &804466388
 Transform:
   m_ObjectHideFlags: 0
@@ -5606,7 +5572,6 @@ MonoBehaviour:
   ZoomChangeSpeed: 0.05
   UpDownSpeed: 50
   RotationSpeed: 50
-  DefaultRotation: {x: 0, y: 0, z: 0}
 --- !u!4 &1613869249
 Transform:
   m_ObjectHideFlags: 0
@@ -6898,7 +6863,6 @@ SceneRoots:
   - {fileID: 963194228}
   - {fileID: 1613869249}
   - {fileID: 705507995}
-  - {fileID: 117938026}
   - {fileID: 1712206359}
   - {fileID: 1804570620}
   - {fileID: 630093512}
