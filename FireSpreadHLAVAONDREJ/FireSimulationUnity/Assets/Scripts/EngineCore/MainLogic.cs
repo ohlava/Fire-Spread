@@ -128,11 +128,11 @@ public class MainLogic : MonoBehaviour
     // Visually updates the wind indicator of the simulation.
     private void UpdateWind()
     {
-        if (windSimulation is null) return;
+        if (windSimulation == null) return;
 
         List<WindEvent> events = windSimulation.GetLastUpdateEvents();
 
-        if (events.Count == 0 || windIndicator is null) return;
+        if (events.Count == 0 || windIndicator == null) return;
 
         int windDirection = 0;
         float windSpeed = 0.0f;
@@ -162,7 +162,7 @@ public class MainLogic : MonoBehaviour
     // Visually updates the simulation state of the world and handles fire spread events.
     private void UpdateFire()
     {
-        if (fireSimulation is null) return;
+        if (fireSimulation == null) return;
 
         List<FireEvent> events = fireSimulation.GetLastUpdateEvents();
 
@@ -204,13 +204,9 @@ public class MainLogic : MonoBehaviour
         {
             currentlyHoveredTile = hoveredOverTile;
             GameObject tileInstance = visualizer.GetTileInstance(hoveredOverTile);
-            if (tileInstance is not null)
+            if (tileInstance != null)
             {
-                Renderer renderer = tileInstance.GetComponent<Renderer>();
-                if (renderer != null)
-                {
-                    renderer.material.color = Color.white;
-                }
+                tileInstance.SetColorTo(Color.white);
             }
         }
     }
@@ -218,7 +214,7 @@ public class MainLogic : MonoBehaviour
     // Resets the visual state of the previously hovered tile.
     private void ResetHoveredTileColor()
     {
-        if (currentlyHoveredTile is not null)
+        if (currentlyHoveredTile != null)
         {
             GameObject tileInstance = visualizer.GetTileInstance(currentlyHoveredTile);
             if (tileInstance != null)
@@ -318,13 +314,13 @@ public class MainLogic : MonoBehaviour
     // Updates the graph visualization with the latest simulation data.
     private void UpdateGraph()
     {
-        if (graphVisualizer is null) return;
+        if (graphVisualizer == null) return;
 
         if (showingGraph)
         {
             Dictionary<int, int> burningTilesOverTime = new Dictionary<int, int>();
 
-            if (fireSimulation is not null)
+            if (fireSimulation != null)
             {
                 burningTilesOverTime = fireSimulation.GetBurningTilesOverTime();
             }

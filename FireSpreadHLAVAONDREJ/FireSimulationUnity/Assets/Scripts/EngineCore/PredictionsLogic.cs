@@ -141,7 +141,7 @@ public class PredictionLogic : MonoBehaviour
         {
             currentlyHoveredTile = hoveredOverTile;
             GameObject tileInstance = visualizer.GetTileInstance(hoveredOverTile);
-            if (tileInstance is not null)
+            if (tileInstance != null)
             {
                 Renderer renderer = tileInstance.GetComponent<Renderer>();
                 if (renderer != null)
@@ -155,7 +155,7 @@ public class PredictionLogic : MonoBehaviour
     // Resets the visual state of the previously hovered tile.
     private void ResetHoveredTileColor()
     {
-        if (currentlyHoveredTile is not null)
+        if (currentlyHoveredTile != null)
         {
             GameObject tileInstance = visualizer.GetTileInstance(currentlyHoveredTile);
             if (tileInstance != null)

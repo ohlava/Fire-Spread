@@ -30,7 +30,7 @@ public class SimulationManager
     {
         foreach (var simulation in simulations)
         {
-            if (simulation is not null)
+            if (simulation != null)
             {
                 simulation.Update();
             }

@@ -279,20 +279,30 @@ public class Visualizer : MonoBehaviour
     // Sets tile material based on its properties or state. Tile instance should already be in the tileToInstanceDict
     public void SetAppropriateMaterial(Tile tile)
     {
+        GameObject tileInstance = GetTileInstance(tile);
+        if (tileInstance == null)
+        {
+            return;  // Exit if tileInstance is null to avoid errors
+        }
+
         int maxVegetationType = Enum.GetNames(typeof(VegetationType)).Length;
 
         if (tile.IsWater)
         {
-            GetTileInstance(tile).SetMaterialTo(waterMaterial);
+            tileInstance.SetMaterialTo(waterMaterial);
         }
         else if (tile.IsBurning)
         {
-            GetTileInstance(tile).SetMaterialTo(fireMaterial);
+            tileInstance.SetMaterialTo(fireMaterial);
+        }
+        else if (tile.IsBurned)
+        {
+            tileInstance.SetMaterialTo(burnedMaterial);
         }
         else // Set tile color based on vegetation level
         {
             float greenValue = 0.4f + (0.2f / (maxVegetationType - 1)) * (int)tile.Vegetation;
-            GetTileInstance(tile).SetColorTo(new Color(0, greenValue, 0));  // RGB color with variable green value/shade
+            tileInstance.SetColorTo(new Color(0, greenValue, 0));  // RGB color with variable green value/shade
         }
     }
 
