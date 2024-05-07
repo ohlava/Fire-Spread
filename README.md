@@ -6,6 +6,7 @@ The Fire Spread Simulator is an application developed in Unity that models the s
 This project now offers for example:
 
 - Procedurally generated terrains with vegetation, lakes and rivers
+- ability to save or load worlds from JSON
 - Customizable terrain sizes and variations
 - Moisture map to simulate different climatic conditions
 - Vegetation map with different types of vegetation
@@ -31,11 +32,11 @@ The Fire Spread Simulator features an intuitive menu system that provides quick 
 ## TUTORIAL
 The Tutorial button is designed to guide new users through the basics of the Fire Spread Simulator. Clicking this will provide step-by-step instructions on starting a simulation, understanding the various elements of the interface, and learning how to control the simulation parameters.
 
-## PLAY
-...To be added...
-
 ## SANDBOX
-The Sandbox mode allows for a more freeform interaction with the simulation. Users can experiment with various conditions and settings without the constraints of the standard simulation parameters. It's a space for experimentation and testing hypotheses about fire behavior.
+The Sandbox scene allows for a more freeform interaction with the simulation. Users can experiment with various conditions and settings without the constraints of the standard simulation parameters. It's a space for experimentation and testing hypotheses about fire behavior.
+
+## PREDICTIONS
+The Predictions scene is designed as a specialized environment for analyzing fire spread probabilities and predictions. The central part of the control panel allows you to adjust and experiment with various factors. The 'Spread Probability' serves as the default probability of the fire spreading to adjacent tiles. Other modifiable factors include 'Vegetation Factor' (based on the type of vegetation on the tiles), 'Slope Factor' (based on elevation differences), and 'Moisture Factor' (based on tile wetness).
 
 ### INFO
 The Info section provides some basic information about the application, including user support information. This section can be used to understand more about the simulation's capabilities and background.
@@ -116,6 +117,8 @@ Future enhancements will include:
 - Better fire spread calculation based on more factors - more real
 - UI changes and enhancements
 - World logger
+- VR, mobile support
+- more live world (birds, moving grass)
 - and many many more
 
 ## Support
