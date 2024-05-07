@@ -262,10 +262,10 @@ public class InputHandler : MonoBehaviour
         }
     }
 
-    // Responds to specific key inputs to zoom the camera in or out.
+    // Responds to specific inputs to zoom the camera in or out.
     private void HandleCameraMove()
     {
-        float zoomChange = 0;
+        float zoomChange = Input.GetAxis("Mouse ScrollWheel") * 20f; // Make faster compared to keyboard input
 
         if (Input.GetKey(KeyCode.I))
             zoomChange -= 1;
