@@ -320,6 +320,9 @@ public class InputHandler : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
             BackToMainMenu();
+
+        if (Input.GetKey(KeyCode.P))
+            cameraHandler.CaptureHighResolutionScreenshot();
     }
 
     public void BackToMainMenu()

@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -58,5 +59,33 @@ public class CameraHandler : MonoBehaviour
         targetCamera.transform.eulerAngles = angles;
         targetCamera.transform.position = worldCenter - (targetCamera.transform.forward * CameraDistance); // Move camera to new position
         targetCamera.transform.LookAt(worldCenter);
+    }
+
+    // Captures a high-resolution screenshot
+    public void CaptureHighResolutionScreenshot()
+    {
+        int ResolutionMultiplier = 2;
+
+        int width = Screen.width * ResolutionMultiplier;
+        int height = Screen.height * ResolutionMultiplier;
+
+        RenderTexture rt = new RenderTexture(width, height, 24);
+        targetCamera.targetTexture = rt; // Set the target texture of the camera
+        Texture2D screenShot = new Texture2D(width, height, TextureFormat.RGB24, false);
+
+        targetCamera.Render();
+
+        RenderTexture.active = rt;
+        screenShot.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+        targetCamera.targetTexture = null;
+        RenderTexture.active = null;
+        Destroy(rt);
+        byte[] bytes = screenShot.EncodeToPNG();
+        Destroy(screenShot);
+
+        string filename = Path.Combine(Application.streamingAssetsPath, "Screenshot_" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + ".png");
+        File.WriteAllBytes(filename, bytes);
+
+        Debug.Log("Screenshot saved to: " + filename);
     }
 }
