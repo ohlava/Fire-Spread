@@ -323,6 +323,12 @@ public class InputHandler : MonoBehaviour
 
         if (Input.GetKey(KeyCode.P))
             cameraHandler.CaptureHighResolutionScreenshot();
+
+        if (Input.GetKeyDown(KeyCode.N))
+            cameraHandler.SaveCameraPosition();
+
+        if (Input.GetKeyDown(KeyCode.M))
+            cameraHandler.ApplySavedCameraPosition();
     }
 
     public void BackToMainMenu()
