@@ -3,6 +3,9 @@
 # Description
 The Fire Spread Simulator is an application developed in Unity that models the spread of fire in a procedurally generated world. It enables users to observe and analyze how fire propagates through different environments and conditions. The application is built with a set of classes and methods that generate a world, run the fire spread simulation, and visualize the outcome.
 
+![Fire Spread Simulator Overview](fire_spread_overview.png)  
+*Czech poster of the Fire Spread Simulator*  
+
 This project now offers for example:
 
 - Procedurally generated terrains with vegetation, lakes and rivers
